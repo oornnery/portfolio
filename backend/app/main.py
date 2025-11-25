@@ -1,6 +1,8 @@
 import logging
+import platform
 from contextlib import asynccontextmanager
 from datetime import datetime
+from importlib.metadata import version
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -73,10 +75,19 @@ async def root():
 
 @app.get("/health")
 async def health():
+    try:
+        app_version = version("backend")
+    except Exception:
+        app_version = "unknown"
+
     return {
         "status": "healthy",
         "message": "Server is running",
+        "service": "backend",
         "timestamp": datetime.now().isoformat(),
+        "uptime": "running",
+        "version": app_version,
+        "platform": platform.system(),
     }
 
 

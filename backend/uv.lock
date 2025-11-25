@@ -53,7 +53,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/2f/4c/7c991e080e106d854
 
 [[package]]
 name = "backend"
-version = "1.0.0"
+version = "0.0.1"
 source = { virtual = "." }
 dependencies = [
     { name = "asyncpg" },
