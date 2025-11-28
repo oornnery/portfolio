@@ -30,7 +30,7 @@ async def seed_db():
         # Check if we have posts
         result = await session.execute(select(Post))
         post = result.scalars().first()
-        
+
         if not post:
             # Create sample posts
             posts = [
@@ -59,7 +59,7 @@ Stay tuned for more updates!
                     category="personal",
                     tags=["portfolio", "fastapi", "htmx"],
                     reading_time=2,
-                    image="https://images.unsplash.com/photo-1499750310159-5b5f226932b7?auto=format&fit=crop&w=800&q=80"
+                    image="https://images.unsplash.com/photo-1499750310159-5b5f226932b7?auto=format&fit=crop&w=800&q=80",
                 ),
                 Post(
                     title="Building Scalable APIs with FastAPI",
@@ -101,7 +101,7 @@ With the right structure, FastAPI can handle massive scale while keeping your co
                     category="tech",
                     tags=["fastapi", "python", "architecture"],
                     reading_time=5,
-                    image="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
+                    image="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
                 ),
                 Post(
                     title="The Power of HTMX",
@@ -129,7 +129,7 @@ With HTMX, your server is the source of truth for the UI state. This simplifies 
                     category="tech",
                     tags=["htmx", "frontend", "javascript"],
                     reading_time=3,
-                    image="https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&w=800&q=80"
+                    image="https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&w=800&q=80",
                 ),
                 Post(
                     title="My Journey as a Developer",
@@ -159,17 +159,17 @@ I'm excited about the future of web development, especially with tools like AI a
                     category="career",
                     tags=["career", "personal", "reflection"],
                     reading_time=4,
-                    image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80"
-                )
+                    image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
+                ),
             ]
-            
+
             session.add_all(posts)
             await session.commit()
 
         # Check if we have projects
         result = await session.execute(select(Project))
         project = result.scalars().first()
-        
+
         if not project:
             projects = [
                 Project(
@@ -201,7 +201,7 @@ This project leverages the power of LLMs to help developers create stunning port
                     demo_url="https://ai-portfolio.example.com",
                     featured=True,
                     github_stars=120,
-                    github_forks=30
+                    github_forks=30,
                 ),
                 Project(
                     title="E-Commerce Microservices",
@@ -234,7 +234,7 @@ The system is divided into several services:
                     github_url="https://github.com/oornnery/ecommerce-microservices",
                     featured=True,
                     github_stars=85,
-                    github_forks=12
+                    github_forks=12,
                 ),
                 Project(
                     title="Task Master",
@@ -265,7 +265,7 @@ Stay organized and productive with Task Master.
                     demo_url="https://taskmaster.example.com",
                     featured=False,
                     github_stars=45,
-                    github_forks=5
+                    github_forks=5,
                 ),
                 Project(
                     title="Weather CLI",
@@ -294,10 +294,10 @@ weather city london
                     github_url="https://github.com/oornnery/weather-cli",
                     featured=False,
                     github_stars=230,
-                    github_forks=40
-                )
+                    github_forks=40,
+                ),
             ]
-            
+
             session.add_all(projects)
             await session.commit()
 
@@ -305,5 +305,5 @@ weather city london
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
-    
+
     await seed_db()

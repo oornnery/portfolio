@@ -6,11 +6,14 @@ from app.core.security import decode_access_token
 from typing import Optional
 import uuid
 
-async def get_current_user_optional(request: Request, session: AsyncSession = Depends(get_session)) -> Optional[User]:
+
+async def get_current_user_optional(
+    request: Request, session: AsyncSession = Depends(get_session)
+) -> Optional[User]:
     token = request.cookies.get("access_token")
     if not token:
         return None
-    
+
     try:
         scheme, _, param = token.partition(" ")
         payload = decode_access_token(param)
@@ -19,7 +22,7 @@ async def get_current_user_optional(request: Request, session: AsyncSession = De
         user_id = payload.get("sub")
         if not user_id:
             return None
-            
+
         user = await session.get(User, uuid.UUID(user_id))
         return user
     except Exception:

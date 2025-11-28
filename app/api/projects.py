@@ -2,11 +2,10 @@ from fastapi import APIRouter, HTTPException, Query, Request, Depends
 from sqlmodel import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import get_session
-from app.models.project import (
-    Project, ProjectCreate, ProjectUpdate, ProjectPublic
-)
+from app.models.project import Project, ProjectCreate, ProjectPublic
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
+
 
 @router.get("", response_model=list[ProjectPublic])
 async def list_projects(
@@ -20,7 +19,7 @@ async def list_projects(
 ):
     """List all projects with optional filters."""
     query = select(Project)
-    
+
     if category:
         query = query.where(Project.category == category)
     if featured is not None:
@@ -29,12 +28,13 @@ async def list_projects(
         # This is a simple check, for JSON array containment it might need specific dialect support or different logic
         # For SQLite/Postgres with SQLModel/SQLAlchemy, .contains might work if configured correctly
         # But for simplicity in this demo, we might filter in python if needed or assume it works
-        pass 
-        # query = query.where(Project.tech_stack.contains([tech])) 
-    
+        pass
+        # query = query.where(Project.tech_stack.contains([tech]))
+
     query = query.offset(offset).limit(limit)
     result = await session.execute(query)
     return result.scalars().all()
+
 
 @router.get("/{slug}", response_model=ProjectPublic)
 async def get_project(slug: str, session: AsyncSession = Depends(get_session)):
@@ -42,14 +42,17 @@ async def get_project(slug: str, session: AsyncSession = Depends(get_session)):
     query = select(Project).where(Project.slug == slug)
     result = await session.execute(query)
     project = result.scalar_one_or_none()
-    
+
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
+
     return project
 
+
 @router.post("", response_model=ProjectPublic)
-async def create_project(project: ProjectCreate, session: AsyncSession = Depends(get_session)):
+async def create_project(
+    project: ProjectCreate, session: AsyncSession = Depends(get_session)
+):
     db_project = Project.model_validate(project)
     session.add(db_project)
     await session.commit()

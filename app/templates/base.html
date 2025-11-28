@@ -44,25 +44,58 @@
     <style>
         .fade-in { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
         body { font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+        .snap-section {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .snap-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.snap-section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
 </head>
-<body class="bg-black text-gray-200 font-sans antialiased selection:bg-gray-800 selection:text-white" hx-boost="true">
+<body class="bg-black text-gray-200 font-sans antialiased selection:bg-gray-800 selection:text-white" hx-boost="false">
     
-    <div class="max-w-3xl mx-auto px-6 flex flex-col min-h-screen">
-        <!-- Navbar -->
-        <nav class="py-8 flex items-center justify-between">
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-gray-800/50 transition-all duration-300">
+        <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
             <a href="/" class="text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors">
                 Fabio Souza
             </a>
             <div class="flex gap-6 text-sm text-gray-400">
                 <a href="/" class="hover:text-white transition-colors">Home</a>
+                <a href="/projects" class="hover:text-white transition-colors">Projects</a>
                 <a href="/blog" class="hover:text-white transition-colors">Blog</a>
+                <a href="/contact" class="hover:text-white transition-colors">Contact</a>
                 <a href="https://github.com/oornnery" target="_blank" class="hover:text-white transition-colors">GitHub</a>
             </div>
-        </nav>
+        </div>
+    </nav>
 
+    <div class="max-w-3xl mx-auto px-6 flex flex-col min-h-screen pt-20">
         <!-- Conteúdo Principal -->
         <main class="flex-grow fade-in py-8">
             {% block content %}{% endblock %}

@@ -16,7 +16,7 @@
                 <h2 class="text-xl font-medium text-white group-hover:text-blue-400 transition-colors">
                     {{ post.title }}
                 </h2>
-                <time class="text-sm text-gray-500 font-mono shrink-0">{{ post.date }}</time>
+                <time class="text-sm text-gray-500 font-mono shrink-0">{{ post.published_at.strftime('%Y-%m-%d') }}</time>
             </div>
             <div class="flex gap-2">
                 {% for tag in post.tags %}
