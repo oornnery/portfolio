@@ -26,6 +26,9 @@
                 <a href="https://linkedin.com/in/fabiohcsouza?ref=selfso" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-gray-800 bg-black hover:bg-gray-800 hover:text-white size-8">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin size-4" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                 </a>
+                <a href="https://x.com/oornnery" aria-label="X" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-gray-800 bg-black hover:bg-gray-800 hover:text-white size-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter size-4" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                </a>
             </div>
             <div class="pt-4">
                  <a href="/about" class="inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors">
@@ -50,7 +53,7 @@
             </a>
             <div class="space-y-6">
                 {% for project in projects %}
-                <a href="{{ project.demo_url or project.github_url or '#' }}" class="block group">
+                <a href="{{ project.demo_url or project.github_url or '#' }}" class="block group bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-gray-700 transition-colors">
                     <div class="flex flex-col gap-1">
                         <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
                             {{ project.title }}
@@ -81,7 +84,7 @@
             </a>
             <div class="space-y-6">
                 {% for post in posts %}
-                <a href="/blog/{{ post.slug }}" class="block group">
+                <a href="/blog/{{ post.slug }}" class="block group bg-gray-900/50 p-6 rounded-lg border border-gray-800 hover:border-gray-700 transition-colors">
                     <div class="flex flex-col gap-1">
                         <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
                             {{ post.title }}
@@ -95,7 +98,6 @@
                                 </span>
                                 {% endfor %}
                             </div>
-                            <time class="text-xs text-gray-500 font-mono">{{ post.published_at.strftime('%Y-%m-%d') }}</time>
                         </div>
                     </div>
                 </a>
@@ -122,6 +124,10 @@
                     <a href="https://linkedin.com/in/fabiohcsouza" target="_blank" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin size-5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                         LinkedIn
+                    </a>
+                    <a href="https://x.com/oornnery" target="_blank" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter size-5"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                        X
                     </a>
                     <a href="mailto:fabiohcsouza@outlook.com.br" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail size-5"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>

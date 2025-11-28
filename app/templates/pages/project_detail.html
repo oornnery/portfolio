@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Fabio Souza{% endblock %}
+
+{% block content %}
+<article>
+    <header class="mb-10">
+        <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+            <a href="/projects" class="hover:text-white transition-colors">&larr; Projects</a>
+        </div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">{{ project.title }}</h1>
+            <div class="flex gap-4">
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+                    <span>Source</span>
+                </a>
+                {% endif %}
+                {% if project.demo_url %}
+                <a href="{{ project.demo_url }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    <span>Demo</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 mb-6">
+            {% for tech in project.tech_stack %}
+            <span class="text-xs text-gray-400 bg-gray-900 px-2 py-1 rounded border border-gray-800">
+                {{ tech }}
+            </span>
+            {% endfor %}
+        </div>
+
+        {% if project.image %}
+        <div class="mb-8 rounded-lg overflow-hidden border border-gray-800">
+            <img src="{{ project.image }}" alt="{{ project.title }}" class="w-full h-auto object-cover">
+        </div>
+        {% endif %}
+    </header>
+
+    <div class="prose prose-invert prose-gray max-w-none prose-headings:font-semibold prose-a:text-blue-400 hover:prose-a:text-blue-300">
+        {{ content | safe }}
+    </div>
+</article>
+{% endblock %}
