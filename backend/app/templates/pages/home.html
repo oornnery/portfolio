@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero fade-in" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center;">
+    <div>
+        <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">
+            Hi, I'm <span style="color: var(--green)">Developer</span>
+        </h1>
+        <h2 style="color: var(--comment); font-weight: 300; margin-bottom: 2rem;">
+            Full Stack Developer & Python Enthusiast
+        </h2>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="/projects" class="btn btn-primary">View Projects</a>
+            <a href="/contact" class="btn btn-outline">Contact Me</a>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="mb-2 fade-in" style="animation-delay: 0.2s;">
+    <h2 class="text-center mb-1">About Me</h2>
+    <div class="card">
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+            I am a passionate Full Stack Developer with expertise in Python, FastAPI, and modern frontend technologies.
+            I love building scalable applications and solving complex problems.
+            With a strong background in DevOps and cloud infrastructure, I ensure that my applications are not only functional but also robust and secure.
+        </p>
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+            When I'm not coding, you can find me exploring new technologies, contributing to open source, or writing about my experiences on my blog.
+        </p>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="mb-2 fade-in" style="animation-delay: 0.4s;">
+    <h2 class="text-center mb-1">Technical Skills</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+        <!-- Frontend -->
+        <div class="card">
+            <h3 style="margin-bottom: 1.5rem;">Frontend</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <span class="tag">HTML5</span>
+                <span class="tag">CSS3</span>
+                <span class="tag">JavaScript</span>
+                <span class="tag">HTMX</span>
+                <span class="tag">React</span>
+                <span class="tag">TypeScript</span>
+            </div>
+        </div>
+        
+        <!-- Backend -->
+        <div class="card">
+            <h3 style="margin-bottom: 1.5rem;">Backend</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">Django</span>
+                <span class="tag">PostgreSQL</span>
+                <span class="tag">MongoDB</span>
+                <span class="tag">Redis</span>
+            </div>
+        </div>
+
+        <!-- DevOps & Tools -->
+        <div class="card">
+            <h3 style="margin-bottom: 1.5rem;">DevOps & Tools</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <span class="tag">Docker</span>
+                <span class="tag">Kubernetes</span>
+                <span class="tag">Linux</span>
+                <span class="tag">Git</span>
+                <span class="tag">CI/CD</span>
+                <span class="tag">AWS</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Section -->
+<section id="experience" class="mb-2 fade-in" style="animation-delay: 0.6s;">
+    <h2 class="text-center mb-1">Experience</h2>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div class="card" style="border-left: 3px solid var(--accent-glow);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 style="margin: 0;">Senior Full Stack Developer</h3>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">2023 - Present</span>
+            </div>
+            <h4 style="color: var(--accent-primary); margin-bottom: 1rem; font-weight: 600;">Tech Corp Inc.</h4>
+            <p style="line-height: 1.8;">Leading the development of scalable web applications using FastAPI and React. Mentoring junior developers and implementing DevOps best practices.</p>
+        </div>
+
+        <div class="card" style="border-left: 3px solid var(--accent-pink);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 style="margin: 0;">Backend Developer</h3>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">2021 - 2023</span>
+            </div>
+            <h4 style="color: var(--accent-primary); margin-bottom: 1rem; font-weight: 600;">StartupX</h4>
+            <p style="line-height: 1.8;">Designed and implemented RESTful APIs using Python and Django. Optimized database queries and improved application performance by 40%.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="mb-2 fade-in" style="animation-delay: 0.8s;">
+    <h2 class="text-center mb-1">Get In Touch</h2>
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <form hx-post="/api/contact" hx-swap="outerHTML" autocomplete="on">
+            <div class="mb-1">
+                <label for="contact-name" style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Name</label>
+                <input 
+                    type="text" 
+                    id="contact-name" 
+                    name="name" 
+                    required 
+                    autocomplete="name"
+                    placeholder="Your name">
+            </div>
+            <div class="mb-1">
+                <label for="contact-email" style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Email</label>
+                <input 
+                    type="email" 
+                    id="contact-email" 
+                    name="email" 
+                    required 
+                    autocomplete="email"
+                    placeholder="your@email.com">
+            </div>
+            <div class="mb-1">
+                <label for="contact-message" style="display: block; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 500;">Message</label>
+                <textarea 
+                    id="contact-message" 
+                    name="message" 
+                    rows="5" 
+                    required
+                    placeholder="Your message..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>Send Message</span>
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}

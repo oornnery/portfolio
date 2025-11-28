@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fabio Souza{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        gray: {
+                            900: '#111111',
+                            800: '#1a1a1a',
+                            700: '#2a2a2a',
+                            600: '#444444',
+                            500: '#666666',
+                            400: '#888888',
+                            300: '#aaaaaa',
+                            200: '#cccccc',
+                            100: '#eeeeee',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        html { scroll-behavior: smooth; }
+        body { font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    </style>
+</head>
+<body class="bg-black text-gray-200 font-sans antialiased selection:bg-gray-800 selection:text-white" hx-boost="true">
+    
+    <div class="max-w-3xl mx-auto px-6 flex flex-col min-h-screen">
+        <!-- Navbar -->
+        <nav class="py-8 flex items-center justify-between">
+            <a href="/" class="text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors">
+                Fabio Souza
+            </a>
+            <div class="flex gap-6 text-sm text-gray-400">
+                <a href="/" class="hover:text-white transition-colors">Home</a>
+                <a href="/blog" class="hover:text-white transition-colors">Blog</a>
+                <a href="https://github.com/oornnery" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+            </div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-grow fade-in py-8">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-12 text-sm text-gray-500 flex justify-between items-center border-t border-gray-900 mt-12">
+            <p>&copy; {{ year }} Fabio Souza</p>
+            <div class="flex gap-4">
+                <a href="https://linkedin.com/in/fabiohcsouza" target="_blank" class="hover:text-white transition-colors">LinkedIn</a>
+                <a href="mailto:fabiohcsouza@outlook.com.br" class="hover:text-white transition-colors">Email</a>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,96 +1,91 @@
-import logging
-import platform
-from contextlib import asynccontextmanager
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+import markdown
 from datetime import datetime
-from importlib.metadata import version
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse
+app = FastAPI(title="Portfolio Jinja2+HTMX")
 
-from app.config import settings
-from app.db import init_db
+# Configuração de Arquivos Estáticos e Templates
+# Mount static files. Assuming running from backend/ directory.
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
-logger = logging.getLogger(__name__)
+# --- DADOS MOCKADOS (Simulando Banco de Dados/GitHub) ---
 
+USER_DATA = {
+    "name": "Fabio Souza",
+    "role": "Software Engineer & VoIP Specialist",
+    "location": "São Paulo, Brazil",
+    "bio": "Experienced telecommunications engineer with a strong focus on voice and data services. Specialized in SIP, Python, and DevOps.",
+    "social": {
+        "github": "https://github.com/oornnery",
+        "linkedin": "https://linkedin.com/in/fabiohcsouza",
+        "email": "mailto:fabiohcsouza@outlook.com.br"
+    },
+    "skills": ["Python", "FastAPI", "React", "SIP", "DevOps", "Zabbix", "Grafana"]
+}
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await init_db()
-    yield
+PROJECTS = [
+    {"id": 1, "title": "SIP Trunk Monitor", "tech": ["Python", "Zabbix"], "desc": "Automated monitoring system for SIP Trunks and VoIP services."},
+    {"id": 2, "title": "Portfolio V2", "tech": ["FastAPI", "HTMX", "Tailwind"], "desc": "Modern server-side rendered portfolio with SPA-like experience."}
+]
 
-
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    lifespan=lifespan,
-    docs_url=None if settings.ENV == "production" else "/docs",
-)
-
-# Register middlewares using the correct pattern
-app.add_middleware(
-    CORSMiddleware,  # type: ignore
-    allow_origins=settings.ALLOW_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app.add_middleware(
-    TrustedHostMiddleware,  # type: ignore
-    allowed_hosts=settings.ALLOWED_HOSTS,
-)
-
-
-@app.exception_handler(404)
-async def not_found_exception_handler(request: Request, exc: Exception):
-    return JSONResponse(
-        status_code=404,
-        content={
-            "status": "error",
-            "type": "not_found",
-            "message": f"A rota '{request.url.path}' não foi encontrada no sistema.",
-        },
-    )
-
-
-@app.exception_handler(500)
-async def internal_server_error_handler(request: Request, exc: Exception):
-    logger.error(f"❌ ERRO CRÍTICO: {exc!s}")
-
-    return JSONResponse(
-        status_code=500,
-        content={
-            "status": "error",
-            "type": "server_error",
-            "message": "An unexpected error occurred. Please try again later.",
-        },
-    )
-
-
-@app.get("/")
-async def root():
-    return JSONResponse(status_code=200, content={"message": "OK"})
-
-
-@app.get("/health")
-async def health():
-    try:
-        app_version = version("backend")
-    except Exception:
-        app_version = "unknown"
-
-    return {
-        "status": "healthy",
-        "message": "Server is running",
-        "service": "backend",
-        "timestamp": datetime.now().isoformat(),
-        "uptime": "running",
-        "version": app_version,
-        "platform": platform.system(),
+# Simulando posts que viriam do GitHub API
+BLOG_POSTS = [
+    {
+        "slug": "ola-mundo",
+        "title": "Olá Mundo com FastAPI e HTMX",
+        "date": "2025-11-26",
+        "content": "# Olá Mundo\n\nEste é um post escrito em **Markdown** renderizado pelo Jinja2.",
+        "tags": ["python", "htmx"]
+    },
+    {
+        "slug": "seguranca-osint",
+        "title": "Segurança e OSINT em Portfólios",
+        "date": "2025-11-25",
+        "content": "## Protegendo seus dados\n\nNunca exponha seu endereço real no footer...",
+        "tags": ["security", "osint"]
     }
+]
 
+# --- ROTAS DA LANDING PAGE ---
 
-@app.get("/helloworld")
-async def hello_world():
-    return {"message": "Hello World!"}
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("pages/home.html", {
+        "request": request,
+        "user": USER_DATA,
+        "projects": PROJECTS,
+        "posts": BLOG_POSTS[:3], # Show recent posts on home
+        "year": datetime.now().year
+    })
+
+# --- ROTAS DO BLOG ---
+
+@app.get("/blog", response_class=HTMLResponse)
+async def blog_list(request: Request):
+    # Aqui você chamaria: github_service.get_all_posts()
+    return templates.TemplateResponse("blog/list.html", {
+        "request": request,
+        "posts": BLOG_POSTS,
+        "year": datetime.now().year
+    })
+
+@app.get("/blog/{slug}", response_class=HTMLResponse)
+async def blog_detail(request: Request, slug: str):
+    # Busca o post pelo slug
+    post = next((p for p in BLOG_POSTS if p["slug"] == slug), None)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post não encontrado")
+    
+    # Converte Markdown para HTML
+    html_content = markdown.markdown(post["content"])
+    
+    return templates.TemplateResponse("blog/detail.html", {
+        "request": request, 
+        "post": post, 
+        "content": html_content,
+        "year": datetime.now().year
+    })

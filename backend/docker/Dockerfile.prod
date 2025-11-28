@@ -1,0 +1,50 @@
+# Backend Production Dockerfile - Multi-stage build
+# Using Chainguard Python images for zero CVE security
+
+# ============================================
+# Build stage - using Chainguard Python dev image
+# ============================================
+FROM cgr.dev/chainguard/python:latest-dev AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install uv for fast dependency management
+RUN pip install --no-cache-dir uv
+
+# Copy and install dependencies
+COPY pyproject.toml uv.lock* ./
+RUN uv sync --frozen --no-dev || uv sync --no-dev
+
+# Copy application code
+COPY . .
+
+# ============================================
+# Production stage - using Chainguard Python (minimal)
+# ============================================
+FROM cgr.dev/chainguard/python:latest AS production
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Copy installed packages and application from builder
+# Chainguard images run as non-root by default
+COPY --from=builder /app /app
+COPY --from=builder /home/nonroot/.local /home/nonroot/.local
+
+# Add local bin to PATH for uv
+ENV PATH="/home/nonroot/.local/bin:$PATH"
+
+EXPOSE 8000
+
+# Health check (using python since curl/wget not available)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+
+# Run with production settings
+# Note: Using python directly since uv may not be in minimal image
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
