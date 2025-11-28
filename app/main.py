@@ -10,7 +10,7 @@ app = FastAPI(title="Portfolio Jinja2+HTMX")
 # Configuração de Arquivos Estáticos e Templates
 # Mount static files. Assuming running from backend/ directory.
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 # --- DADOS MOCKADOS (Simulando Banco de Dados/GitHub) ---
 
