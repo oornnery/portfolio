@@ -10,6 +10,7 @@ from app.models.blog import (
     CategoryCount,
     TagCount,
 )
+from app.models.profile import Profile, ProfileBase
 
 __all__ = [
     "Post",
@@ -22,4 +23,6 @@ __all__ = [
     "ReactionPublic",
     "CategoryCount",
     "TagCount",
+    "Profile",
+    "ProfileBase",
 ]

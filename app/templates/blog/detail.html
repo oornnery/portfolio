@@ -26,9 +26,12 @@
         <h3 class="text-lg font-semibold text-white mb-6">Discussion</h3>
         <div id="comments-section"
              hx-get="/comments/post/{{ post.slug }}" 
-             hx-trigger="reveal" 
-             class="text-gray-500 text-sm">
-             <span class="animate-pulse">Loading comments...</span>
+             hx-trigger="load delay:100ms" 
+             class="text-gray-500 text-sm min-h-[200px]">
+             <div class="flex items-center gap-2">
+                 <div class="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
+                 <span>Loading comments...</span>
+             </div>
         </div>
     </div>
 </article>

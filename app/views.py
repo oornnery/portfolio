@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, Depends
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select, or_
@@ -7,11 +8,14 @@ from app.models.project import Project
 from app.models.blog import Post
 from app.models.user import User
 from app.models.comment import Comment
+from app.models.profile import Profile
 from app.core.deps import get_current_user_optional
 import markdown
+from app.config import settings
 
 router = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="app/templates")
+templates.env.globals["settings"] = settings
 
 
 @router.get("/")
@@ -47,6 +51,13 @@ async def home(
     )
 
 
+@router.get("/login")
+async def login_page(request: Request, user: User | None = Depends(get_current_user_optional)):
+    if user:
+        return RedirectResponse(url="/")
+    return templates.TemplateResponse("pages/login.html", {"request": request, "title": "Login", "user": user})
+
+
 @router.get("/contact")
 async def contact(
     request: Request, user: User | None = Depends(get_current_user_optional)
@@ -58,10 +69,19 @@ async def contact(
 
 @router.get("/about")
 async def about(
-    request: Request, user: User | None = Depends(get_current_user_optional)
+    request: Request, 
+    session: AsyncSession = Depends(get_session),
+    user: User | None = Depends(get_current_user_optional)
 ):
+    # Fetch the first profile found (assuming single user site or main admin profile)
+    # In a multi-user app, we'd fetch by specific user or site config
+    query = select(Profile).limit(1)
+    result = await session.execute(query)
+    profile = result.scalar_one_or_none()
+
     return templates.TemplateResponse(
-        "pages/about.html", {"request": request, "title": "About", "user": user}
+        "pages/about.html", 
+        {"request": request, "title": "About", "user": user, "profile": profile}
     )
 
 

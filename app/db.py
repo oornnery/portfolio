@@ -12,6 +12,9 @@ from app.config import settings
 # Import all models to register them with SQLModel
 from app.models.blog import Post, Reaction  # noqa: F401
 from app.models.project import Project  # noqa: F401
+from app.models.user import User
+from app.models.profile import Profile
+from app.core.security import get_password_hash
 
 engine = create_async_engine(settings.DATABASE_URL, echo=True, future=True)
 
@@ -27,6 +30,84 @@ async def get_session() -> AsyncGenerator[AsyncSession]:
 
 async def seed_db():
     async with async_session_factory() as session:
+        # Check if we have an admin user
+        result = await session.execute(select(User).where(User.email == "admin@example.com"))
+        admin_user = result.scalars().first()
+
+        if not admin_user:
+            admin_user = User(
+                email="admin@example.com",
+                name="Fabio Souza",
+                hashed_password=get_password_hash("admin123"),
+                is_admin=True,
+                provider="email"
+            )
+            session.add(admin_user)
+            await session.commit()
+            await session.refresh(admin_user)
+
+        # Check if we have a profile for admin
+        result = await session.execute(select(Profile).where(Profile.user_id == admin_user.id))
+        profile = result.scalars().first()
+
+        if not profile:
+            profile = Profile(
+                user_id=admin_user.id,
+                name="Fabio Souza",
+                location="São Paulo, Brazil",
+                short_bio="Full-stack Developer",
+                email="contact@example.com",
+                website="https://fabiosouza.dev",
+                github="fabiosouza",
+                linkedin="fabiohcsouza",
+                twitter="fabiosouza",
+                about_markdown="""
+# About Me
+
+I am a passionate Full-stack Developer with over 5 years of experience in building web applications. I love working with Python, JavaScript, and modern web technologies.
+
+## My Skills
+
+- **Backend**: Python (FastAPI, Django), Node.js
+- **Frontend**: React, Vue.js, HTMX, Tailwind CSS
+- **Database**: PostgreSQL, MongoDB, Redis
+- **DevOps**: Docker, Kubernetes, AWS
+
+## Philosophy
+
+I believe in writing clean, maintainable code and building user-centric products. I am always learning and exploring new technologies to improve my craft.
+""",
+                work_experience=[
+                    {
+                        "title": "Senior Software Engineer",
+                        "company": "Tech Corp",
+                        "start_date": "2020",
+                        "end_date": "Present",
+                        "location": "Remote",
+                        "description": "Leading the backend team in building scalable microservices."
+                    },
+                    {
+                        "title": "Software Developer",
+                        "company": "Web Solutions",
+                        "start_date": "2018",
+                        "end_date": "2020",
+                        "location": "São Paulo",
+                        "description": "Developed and maintained various client websites and web applications."
+                    }
+                ],
+                education=[
+                    {
+                        "school": "University of Technology",
+                        "degree": "B.S. in Computer Science",
+                        "start_date": "2014",
+                        "end_date": "2018"
+                    }
+                ],
+                skills=["Python", "FastAPI", "JavaScript", "React", "Docker", "PostgreSQL"]
+            )
+            session.add(profile)
+            await session.commit()
+
         # Check if we have posts
         result = await session.execute(select(Post))
         post = result.scalars().first()
