@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
+from sqlmodel import select, or_
 from app.db import get_session
 from app.models.project import Project
 from app.models.blog import Post
@@ -115,9 +115,19 @@ async def blog(
 
     if category:
         query = query.where(Post.category == category)
+    
+    if search:
+        query = query.where(
+            or_(
+                Post.title.ilike(f"%{search}%"),
+                Post.description.ilike(f"%{search}%"),
+                Post.content.ilike(f"%{search}%")
+            )
+        )
 
-    # Tag and search filtering would go here similar to API
-
+    # Tag filtering would require a join or specific logic depending on how tags are stored (JSON or relation)
+    # Assuming tags is a JSON column or similar for now as per model
+    
     result = await session.execute(query)
     posts = result.scalars().all()
 
@@ -149,7 +159,10 @@ async def blog_post(
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Post not found")
 
-    html_content = markdown.markdown(post.content)
+    html_content = markdown.markdown(
+        post.content,
+        extensions=['fenced_code', 'codehilite', 'tables']
+    )
 
     return templates.TemplateResponse(
         "blog/detail.html", 
@@ -227,3 +240,29 @@ async def post_comment(
 
     # Return updated comments list
     return await get_comments(slug, request, session, user)
+
+
+@router.get("/projects/{slug}")
+async def project_detail(
+    slug: str,
+    request: Request,
+    session: AsyncSession = Depends(get_session),
+    user: User | None = Depends(get_current_user_optional),
+):
+    query = select(Project).where(Project.slug == slug)
+    result = await session.execute(query)
+    project = result.scalar_one_or_none()
+
+    if not project:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    html_content = markdown.markdown(
+        project.content,
+        extensions=['fenced_code', 'codehilite', 'tables']
+    )
+
+    return templates.TemplateResponse(
+        "pages/project_detail.html",
+        {"request": request, "title": project.title, "project": project, "content": html_content, "user": user},
+    )

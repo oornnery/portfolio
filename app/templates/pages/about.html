@@ -2,36 +2,205 @@
 
 {% block title %}About - Fabio Souza{% endblock %}
 
-{% block content %}
-<section class="mb-16">
-    <h1 class="text-4xl font-bold text-white mb-4 tracking-tight">About Me</h1>
-    <div class="prose prose-invert max-w-none">
-        <p class="text-xl text-gray-400 mb-6">
-            Experienced telecommunications professional with a focus on voice and data services, specializing in SIP, networking, and DevOps. Strong background in technical support, service monitoring, and automation.
-        </p>
-        
-        <h2 class="text-2xl font-bold text-white mt-8 mb-4">Experience</h2>
-        <div class="space-y-8">
-            <div>
-                <h3 class="text-xl font-semibold text-white">Software Engineer & VoIP Specialist</h3>
-                <p class="text-gray-400">Company Name &middot; 2020 - Present</p>
-                <p class="text-gray-400 mt-2">
-                    Description of your role and responsibilities. Working with SIP, Python, and DevOps tools to automate and improve voice services.
-                </p>
+{% block breadcrumb_actions %}
+<div class="relative flex items-center print:hidden">
+    <button onclick="if(navigator.share){navigator.share({title: document.title, url: window.location.href})}else{navigator.clipboard.writeText(window.location.href); alert('Link copied!');}" class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-300 bg-black border border-gray-800 rounded-l-lg hover:bg-gray-800 hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+        <span>Share</span>
+    </button>
+    <div class="relative">
+        <button id="share-menu-button" class="flex items-center justify-center px-2 py-1.5 text-gray-300 bg-black border-y border-r border-gray-800 rounded-r-lg hover:bg-gray-800 hover:text-white transition-colors" aria-label="More actions">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div id="share-dropdown" class="hidden absolute right-0 z-50 mt-2 w-48 origin-top-right bg-black border border-gray-800 rounded-md shadow-lg ring-1 ring-gray-800 focus:outline-none">
+            <div class="py-1">
+                <a href="mailto:?subject=Resume&body=Check out this resume: " onclick="this.href='mailto:?subject=Resume&body=Check out this resume: '+window.location.href" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    Email
+                </a>
+                <button onclick="navigator.clipboard.writeText(window.location.href); document.getElementById('share-dropdown').classList.add('hidden');" class="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    Copy Link
+                </button>
+                <button onclick="window.print(); document.getElementById('share-dropdown').classList.add('hidden');" class="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                    Export PDF
+                </button>
             </div>
-            <!-- Add more experience items here -->
-        </div>
-
-        <h2 class="text-2xl font-bold text-white mt-8 mb-4">Skills</h2>
-        <div class="flex flex-wrap gap-2">
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">Python</span>
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">FastAPI</span>
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">SIP</span>
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">VoIP</span>
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">Docker</span>
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">Linux</span>
-            <span class="bg-gray-900 text-gray-300 px-3 py-1 rounded border border-gray-800">DevOps</span>
         </div>
     </div>
-</section>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto w-full max-w-2xl space-y-8 print:space-y-4 my-8 px-4 text-gray-200" aria-label="Resume Content">
+    <div>
+        <header class="flex items-start md:items-center justify-between gap-4">
+            <div class="flex-1 space-y-1.5">
+                <div class="flex items-center justify-between gap-4">
+                    <h1 class="text-2xl font-bold text-white" id="resume-name">Fabio Souza</h1>
+                </div>
+                <p class="max-w-md text-pretty font-mono text-sm text-gray-400 print:text-[12px]" aria-labelledby="resume-name">Experienced telecommunications professional with a focus on voice and data services, specializing in SIP, networking, and DevOps. Strong background in technical support, service monitoring, and automation.</p>
+                <p class="max-w-md items-center text-pretty font-mono text-xs text-gray-400">
+                    <a class="inline-flex gap-x-1.5 align-baseline leading-none hover:underline text-gray-400" href="https://www.google.com/maps/search/S%C3%A3o%20Paulo%2C%20Brazil" target="_blank" rel="noopener noreferrer" aria-label="Location: São Paulo, Brazil">São Paulo, Brazil</a>
+                </p>
+                <div class="flex gap-x-1 pt-1 font-mono text-sm text-gray-400 print:hidden" role="list" aria-label="Contact links">
+                    <a href="mailto:fabiohcsouza@outlook.com.br" aria-label="Email" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-gray-700 bg-gray-800 hover:bg-gray-700 hover:text-white size-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail size-4" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                    </a>
+                    <a href="tel:11960433124" aria-label="Phone" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-gray-700 bg-gray-800 hover:bg-gray-700 hover:text-white size-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone size-4" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </a>
+                    <a href="https://github.com/oornnery?ref=selfso" aria-label="GitHub" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-gray-700 bg-gray-800 hover:bg-gray-700 hover:text-white size-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github size-4" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+                    </a>
+                    <a href="https://linkedin.com/in/fabiohcsouza?ref=selfso" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-gray-700 bg-gray-800 hover:bg-gray-700 hover:text-white size-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin size-4" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                    <a href="https://x.com/oornnery" aria-label="X" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-gray-700 bg-gray-800 hover:bg-gray-700 hover:text-white size-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter size-4" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                    </a>
+                </div>
+                <div class="hidden gap-x-2 font-mono text-sm text-gray-400 print:flex print:text-[12px]" aria-label="Print contact information">
+                    <a class="underline hover:text-gray-300" href="mailto:fabiohcsouza@outlook.com.br">fabiohcsouza@outlook.com.br</a>
+                    <span aria-hidden="true">/</span>
+                    <a class="underline hover:text-gray-300" href="tel:11960433124">11960433124</a>
+                </div>
+            </div>
+            <span class="relative flex shrink-0 overflow-hidden rounded-full size-20 md:size-28" aria-hidden="true">
+                <img class="aspect-square h-full w-full" alt="Fabio Souza's profile picture" src="https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18zNjVPNkV0QmpZU0ZjYWhBRjlpSHVyUlJYQ2cifQ">
+            </span>
+        </header>
+    </div>
+
+    <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+        <h2 class="text-xl font-bold text-white" id="about-section">About</h2>
+            <div class="text-pretty font-mono text-sm text-gray-400 print:text-[12px]" aria-labelledby="about-section">Experienced telecommunications engineer with a strong focus on voice and data services. Specialized in technical support for SIP Trunk, SIP Link, PBX, and Call Center services. Proficient in service monitoring, log analysis, and automation using tools like Zabbix, Grafana, Splunk, and Python 3. Committed to enhancing the reliability and efficiency of telecommunications environments.</div>
+        </section>
+        <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+            <h2 class="text-lg font-bold text-white" id="work-experience">Work Experience</h2>
+            <div class="flex flex-col gap-4" role="feed" aria-labelledby="work-experience">
+                <div class="font-mono flex flex-col justify-start items-start gap-1 print:mb-4">
+                    <div class="flex flex-wrap justify-between items-start self-stretch gap-2">
+                        <div class="flex flex-wrap justify-start items-center gap-2">
+                            <p class="text-base font-semibold text-left text-white">Voice/VoIP Engineer I</p>
+                            <div class="flex justify-center items-center relative overflow-hidden gap-2.5 px-[7px] py-0.5 rounded bg-gray-800">
+                                <p class="text-[12px] font-semibold text-center text-gray-400">São Paulo, Brasil</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-right text-gray-400">Feb 2020 - Present</p>
+                    </div>
+                    <div class="flex flex-col justify-start items-start relative gap-1.5">
+                        <p class="self-stretch text-sm font-medium text-left text-gray-400 font-mono capitalize flex flex-wrap gap-1"><span>net2phone brasil</span><span>·</span><span>Full-time</span></p>
+                        <p class="self-stretch text-sm font-medium text-left text-gray-400">Specialized in voice and data services, providing technical support for SIP Trunk, SIP Link, PBX, and Call Center services. Managed tickets using JIRA, Salesforce, and BA. Configured and maintained voice and data equipment. Monitored services using Zabbix, Grafana, VoIP Monitor, and Hepic. Conducted log analysis using Splunk and PCAP. Implemented automation tools using Python 3. Progressed from Level 1 Support Analyst to Senior Level 2 Support Analyst and currently hold the position of Voice Engineer.</p>
+                    </div>
+                </div>
+                <div class="font-mono flex flex-col justify-start items-start gap-1 print:mb-4">
+                    <div class="flex flex-wrap justify-between items-start self-stretch gap-2">
+                        <div class="flex flex-wrap justify-start items-center gap-2">
+                            <p class="text-base font-semibold text-left text-white">Analista de suporte júnior</p>
+                            <div class="flex justify-center items-center relative overflow-hidden gap-2.5 px-[7px] py-0.5 rounded bg-gray-800">
+                                <p class="text-[12px] font-semibold text-center text-gray-400">São Paulo e Região, Brasil</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-right text-gray-400">Aug 2018 - Oct 2019</p>
+                    </div>
+                    <div class="flex flex-col justify-start items-start relative gap-1.5">
+                        <p class="self-stretch text-sm font-medium text-left text-gray-400 font-mono capitalize flex flex-wrap gap-1"><span>sipvoice telecom</span><span>·</span><span>Full-time</span></p>
+                        <p class="self-stretch text-sm font-medium text-left text-gray-400">Responsible for opening and handling tickets, providing support and maintenance for machines, servers, and networks. Supported PABX analog and virtual services.</p>
+                    </div>
+                </div>
+                <div class="font-mono flex flex-col justify-start items-start gap-1 print:mb-4">
+                    <div class="flex flex-wrap justify-between items-start self-stretch gap-2">
+                        <div class="flex flex-wrap justify-start items-center gap-2">
+                            <p class="text-base font-semibold text-left text-white">Estagiário</p>
+                            <div class="flex justify-center items-center relative overflow-hidden gap-2.5 px-[7px] py-0.5 rounded bg-gray-800">
+                                <p class="text-[12px] font-semibold text-center text-gray-400">São Paulo e Região, Brasil</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-right text-gray-400">May 2018 - Jul 2018</p>
+                    </div>
+                    <div class="flex flex-col justify-start items-start relative gap-1.5">
+                        <p class="self-stretch text-sm font-medium text-left text-gray-400 font-mono capitalize flex flex-wrap gap-1"><span>sipvoice telecom</span><span>·</span><span>Internship</span></p>
+                        <p class="self-stretch text-sm font-medium text-left text-gray-400">Assisted in the support and maintenance of machines, servers, and networks. Gained experience in PABX analog and virtual services.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+            <h2 class="text-xl font-bold text-white" id="education-section">Education</h2>
+            <div class="space-y-4" role="feed" aria-labelledby="education-section">
+                <article role="article">
+                    <div class="text-card-foreground">
+                        <div class="flex flex-col space-y-1.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-base">
+                                <h3 class="font-semibold leading-none text-white" id="education-universidade-anhembi-morumbi">Universidade Anhembi Morumbi</h3>
+                                <div class="text-sm tabular-nums text-gray-500" aria-label="Period: 2021 to  2023">2021 - 2023</div>
+                            </div>
+                        </div>
+                        <div class="text-pretty font-mono text-sm mt-2 text-gray-400 print:text-[12px]" aria-labelledby="education-universidade-anhembi-morumbi">Graduação, Segurança da informação</div>
+                    </div>
+                </article>
+                <article role="article">
+                    <div class="text-card-foreground">
+                        <div class="flex flex-col space-y-1.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-base">
+                                <h3 class="font-semibold leading-none text-white" id="education-uninove">UNINOVE</h3>
+                                <div class="text-sm tabular-nums text-gray-500" aria-label="Period: 2018 to  2020">2018 - 2020</div>
+                            </div>
+                        </div>
+                        <div class="text-pretty font-mono text-sm mt-2 text-gray-400 print:text-[12px]" aria-labelledby="education-uninove">Gestão Tecnologia da Informação, Tecnologia da Informação</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+        <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+            <h2 class="text-xl font-bold text-white" id="certificates-section">Certificates</h2>
+            <div class="space-y-4" role="feed" aria-labelledby="certificates-section">
+                <article role="article">
+                    <div class="text-card-foreground">
+                        <div class="flex flex-col space-y-1.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-base">
+                                <h3 class="font-semibold leading-none text-white">Certified Kubernetes Administrator (CKA)</h3>
+                                <div class="text-sm tabular-nums text-gray-500">2024</div>
+                            </div>
+                        </div>
+                        <div class="text-pretty font-mono text-sm mt-2 text-gray-400 print:text-[12px]">The Linux Foundation</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+        <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+            <h2 class="text-xl font-bold text-white" id="skills-section">Skills</h2>
+            <ul class="flex list-none flex-wrap gap-1 p-0" aria-label="List of skills" aria-labelledby="skills-section">
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: Git">Git</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: React.js">React.js</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: FastAPI">FastAPI</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: SIP">SIP</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: Networking">Networking</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: DevOps">DevOps</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: Zabbix">Zabbix</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: Grafana">Grafana</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: Python 3">Python 3</div></li>
+                <li><div class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-nowrap border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700 print:text-[10px] pointer-events-none" aria-label="Skill: Splunk">Splunk</div></li>
+            </ul>
+        </section>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.getElementById('share-menu-button');
+        const dropdown = document.getElementById('share-dropdown');
+
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && !menuButton.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    });
+</script>
 {% endblock %}
