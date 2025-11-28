@@ -8,6 +8,7 @@ from app.api.blog import router as blog_router
 from app.api.projects import router as projects_router
 from app.api.auth import router as auth_router
 from app.api.comments import router as comments_router
+from app.admin_views import router as admin_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,6 +28,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Include views router
 app.include_router(views_router)
+app.include_router(admin_router)
 
 # Include API routers
 app.include_router(blog_router, prefix="/api")

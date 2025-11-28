@@ -15,8 +15,8 @@ class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     name: str = Field(max_length=100)
     avatar_url: Optional[str] = Field(default=None)
-    provider: str = Field(description="OAuth provider: github, google, discord")
-    provider_id: str = Field(description="Provider user ID")
+    provider: str = Field(default="email", description="OAuth provider: github, google, discord, or email")
+    provider_id: Optional[str] = Field(default=None, description="Provider user ID")
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -41,6 +41,7 @@ class User(UserBase, table=True):
     last_login: datetime = Field(default_factory=utc_now)
     is_admin: bool = Field(default=False)
     is_banned: bool = Field(default=False)
+    hashed_password: Optional[str] = Field(default=None)
 
 
 class UserPublic(SQLModel):

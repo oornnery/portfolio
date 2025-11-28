@@ -23,6 +23,7 @@ portfolio/
 │   │   ├── blog.py             # Post, Category
 │   │   ├── comment.py          # Comment
 │   │   ├── project.py          # Project
+│   │   ├── profile.py          # Profile (Resume)
 │   │   └── user.py             # User
 │   ├── services/               # Business logic
 │   ├── static/                 # Static assets
@@ -30,9 +31,11 @@ portfolio/
 │   │   ├── img/                # Images
 │   │   └── js/                 # HTMX and scripts
 │   ├── templates/              # Jinja2 templates
+│   │   ├── admin/              # Admin templates
 │   │   ├── base.html           # Base layout
 │   │   ├── blog/               # Blog templates
 │   │   └── pages/              # Page templates
+│   ├── admin_views.py          # Admin panel routes
 │   ├── config.py               # Pydantic Settings
 │   ├── db.py                   # Async SQLAlchemy engine
 │   ├── main.py                 # FastAPI app entry point
