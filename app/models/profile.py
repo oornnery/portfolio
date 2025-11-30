@@ -27,22 +27,22 @@ class Education(SQLModel):
 
 class ProfileBase(SQLModel):
     """Base profile model."""
-    
+
     name: str = Field(default="Fabio Souza")
     location: str = Field(default="São Paulo, Brazil")
     short_bio: str = Field(default="Full-stack Developer")
     email: str = Field(default="contact@example.com")
     phone: Optional[str] = Field(default=None)
-    
+
     # Social Links
     website: Optional[str] = Field(default=None)
     github: Optional[str] = Field(default=None)
     linkedin: Optional[str] = Field(default=None)
     twitter: Optional[str] = Field(default=None)
-    
+
     # Long content
     about_markdown: str = Field(default="")
-    
+
     # Structured data
     work_experience: List[dict] = Field(default=[], sa_column=Column(JSON))
     education: List[dict] = Field(default=[], sa_column=Column(JSON))

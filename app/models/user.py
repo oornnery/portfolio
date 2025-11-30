@@ -15,7 +15,9 @@ class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     name: str = Field(max_length=100)
     avatar_url: Optional[str] = Field(default=None)
-    provider: str = Field(default="email", description="OAuth provider: github, google, discord, or email")
+    provider: str = Field(
+        default="email", description="OAuth provider: github, google, discord, or email"
+    )
     provider_id: Optional[str] = Field(default=None, description="Provider user ID")
 
     model_config = ConfigDict(

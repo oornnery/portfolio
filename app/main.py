@@ -1,41 +1,88 @@
+"""
+Main FastAPI application entry point.
+
+Why: Centraliza a configuração da aplicação, middlewares,
+     routers e lifecycle hooks em um único ponto.
+
+How: Usa lifespan para inicialização do banco,
+     middlewares para segurança e logging,
+     routers versionados para API e views.
+"""
+
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
+
+from app.api.v1 import api_router
 from app.db import engine, seed_db
-from app.views import router as views_router
-from app.api.blog import router as blog_router
-from app.api.projects import router as projects_router
-from app.api.auth import router as auth_router
-from app.api.comments import router as comments_router
-from app.admin_views import router as admin_router
+from app.middleware import RequestLoggingMiddleware, SecurityMiddleware
+from app.views import admin_router, public_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Application lifecycle manager.
+
+    Startup: Cria tabelas no banco e executa seed.
+    Shutdown: Cleanup de recursos (se necessário).
+    """
     # Create tables
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
-    
-    # Seed database
+
+    # Seed database with admin user
     await seed_db()
-    
+
     yield
 
-app = FastAPI(title="Portfolio Jinja2+HTMX", lifespan=lifespan)
 
-# Mount static files
+# ==========================================
+# App Configuration
+# ==========================================
+
+app = FastAPI(
+    title="Portfolio API",
+    description="API for a minimalist portfolio with blog and projects",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+# ==========================================
+# Middlewares (ordem importa - último adicionado é executado primeiro)
+# ==========================================
+
+app.add_middleware(RequestLoggingMiddleware)  # type: ignore[arg-type]
+app.add_middleware(SecurityMiddleware)  # type: ignore[arg-type]
+
+# ==========================================
+# Static Files
+# ==========================================
+
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Include views router
-app.include_router(views_router)
+# ==========================================
+# Routers
+# ==========================================
+
+# Public views (templates)
+app.include_router(public_router)
+
+# Admin views (templates)
 app.include_router(admin_router)
 
-# Include API routers
-app.include_router(blog_router, prefix="/api")
-app.include_router(projects_router, prefix="/api")
-app.include_router(auth_router, prefix="/api")
-app.include_router(comments_router, prefix="/api")
+# API v1 (JSON endpoints)
+app.include_router(api_router, prefix="/api/v1")
 
-@app.get("/health")
+
+# ==========================================
+# Health Check
+# ==========================================
+
+
+@app.get("/health", tags=["Health"])
 async def health_check():
-    return {"status": "ok"}
+    """Health check endpoint for monitoring."""
+    return {"status": "ok", "version": "1.0.0"}

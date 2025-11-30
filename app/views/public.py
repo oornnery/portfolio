@@ -1,17 +1,28 @@
-from fastapi import APIRouter, Request, Depends
+"""
+Public views for the portfolio frontend.
+
+Why: Separa as rotas públicas do site das rotas de API e admin,
+     mantendo a lógica de renderização de templates isolada.
+
+How: Usa Jinja2 templates com HTMX para interações dinâmicas,
+     SQLModel para queries async e dependency injection para auth.
+"""
+
+import markdown
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select, or_
+from sqlmodel import col, or_, select
+
+from app.config import settings
+from app.core.deps import get_current_user_optional
 from app.db import get_session
-from app.models.project import Project
 from app.models.blog import Post
-from app.models.user import User
 from app.models.comment import Comment
 from app.models.profile import Profile
-from app.core.deps import get_current_user_optional
-import markdown
-from app.config import settings
+from app.models.project import Project
+from app.models.user import User
 
 router = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="app/templates")
@@ -24,16 +35,17 @@ async def home(
     session: AsyncSession = Depends(get_session),
     user: User | None = Depends(get_current_user_optional),
 ):
-    # Fetch latest 3 projects
-    projects_query = select(Project).order_by(Project.created_at.desc()).limit(3)
+    """Página inicial com projetos e posts em destaque."""
+    # Busca os 3 projetos mais recentes
+    projects_query = select(Project).order_by(col(Project.created_at).desc()).limit(3)
     projects_result = await session.execute(projects_query)
     projects_list = projects_result.scalars().all()
 
-    # Fetch latest 3 posts
+    # Busca os 3 posts publicados mais recentes
     posts_query = (
         select(Post)
         .where(Post.draft == False)  # noqa: E712
-        .order_by(Post.published_at.desc())
+        .order_by(col(Post.published_at).desc())
         .limit(3)
     )
     posts_result = await session.execute(posts_query)
@@ -52,16 +64,22 @@ async def home(
 
 
 @router.get("/login")
-async def login_page(request: Request, user: User | None = Depends(get_current_user_optional)):
+async def login_page(
+    request: Request, user: User | None = Depends(get_current_user_optional)
+):
+    """Página de login - redireciona se já autenticado."""
     if user:
         return RedirectResponse(url="/")
-    return templates.TemplateResponse("pages/login.html", {"request": request, "title": "Login", "user": user})
+    return templates.TemplateResponse(
+        "pages/login.html", {"request": request, "title": "Login", "user": user}
+    )
 
 
 @router.get("/contact")
 async def contact(
     request: Request, user: User | None = Depends(get_current_user_optional)
 ):
+    """Página de contato."""
     return templates.TemplateResponse(
         "pages/contact.html", {"request": request, "title": "Contact", "user": user}
     )
@@ -69,19 +87,18 @@ async def contact(
 
 @router.get("/about")
 async def about(
-    request: Request, 
+    request: Request,
     session: AsyncSession = Depends(get_session),
-    user: User | None = Depends(get_current_user_optional)
+    user: User | None = Depends(get_current_user_optional),
 ):
-    # Fetch the first profile found (assuming single user site or main admin profile)
-    # In a multi-user app, we'd fetch by specific user or site config
+    """Página sobre com perfil do usuário."""
     query = select(Profile).limit(1)
     result = await session.execute(query)
     profile = result.scalar_one_or_none()
 
     return templates.TemplateResponse(
-        "pages/about.html", 
-        {"request": request, "title": "About", "user": user, "profile": profile}
+        "pages/about.html",
+        {"request": request, "title": "About", "user": user, "profile": profile},
     )
 
 
@@ -93,17 +110,15 @@ async def projects(
     session: AsyncSession = Depends(get_session),
     user: User | None = Depends(get_current_user_optional),
 ):
+    """Lista de projetos com filtro opcional por categoria."""
     query = select(Project)
     if category:
         query = query.where(Project.category == category)
 
-    # For tech stack filtering, we'd need a more complex query or filter in python
-    # For now, let's just fetch all and filter in python if needed, or ignore tech filter for MVP
-
     result = await session.execute(query)
     projects_list = result.scalars().all()
 
-    # Check if it's an HTMX request
+    # HTMX partial response
     if request.headers.get("HX-Request"):
         return templates.TemplateResponse(
             "partials/project_list.html",
@@ -122,6 +137,40 @@ async def projects(
     )
 
 
+@router.get("/projects/{slug}")
+async def project_detail(
+    slug: str,
+    request: Request,
+    session: AsyncSession = Depends(get_session),
+    user: User | None = Depends(get_current_user_optional),
+):
+    """Detalhe de um projeto específico."""
+    query = select(Project).where(Project.slug == slug)
+    result = await session.execute(query)
+    project = result.scalar_one_or_none()
+
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found",
+        )
+
+    html_content = markdown.markdown(
+        project.content, extensions=["fenced_code", "codehilite", "tables"]
+    )
+
+    return templates.TemplateResponse(
+        "pages/project_detail.html",
+        {
+            "request": request,
+            "title": project.title,
+            "project": project,
+            "content": html_content,
+            "user": user,
+        },
+    )
+
+
 @router.get("/blog")
 async def blog(
     request: Request,
@@ -131,26 +180,25 @@ async def blog(
     session: AsyncSession = Depends(get_session),
     user: User | None = Depends(get_current_user_optional),
 ):
-    query = select(Post).where(Post.draft == False).order_by(Post.published_at.desc())  # noqa: E712
+    """Lista de posts do blog com filtros opcionais."""
+    query = select(Post).where(not Post.draft).order_by(col(Post.published_at).desc())  # noqa: E712
 
     if category:
         query = query.where(Post.category == category)
-    
+
     if search:
         query = query.where(
             or_(
-                Post.title.ilike(f"%{search}%"),
-                Post.description.ilike(f"%{search}%"),
-                Post.content.ilike(f"%{search}%")
+                col(Post.title).ilike(f"%{search}%"),
+                col(Post.description).ilike(f"%{search}%"),
+                col(Post.content).ilike(f"%{search}%"),
             )
         )
 
-    # Tag filtering would require a join or specific logic depending on how tags are stored (JSON or relation)
-    # Assuming tags is a JSON column or similar for now as per model
-    
     result = await session.execute(query)
     posts = result.scalars().all()
 
+    # HTMX partial response
     if request.headers.get("HX-Request"):
         return templates.TemplateResponse(
             "partials/post_list.html",
@@ -158,41 +206,42 @@ async def blog(
         )
 
     return templates.TemplateResponse(
-        "blog/list.html", 
-        {"request": request, "title": "Blog", "posts": posts, "user": user}
+        "blog/list.html",
+        {"request": request, "title": "Blog", "posts": posts, "user": user},
     )
 
 
 @router.get("/blog/{slug}")
 async def blog_post(
-    slug: str, 
-    request: Request, 
+    slug: str,
+    request: Request,
     session: AsyncSession = Depends(get_session),
-    user: User | None = Depends(get_current_user_optional)
+    user: User | None = Depends(get_current_user_optional),
 ):
+    """Detalhe de um post do blog."""
     query = select(Post).where(Post.slug == slug)
     result = await session.execute(query)
     post = result.scalar_one_or_none()
-    
+
     if not post:
-        # Handle 404
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="Post not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Post not found",
+        )
 
     html_content = markdown.markdown(
-        post.content,
-        extensions=['fenced_code', 'codehilite', 'tables']
+        post.content, extensions=["fenced_code", "codehilite", "tables"]
     )
 
     return templates.TemplateResponse(
-        "blog/detail.html", 
+        "blog/detail.html",
         {
-            "request": request, 
-            "title": post.title, 
-            "post": post, 
+            "request": request,
+            "title": post.title,
+            "post": post,
             "content": html_content,
-            "user": user
-        }
+            "user": user,
+        },
     )
 
 
@@ -203,6 +252,7 @@ async def get_comments(
     session: AsyncSession = Depends(get_session),
     user: User | None = Depends(get_current_user_optional),
 ):
+    """Retorna os comentários de um post (partial HTMX)."""
     post_query = select(Post).where(Post.slug == slug)
     post_result = await session.execute(post_query)
     post = post_result.scalar_one_or_none()
@@ -214,7 +264,7 @@ async def get_comments(
         select(Comment, User)
         .join(User)
         .where(Comment.post_id == post.id)
-        .order_by(Comment.created_at.desc())
+        .order_by(col(Comment.created_at).desc())
     )
     result = await session.execute(query)
     comments = []
@@ -237,6 +287,7 @@ async def post_comment(
     session: AsyncSession = Depends(get_session),
     user: User | None = Depends(get_current_user_optional),
 ):
+    """Adiciona um comentário a um post."""
     if not user:
         return "Please login to comment"
 
@@ -253,36 +304,10 @@ async def post_comment(
     if not post:
         return "Post not found"
 
-    comment = Comment(content=content, post_id=post.id, user_id=user.id)
+    comment = Comment(content=str(content), post_id=post.id, user_id=user.id)
 
     session.add(comment)
     await session.commit()
 
     # Return updated comments list
     return await get_comments(slug, request, session, user)
-
-
-@router.get("/projects/{slug}")
-async def project_detail(
-    slug: str,
-    request: Request,
-    session: AsyncSession = Depends(get_session),
-    user: User | None = Depends(get_current_user_optional),
-):
-    query = select(Project).where(Project.slug == slug)
-    result = await session.execute(query)
-    project = result.scalar_one_or_none()
-
-    if not project:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    html_content = markdown.markdown(
-        project.content,
-        extensions=['fenced_code', 'codehilite', 'tables']
-    )
-
-    return templates.TemplateResponse(
-        "pages/project_detail.html",
-        {"request": request, "title": project.title, "project": project, "content": html_content, "user": user},
-    )
