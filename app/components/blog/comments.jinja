@@ -1,0 +1,43 @@
+{#def comments, post_slug, user=None #}
+{#import "../ui/button.jinja" as Button #}
+{#import "../ui/input.jinja" as Input #}
+
+<section id="comments-section" class="mt-12 pt-8 border-t border-gray-800">
+    <h2 class="text-xl font-medium text-white mb-6">Comments ({{ comments | length }})</h2>
+    
+    {% if user %}
+    <form 
+        hx-post="/api/v1/comments/{{ post_slug }}" 
+        hx-target="#comments-section" 
+        hx-swap="outerHTML"
+        class="mb-8 space-y-4"
+    >
+        <Input 
+            name="content" 
+            type="textarea" 
+            rows="3" 
+            placeholder="Write a comment..." 
+            required 
+        />
+        <Button type="submit" variant="primary">Post Comment</Button>
+    </form>
+    {% else %}
+    <p class="text-gray-500 mb-8">
+        <a href="/login" class="text-white hover:underline">Login</a> to leave a comment.
+    </p>
+    {% endif %}
+    
+    <div class="space-y-6">
+        {% for comment in comments %}
+        <div class="p-4 bg-gray-900/50 rounded-lg border border-gray-800">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-white">{{ comment.author.name if comment.author else 'Anonymous' }}</span>
+                <time class="text-xs text-gray-500">{{ comment.created_at.strftime('%d %b %Y') if comment.created_at else '' }}</time>
+            </div>
+            <p class="text-gray-400 text-sm">{{ comment.content }}</p>
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-sm">No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+</section>

@@ -1,0 +1,27 @@
+{#def project #}
+{#import "../ui/tag.jinja" as Tag #}
+{#import "../ui/card.jinja" as Card #}
+
+<Card href={{ "/projects/" ~ project.slug }}>
+    <article>
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">{{ project.created_at.strftime('%Y') if project.created_at else '' }}</span>
+            {% if project.featured %}
+            <span class="text-xs text-green-500">★ Featured</span>
+            {% endif %}
+        </div>
+        <h2 class="text-lg font-medium text-white mb-2 group-hover:text-gray-300 transition-colors">
+            {{ project.title }}
+        </h2>
+        {% if project.description %}
+        <p class="text-gray-400 text-sm line-clamp-2 mb-3">{{ project.description }}</p>
+        {% endif %}
+        {% if project.tech_stack %}
+        <div class="flex flex-wrap gap-2">
+            {% for tech in project.tech_stack[:4] %}
+            <Tag text={{ tech }} />
+            {% endfor %}
+        </div>
+        {% endif %}
+    </article>
+</Card>

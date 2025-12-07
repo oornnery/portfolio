@@ -1,0 +1,43 @@
+{#def profile #}
+{#import "../ui/social-button.jinja" as SocialButton #}
+
+<header class="flex items-start md:items-center justify-between gap-4 mb-16">
+    <div class="flex-1 space-y-1.5">
+        <h1 class="text-2xl font-bold text-white" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
+        <p class="max-w-md text-pretty font-mono text-sm text-gray-400 print:text-[12px]" aria-labelledby="resume-name">
+            {{ profile.short_bio if profile else 'Experienced telecommunications professional with a focus on voice and data services, specializing in SIP, networking, and DevOps.' }}
+        </p>
+        <p class="max-w-md items-center text-pretty font-mono text-xs text-gray-500">
+            <a class="inline-flex gap-x-1.5 align-baseline leading-none hover:underline text-gray-400" 
+               href="https://www.google.com/maps/search/{{ profile.location if profile else 'São Paulo, Brazil' }}" 
+               target="_blank" rel="noopener noreferrer">
+                {{ profile.location if profile else 'São Paulo, Brazil' }}
+            </a>
+        </p>
+        <div class="flex gap-x-1 pt-1 font-mono text-sm text-gray-400 print:hidden" role="list" aria-label="Contact links">
+            {% if profile %}
+                {% if profile.email %}<SocialButton href="mailto:{{ profile.email }}" label="Email" icon="email" />{% endif %}
+                {% if profile.phone %}<SocialButton href="tel:{{ profile.phone }}" label="Phone" icon="phone" />{% endif %}
+                {% if profile.github %}<SocialButton href={{ profile.github }} label="GitHub" icon="github" />{% endif %}
+                {% if profile.linkedin %}<SocialButton href={{ profile.linkedin }} label="LinkedIn" icon="linkedin" />{% endif %}
+                {% if profile.twitter %}<SocialButton href={{ profile.twitter }} label="X" icon="twitter" />{% endif %}
+            {% else %}
+                <SocialButton href="mailto:fabiohcsouza@outlook.com.br" label="Email" icon="email" />
+                <SocialButton href="tel:11960433124" label="Phone" icon="phone" />
+                <SocialButton href="https://github.com/oornnery" label="GitHub" icon="github" />
+                <SocialButton href="https://linkedin.com/in/fabiohcsouza" label="LinkedIn" icon="linkedin" />
+                <SocialButton href="https://x.com/oornnery" label="X" icon="twitter" />
+            {% endif %}
+        </div>
+        <div class="pt-4">
+            <a href="/about" class="inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors">
+                View full resume &rarr;
+            </a>
+        </div>
+    </div>
+    <span class="relative flex shrink-0 overflow-hidden rounded-full size-20 md:size-28" aria-hidden="true">
+        <img class="aspect-square h-full w-full" 
+             alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture" 
+             src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">
+    </span>
+</header>

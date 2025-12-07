@@ -15,6 +15,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.deps import CurrentAdminUser
 from app.db import get_session
 from app.models.blog import (
     PostCreate,
@@ -130,14 +131,14 @@ async def get_post(
 @router.post("", response_model=PostPublic, status_code=status.HTTP_201_CREATED)
 async def create_post(
     post_data: PostCreate,
+    admin: CurrentAdminUser,  # Requer admin
     service: BlogService = Depends(get_blog_service),
 ):
     """
     Cria um novo post.
 
-    Requer autenticação de admin (TODO: adicionar dependency).
+    Requer autenticação de admin.
     """
-    # TODO: Adicionar verificação de admin
     return await service.create_post(post_data)
 
 
@@ -145,6 +146,7 @@ async def create_post(
 async def update_post(
     slug: SlugPath,
     post_data: PostUpdate,
+    admin: CurrentAdminUser,  # Requer admin
     service: BlogService = Depends(get_blog_service),
 ):
     """
@@ -165,12 +167,13 @@ async def update_post(
 @router.delete("/{slug}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(
     slug: SlugPath,
+    admin: CurrentAdminUser,  # Requer admin
     service: BlogService = Depends(get_blog_service),
 ):
     """
     Remove um post.
 
-    Requer autenticação de admin (TODO: adicionar dependency).
+    Requer autenticação de admin.
     """
     post = await service.get_post_by_slug(slug)
     if not post:

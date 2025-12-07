@@ -1,0 +1,20 @@
+{#def education #}
+
+<section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+    <h2 class="text-xl font-bold text-white" id="education-section">Education</h2>
+    <div class="space-y-4" role="feed" aria-labelledby="education-section">
+        {% for edu in education %}
+        <article role="article">
+            <div class="text-card-foreground">
+                <div class="flex flex-col space-y-1.5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-base">
+                        <h3 class="font-semibold leading-none text-white">{{ edu.school }}</h3>
+                        <div class="text-sm tabular-nums text-gray-500">{{ edu.start_date }} - {{ edu.end_date }}</div>
+                    </div>
+                </div>
+                <div class="text-pretty font-mono text-sm mt-2 text-gray-400 print:text-[12px]">{{ edu.degree }}</div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>

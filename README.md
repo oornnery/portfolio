@@ -1,31 +1,32 @@
-# FastAPI + UV + PostgreSQL Template
+# Portfolio - FastAPI + Jinja2 + HTMX
 
-This template provides a robust backend setup using **FastAPI** for the API layer, **UV** for blazing fast package management, **SQLModel** for ORM/database interactions, and **PostgreSQL** running in Docker.
+Minimalist full-stack portfolio with blog, projects, and resume management.
 
 ## Tech Stack
 
-- **[FastAPI](https://fastapi.tiangolo.com/)**: Modern, fast (high-performance) web framework for building APIs with Python based on standard Python type hints.
-- **[UV](https://github.com/astral-sh/uv)**: An extremely fast Python package installer and resolver, written in Rust.
-- **[SQLModel](https://sqlmodel.tiangolo.com/)**: SQL databases in Python, designed to simplify interacting with SQL databases in FastAPI applications.
-- **[PostgreSQL](https://www.postgresql.org/)**: The World's Most Advanced Open Source Relational Database.
-- **[Docker Compose](https://docs.docker.com/compose/)**: Tool for defining and running multi-container Docker applications.
+- **[FastAPI](https://fastapi.tiangolo.com/)**: Async web framework with automatic OpenAPI docs
+- **[Jinja2](https://jinja.palletsprojects.com/)**: Server-side templating
+- **[HTMX](https://htmx.org/)**: Dynamic interactions without JavaScript
+- **[SQLModel](https://sqlmodel.tiangolo.com/)**: Async ORM built on SQLAlchemy + Pydantic
+- **[Tailwind CSS](https://tailwindcss.com/)**: Utility-first CSS (via CDN)
+- **[UV](https://github.com/astral-sh/uv)**: Fast Python package manager (Rust)
+- **PostgreSQL** (prod) / **SQLite** (dev)
 
 ## Project Structure
 
 ```
-
-backend/
-├── app/
-│   ├── core/          \# App configuration (env vars, settings)
-│   ├── db.py          \# Database connection and session management
-│   └── main.py        \# App entrypoint and CORS config
-├── docker/            \# Docker configuration files
-│   ├── Dockerfile     \# Production-ready Dockerfile
-│   └── docker-compose.yml
-├── .env               \# Environment variables (Not committed)
-├── pyproject.toml     \# Project dependencies
-└── uv.lock            \# Locked dependencies
-
+app/
+├── main.py                 # App entry, middleware, routers
+├── config.py               # Settings via pydantic-settings
+├── db.py                   # Engine, session factory, seed_db()
+├── api/v1/endpoints/       # JSON API (prefix /api/v1)
+├── views/                  # HTML template views (public + admin)
+├── services/               # Business logic layer
+├── models/                 # SQLModel schemas
+├── core/                   # Auth, security, dependencies
+├── middleware/             # Security headers, logging
+├── templates/              # Jinja2 templates
+└── static/                 # CSS, JS (htmx.min.js)
 ```
 
 ## Getting Started
@@ -33,89 +34,76 @@ backend/
 ### Prerequisites
 
 - Python 3.12+
-- Docker & Docker Compose
-- [uv](https://github.com/astral-sh/uv) installed (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+- [uv](https://github.com/astral-sh/uv) (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+- Docker (optional, for PostgreSQL)
 
 ### 1. Environment Setup
 
-Create a `.env` file in the `backend/` root directory:
+Create a `.env` file:
 
+```bash
+DATABASE_URL=sqlite+aiosqlite:///./portfolio.db  # Dev (default)
+# DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/portfolio_db  # Prod
+SECRET_KEY=your-secret-key-here
+ENV=development
 ```
 
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=portfolio_db
+### 2. Running Locally
 
-# For local development (outside Docker):
-
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/portfolio_db
-
-# For Docker container (inside Docker):
-
-# DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/portfolio_db
-
-```
-
-### 2. Running Locally (Development)
-
-Start the database container and then run the API locally for faster debugging:
-
-```
-
-
-# 1. Start PostgreSQL container
-
-docker compose -f docker/docker-compose.yml up -d db
-
-# 2. Install dependencies
-
+```bash
+# Install dependencies
 uv sync
 
-# 3. Run the server with hot-reload
-
+# Run dev server with hot-reload
 uv run uvicorn app.main:app --reload
-
-```
-The API will be available at `http://localhost:8000`.
-Interactive docs: `http://localhost:8000/docs`.
-
-### 3. Running with Docker (Full Stack)
-
-To run the entire backend infrastructure (API + DB) inside containers:
-
 ```
 
-cd backend
-docker compose -f docker/docker-compose.yml up --build
+The app will be available at `http://localhost:8000`.
+- Interactive API docs: `http://localhost:8000/docs`
+- Admin panel: `http://localhost:8000/admin` (login: `admin@example.com` / `admin123`)
 
+### 3. Running with Docker
+
+```bash
+# Development
+docker compose -f docker/docker-compose.dev.yml up --build
+
+# Production
+docker compose -f docker/docker-compose.prod.yml up --build
 ```
 
 ## Development Workflows
 
+### Linting & Formatting (REQUIRED before commits)
+
+```bash
+uv run ruff format . && uv run ruff check . --fix --unsafe-fixes && uv run ty check .
+```
+
+### Running Tests
+
+```bash
+uv run pytest -v
+```
+
 ### Adding Dependencies
 
-Using `uv` is much faster than pip. To add a new library:
-
-```
-
+```bash
 uv add <package_name>
-
-# Example: uv add pydantic
-
+uv add --dev <dev_package>  # Dev dependencies
 ```
 
-### Database Migrations
+## Key Features
 
-Currently, the project uses `SQLModel.metadata.create_all` on startup for simplicity. For production workflows, integrating **Alembic** is recommended.
+- **Blog**: Posts with categories, tags, reactions, comments
+- **Projects**: Portfolio showcase with tech stack tags
+- **Profile/Resume**: Work experience, education, skills (JSON fields)
+- **Admin Panel**: CRUD for all content
+- **Auth**: Cookie-based JWT with optional GitHub/Google OAuth
+- **Rate Limiting**: slowapi protection on public endpoints
+- **Security**: OWASP headers, CSP, request tracing
 
-### Linting & Formatting
+## Documentation
 
-(Recommended configuration - add to `pyproject.toml` if needed)
-- **Ruff**: An extremely fast Python linter, written in Rust.
-```
-
-uv add --dev ruff
-uv run ruff check .
-
-```
+See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for detailed architecture, patterns, and conventions.
 

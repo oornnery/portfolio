@@ -1,0 +1,125 @@
+{#def 
+    name,
+    label="",
+    type="text",
+    placeholder="",
+    value="",
+    required=False,
+    disabled=False,
+    readonly=False,
+    rows=4,
+    variant="default",
+    size="default",
+    error="",
+    hint="",
+    icon_left="",
+    icon_right=""
+#}
+{#-
+Input Component
+
+Variants:
+    - default: Standard input style
+    - filled: Filled background style
+    - outline: Emphasized border
+    - ghost: Minimal style
+
+Sizes:
+    - sm: Small
+    - default: Standard
+    - lg: Large
+-#}
+
+{% set base_classes = "w-full rounded-md transition-all duration-200 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50" %}
+
+{% set variant_classes = {
+    "default": "bg-gray-900 border border-gray-700 text-white focus:border-accent focus:ring-accent/30",
+    "filled": "bg-gray-800 border border-transparent text-white focus:border-accent focus:ring-accent/30",
+    "outline": "bg-transparent border-2 border-gray-600 text-white focus:border-accent focus:ring-accent/30",
+    "ghost": "bg-transparent border border-transparent text-white hover:border-gray-700 focus:border-accent focus:ring-accent/30"
+} %}
+
+{% set size_classes = {
+    "sm": "px-3 py-1.5 text-sm",
+    "default": "px-4 py-2.5 text-sm",
+    "lg": "px-4 py-3 text-base"
+} %}
+
+{% set error_classes = "border-red-500/50 focus:border-red-500 focus:ring-red-500/30" if error else "" %}
+
+<div class="space-y-1.5">
+    {% if label %}
+    <label for="{{ name }}" class="block text-sm font-medium text-gray-300">
+        {{ label }}
+        {% if required %}<span class="text-red-400 ml-0.5">*</span>{% endif %}
+    </label>
+    {% endif %}
+    
+    <div class="relative">
+        {% if icon_left %}
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+            {{ icon_left }}
+        </div>
+        {% endif %}
+        
+        {% if type == "textarea" %}
+        <textarea 
+            id="{{ name }}" 
+            name="{{ name }}" 
+            rows="{{ rows }}"
+            placeholder="{{ placeholder }}"
+            {% if required %}required{% endif %}
+            {% if disabled %}disabled{% endif %}
+            {% if readonly %}readonly{% endif %}
+            class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ error_classes }} {% if icon_left %}pl-10{% endif %} {% if icon_right %}pr-10{% endif %} resize-y min-h-[100px]"
+            {{ attrs.render() }}
+        >{{ value }}</textarea>
+        {% elif type == "select" %}
+        <select 
+            id="{{ name }}" 
+            name="{{ name }}"
+            {% if required %}required{% endif %}
+            {% if disabled %}disabled{% endif %}
+            class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ error_classes }} {% if icon_left %}pl-10{% endif %} pr-10 appearance-none cursor-pointer"
+            {{ attrs.render() }}
+        >
+            {{ content }}
+        </select>
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </div>
+        {% else %}
+        <input 
+            type="{{ type }}" 
+            id="{{ name }}" 
+            name="{{ name }}" 
+            value="{{ value }}"
+            placeholder="{{ placeholder }}"
+            {% if required %}required{% endif %}
+            {% if disabled %}disabled{% endif %}
+            {% if readonly %}readonly{% endif %}
+            class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ error_classes }} {% if icon_left %}pl-10{% endif %} {% if icon_right %}pr-10{% endif %}"
+            {{ attrs.render() }}
+        />
+        {% endif %}
+        
+        {% if icon_right and type != "select" %}
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500">
+            {{ icon_right }}
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if error %}
+    <p class="text-sm text-red-400 flex items-center gap-1">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {{ error }}
+    </p>
+    {% elif hint %}
+    <p class="text-sm text-gray-500">{{ hint }}</p>
+    {% endif %}
+</div>

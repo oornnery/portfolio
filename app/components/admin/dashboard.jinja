@@ -1,0 +1,50 @@
+{#def request, user, title="Dashboard" #}
+{#import "../layouts/admin.jinja" as AdminLayout #}
+{#import "../ui/card.jinja" as Card #}
+
+<AdminLayout request={{ request }} user={{ user }} title={{ title }} current_page="dashboard">
+    <div class="space-y-8">
+        <header>
+            <h1 class="text-3xl font-bold text-white mb-2">Dashboard</h1>
+            <p class="text-gray-400">Welcome back, {{ user.name or user.email }}!</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card href="/admin/profile">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-gray-800 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-medium">Profile</h3>
+                        <p class="text-sm text-gray-500">Manage your profile</p>
+                    </div>
+                </div>
+            </Card>
+
+            <Card href="/admin/projects">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-gray-800 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-medium">Projects</h3>
+                        <p class="text-sm text-gray-500">Manage projects</p>
+                    </div>
+                </div>
+            </Card>
+
+            <Card href="/admin/blog">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-gray-800 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-medium">Blog</h3>
+                        <p class="text-sm text-gray-500">Manage posts</p>
+                    </div>
+                </div>
+            </Card>
+        </div>
+    </div>
+</AdminLayout>

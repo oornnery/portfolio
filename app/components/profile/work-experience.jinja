@@ -1,0 +1,28 @@
+{#def work_experience #}
+
+<section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+    <h2 class="text-lg font-bold text-white" id="work-experience">Work Experience</h2>
+    <div class="flex flex-col gap-4" role="feed" aria-labelledby="work-experience">
+        {% for job in work_experience %}
+        <div class="font-mono flex flex-col justify-start items-start gap-1 print:mb-4">
+            <div class="flex flex-wrap justify-between items-start self-stretch gap-2">
+                <div class="flex flex-wrap justify-start items-center gap-2">
+                    <p class="text-base font-semibold text-left text-white">{{ job.title }}</p>
+                    {% if job.location %}
+                    <div class="flex justify-center items-center relative overflow-hidden gap-2.5 px-[7px] py-0.5 rounded bg-gray-800">
+                        <p class="text-[12px] font-semibold text-center text-gray-400">{{ job.location }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <p class="text-sm text-right text-gray-400">{{ job.start_date }} - {{ job.end_date }}</p>
+            </div>
+            <div class="flex flex-col justify-start items-start relative gap-1.5">
+                <p class="self-stretch text-sm font-medium text-left text-gray-400 font-mono capitalize flex flex-wrap gap-1">
+                    <span>{{ job.company }}</span>
+                </p>
+                <p class="self-stretch text-sm font-medium text-left text-gray-400">{{ job.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

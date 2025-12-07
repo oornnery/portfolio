@@ -1,0 +1,41 @@
+{#def title="Portfolio", description="", current_page="", env="development" #}
+
+<!DOCTYPE html>
+<html lang="pt-br" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ description or 'Portfolio - Developer & Designer' }}">
+    <title>{{ title }}</title>
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS + Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/tailwind.config.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- HTMX - min in production, full in development -->
+    {% if env == "production" %}
+    <script src="/static/js/htmx.min.js"></script>
+    {% else %}
+    <script src="/static/js/htmx.js"></script>
+    {% endif %}
+    
+    <!-- Additional head content -->
+    {% slot head %}{% endslot %}
+</head>
+<body class="bg-background text-foreground font-sans antialiased selection:bg-accent/20 selection:text-accent min-h-screen" hx-boost="false">
+    {{ content }}
+    
+    <!-- App Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{#def request, user, post=None, title="Post" #}
+{#import "../layouts/admin.jinja" as AdminLayout #}
+{#import "../ui/input.jinja" as Input #}
+{#import "../ui/button.jinja" as Button #}
+
+<AdminLayout request={{ request }} user={{ user }} title={{ title }} current_page="blog">
+    <div class="space-y-8">
+        <header>
+            <h1 class="text-3xl font-bold text-white mb-2">{{ 'Edit' if post else 'New' }} Post</h1>
+            <p class="text-gray-400">{{ 'Update post details.' if post else 'Create a new blog post.' }}</p>
+        </header>
+
+        <form method="post" action={{ '/admin/blog/' + (post.id | string) if post else '/admin/blog/new' }} class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input name="title" label="Title" value={{ post.title if post else '' }} required />
+                <Input name="slug" label="Slug" value={{ post.slug if post else '' }} required />
+            </div>
+            
+            <Input name="description" type="textarea" label="Description" value={{ post.description if post else '' }} rows="2" />
+            
+            <Input name="content" type="textarea" label="Content (Markdown)" value={{ post.content if post else '' }} rows="15" />
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Input name="category" label="Category" value={{ post.category if post else '' }} />
+                <Input name="image" type="url" label="Cover Image URL" value={{ post.image if post else '' }} />
+                <Input name="reading_time" type="number" label="Reading Time (min)" value={{ post.reading_time if post else '5' }} />
+            </div>
+
+            <Input name="tags" label="Tags (comma separated)" value={{ post.tags | join(', ') if post and post.tags else '' }} />
+
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="draft" name="draft" value="true" {% if not post or post.draft %}checked{% endif %} class="rounded bg-gray-900 border-gray-800">
+                <label for="draft" class="text-sm text-gray-400">Save as draft</label>
+            </div>
+
+            <div class="flex gap-4 justify-end">
+                <Button href="/admin/blog" variant="ghost">Cancel</Button>
+                <Button type="submit" variant="primary">{{ 'Update' if post else 'Create' }} Post</Button>
+            </div>
+        </form>
+    </div>
+</AdminLayout>

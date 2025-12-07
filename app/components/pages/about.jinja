@@ -1,0 +1,61 @@
+{#def request, user=None, profile=None #}
+{#import "../layouts/public.jinja" as PublicLayout #}
+{#import "../profile/header.jinja" as ProfileHeader #}
+{#import "../profile/work-experience.jinja" as WorkExperience #}
+{#import "../profile/education.jinja" as Education #}
+{#import "../profile/skills.jinja" as Skills #}
+
+<PublicLayout request={{ request }} user={{ user }} title="About" current_page="about">
+    <div class="mx-auto w-full max-w-2xl space-y-8 print:space-y-4" aria-label="Resume Content">
+        {# Header with Profile Info #}
+        <div>
+            <header class="flex items-start md:items-center justify-between gap-4">
+                <div class="flex-1 space-y-1.5">
+                    <h1 class="text-2xl font-bold text-white" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
+                    <p class="max-w-md text-pretty font-mono text-sm text-gray-400 print:text-[12px]" aria-labelledby="resume-name">
+                        {{ profile.short_bio if profile else 'Experienced telecommunications professional with a focus on voice and data services.' }}
+                    </p>
+                    <p class="max-w-md items-center text-pretty font-mono text-xs text-gray-400">
+                        <a class="inline-flex gap-x-1.5 align-baseline leading-none hover:underline text-gray-400" 
+                           href="https://www.google.com/maps/search/{{ profile.location if profile else 'São Paulo, Brazil' }}" 
+                           target="_blank" rel="noopener noreferrer">
+                            {{ profile.location if profile else 'São Paulo, Brazil' }}
+                        </a>
+                    </p>
+                </div>
+                <span class="relative flex shrink-0 overflow-hidden rounded-full size-20 md:size-28" aria-hidden="true">
+                    <img class="aspect-square h-full w-full" 
+                         alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture" 
+                         src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">
+                </span>
+            </header>
+        </div>
+
+        {# About Section #}
+        <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
+            <h2 class="text-xl font-bold text-white" id="about-section">About</h2>
+            <div class="text-pretty font-mono text-sm text-gray-400 print:text-[12px]" aria-labelledby="about-section">
+                {% if profile and profile.about_markdown %}
+                    {{ profile.about_markdown | safe }}
+                {% else %}
+                    Experienced telecommunications engineer with a strong focus on voice and data services.
+                {% endif %}
+            </div>
+        </section>
+
+        {# Work Experience #}
+        {% if profile and profile.work_experience %}
+        <WorkExperience work_experience={{ profile.work_experience }} />
+        {% endif %}
+
+        {# Education #}
+        {% if profile and profile.education %}
+        <Education education={{ profile.education }} />
+        {% endif %}
+
+        {# Skills #}
+        {% if profile and profile.skills %}
+        <Skills skills={{ profile.skills }} />
+        {% endif %}
+    </div>
+</PublicLayout>

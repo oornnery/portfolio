@@ -1,0 +1,22 @@
+{#def user=None, current_page="" #}
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-gray-800/50 transition-all duration-300">
+    <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors">
+            Fabio Souza
+        </a>
+        <div class="flex gap-6 text-sm text-gray-400">
+            <a href="/" class="{{ 'text-white' if current_page == 'home' else '' }} hover:text-white transition-colors">Home</a>
+            <a href="/about" class="{{ 'text-white' if current_page == 'about' else '' }} hover:text-white transition-colors">About</a>
+            <a href="/projects" class="{{ 'text-white' if current_page == 'projects' else '' }} hover:text-white transition-colors">Projects</a>
+            <a href="/blog" class="{{ 'text-white' if current_page == 'blog' else '' }} hover:text-white transition-colors">Blog</a>
+            <a href="/contact" class="{{ 'text-white' if current_page == 'contact' else '' }} hover:text-white transition-colors">Contact</a>
+            {% if user %}
+            <a href="/admin" class="{{ 'text-white' if current_page == 'admin' else '' }} hover:text-white transition-colors">Admin</a>
+            <a href="/api/v1/auth/logout" class="hover:text-white transition-colors">Logout</a>
+            {% else %}
+            <a href="/login" class="hover:text-white transition-colors">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

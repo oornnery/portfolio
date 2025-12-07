@@ -1,0 +1,46 @@
+{#def request, user, project=None, title="Project" #}
+{#import "../layouts/admin.jinja" as AdminLayout #}
+{#import "../ui/input.jinja" as Input #}
+{#import "../ui/button.jinja" as Button #}
+
+<AdminLayout request={{ request }} user={{ user }} title={{ title }} current_page="projects">
+    <div class="space-y-8">
+        <header>
+            <h1 class="text-3xl font-bold text-white mb-2">{{ 'Edit' if project else 'New' }} Project</h1>
+            <p class="text-gray-400">{{ 'Update project details.' if project else 'Create a new project.' }}</p>
+        </header>
+
+        <form method="post" action={{ '/admin/projects/' + (project.id | string) if project else '/admin/projects/new' }} class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input name="title" label="Title" value={{ project.title if project else '' }} required />
+                <Input name="slug" label="Slug" value={{ project.slug if project else '' }} required />
+            </div>
+            
+            <Input name="description" type="textarea" label="Description" value={{ project.description if project else '' }} rows="3" />
+            
+            <Input name="content" type="textarea" label="Content (Markdown)" value={{ project.content if project else '' }} rows="10" />
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input name="category" label="Category" value={{ project.category if project else '' }} />
+                <Input name="image" type="url" label="Image URL" value={{ project.image if project else '' }} />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input name="github_url" type="url" label="GitHub URL" value={{ project.github_url if project else '' }} />
+                <Input name="demo_url" type="url" label="Demo URL" value={{ project.demo_url if project else '' }} />
+            </div>
+
+            <Input name="tech_stack" label="Tech Stack (comma separated)" value={{ project.tech_stack | join(', ') if project and project.tech_stack else '' }} />
+
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="featured" name="featured" value="true" {% if project and project.featured %}checked{% endif %} class="rounded bg-gray-900 border-gray-800">
+                <label for="featured" class="text-sm text-gray-400">Featured project</label>
+            </div>
+
+            <div class="flex gap-4 justify-end">
+                <Button href="/admin/projects" variant="ghost">Cancel</Button>
+                <Button type="submit" variant="primary">{{ 'Update' if project else 'Create' }} Project</Button>
+            </div>
+        </form>
+    </div>
+</AdminLayout>

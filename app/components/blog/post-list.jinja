@@ -1,0 +1,18 @@
+{#def 
+    posts, 
+    categories=[], 
+    tags=[], 
+    current_category="", 
+    current_tag="",
+    search_query=""
+#}
+{#import "./post-card.jinja" as PostCard #}
+
+{# HTMX partial - only posts grid content #}
+{% for post in posts %}
+<PostCard post={{ post }} />
+{% else %}
+<div class="text-center py-12">
+    <p class="text-gray-500">No posts found.</p>
+</div>
+{% endfor %}

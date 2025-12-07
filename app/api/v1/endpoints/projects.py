@@ -13,6 +13,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.deps import CurrentAdminUser
 from app.db import get_session
 from app.models.project import ProjectCreate, ProjectPublic, ProjectUpdate
 from app.services.project import ProjectService
@@ -117,12 +118,13 @@ async def get_project(
 @router.post("", response_model=ProjectPublic, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project_data: ProjectCreate,
+    admin: CurrentAdminUser,  # Requer admin
     service: ProjectService = Depends(get_project_service),
 ):
     """
     Cria um novo projeto.
 
-    Requer autenticação de admin (TODO: adicionar dependency).
+    Requer autenticação de admin.
     """
     return await service.create_project(project_data)
 
@@ -131,6 +133,7 @@ async def create_project(
 async def update_project(
     slug: SlugPath,
     project_data: ProjectUpdate,
+    admin: CurrentAdminUser,  # Requer admin
     service: ProjectService = Depends(get_project_service),
 ):
     """
@@ -150,12 +153,13 @@ async def update_project(
 @router.delete("/{slug}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project(
     slug: SlugPath,
+    admin: CurrentAdminUser,  # Requer admin
     service: ProjectService = Depends(get_project_service),
 ):
     """
     Remove um projeto.
 
-    Requer autenticação de admin (TODO: adicionar dependency).
+    Requer autenticação de admin.
     """
     project = await service.get_project_by_slug(slug)
     if not project:
