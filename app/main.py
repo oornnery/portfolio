@@ -9,6 +9,7 @@ How: Usa lifespan para inicialização do banco,
      routers versionados para API e views.
 """
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
@@ -25,7 +26,10 @@ from app.api.v1 import api_router
 from app.config import settings
 from app.db import engine, seed_db
 from app.middleware import RequestLoggingMiddleware, SecurityMiddleware
+from app.middleware.analytics import AnalyticsMiddleware
 from app.views import admin_router, public_router
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -36,6 +40,23 @@ async def lifespan(app: FastAPI):
     Startup: Cria tabelas no banco e executa seed.
     Shutdown: Cleanup de recursos (se necessário).
     """
+    # Setup OpenTelemetry (opcional)
+    try:
+        from app.core.telemetry import instrument_app, setup_telemetry
+
+        otlp_endpoint = getattr(settings, "OTLP_ENDPOINT", None)
+        setup_telemetry(
+            service_name="portfolio",
+            otlp_endpoint=otlp_endpoint,
+            enable_console_export=settings.is_development,
+        )
+        instrument_app(app, engine)
+        logger.info("OpenTelemetry initialized")
+    except ImportError:
+        logger.debug("OpenTelemetry not available, skipping instrumentation")
+    except Exception as e:
+        logger.warning(f"OpenTelemetry setup failed: {e}")
+
     # Create tables
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
@@ -118,6 +139,9 @@ app.add_middleware(SlowAPIMiddleware)  # type: ignore[arg-type]
 
 # Request logging (primeiro a executar, último a responder)
 app.add_middleware(RequestLoggingMiddleware)  # type: ignore[arg-type]
+
+# Analytics tracking (fingerprinting e pageviews)
+app.add_middleware(AnalyticsMiddleware, enabled=True)  # type: ignore[arg-type]
 
 # Security headers + HTMX validation
 app.add_middleware(SecurityMiddleware)  # type: ignore[arg-type]

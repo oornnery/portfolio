@@ -1,22 +1,63 @@
 {#def user=None, current_page="" #}
 
-<nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-gray-800/50 transition-all duration-300">
-    <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors">
+<nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800/50 transition-all duration-300">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+        <a href="/" class="text-base sm:text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors">
             Fabio Souza
         </a>
-        <div class="flex gap-6 text-sm text-gray-400">
-            <a href="/" class="{{ 'text-white' if current_page == 'home' else '' }} hover:text-white transition-colors">Home</a>
-            <a href="/about" class="{{ 'text-white' if current_page == 'about' else '' }} hover:text-white transition-colors">About</a>
-            <a href="/projects" class="{{ 'text-white' if current_page == 'projects' else '' }} hover:text-white transition-colors">Projects</a>
-            <a href="/blog" class="{{ 'text-white' if current_page == 'blog' else '' }} hover:text-white transition-colors">Blog</a>
-            <a href="/contact" class="{{ 'text-white' if current_page == 'contact' else '' }} hover:text-white transition-colors">Contact</a>
+        
+        {# Desktop Navigation #}
+        <div class="hidden md:flex items-center gap-1 lg:gap-4 text-sm text-gray-400">
+            <a href="/" class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_page == 'home' else 'hover:text-white hover:bg-gray-800/30' }} transition-all">Home</a>
+            <a href="/about" class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_page == 'about' else 'hover:text-white hover:bg-gray-800/30' }} transition-all">About</a>
+            <a href="/projects" class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_page == 'projects' else 'hover:text-white hover:bg-gray-800/30' }} transition-all">Projects</a>
+            <a href="/blog" class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_page == 'blog' else 'hover:text-white hover:bg-gray-800/30' }} transition-all">Blog</a>
+            <a href="/contact" class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_page == 'contact' else 'hover:text-white hover:bg-gray-800/30' }} transition-all">Contact</a>
             {% if user %}
-            <a href="/admin" class="{{ 'text-white' if current_page == 'admin' else '' }} hover:text-white transition-colors">Admin</a>
-            <a href="/api/v1/auth/logout" class="hover:text-white transition-colors">Logout</a>
+            <span class="w-px h-4 bg-gray-700 mx-1"></span>
+            <a href="/admin" class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_page == 'admin' else 'hover:text-white hover:bg-gray-800/30' }} transition-all">Admin</a>
+            <a href="/api/v1/auth/logout" class="px-3 py-2 rounded-lg hover:text-white hover:bg-gray-800/30 transition-all">Logout</a>
             {% else %}
-            <a href="/login" class="hover:text-white transition-colors">Login</a>
+            <a href="/login" class="px-3 py-2 rounded-lg hover:text-white hover:bg-gray-800/30 transition-all">Login</a>
             {% endif %}
+        </div>
+        
+        {# Mobile Menu Button #}
+        <button 
+            type="button"
+            data-menu-toggle
+            class="md:hidden p-2 -mr-2 text-gray-400 hover:text-white transition-colors"
+            aria-label="Toggle menu"
+            aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon hidden">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+    
+    {# Mobile Menu #}
+    <div data-mobile-menu class="hidden md:hidden border-t border-gray-800/50 bg-black/95 backdrop-blur-md">
+        <div class="px-4 py-4 space-y-1">
+            <a href="/" class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_page == 'home' else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all">Home</a>
+            <a href="/about" class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_page == 'about' else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all">About</a>
+            <a href="/projects" class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_page == 'projects' else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all">Projects</a>
+            <a href="/blog" class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_page == 'blog' else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all">Blog</a>
+            <a href="/contact" class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_page == 'contact' else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all">Contact</a>
+            
+            <div class="pt-2 mt-2 border-t border-gray-800">
+                {% if user %}
+                <a href="/admin" class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_page == 'admin' else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all">Admin</a>
+                <a href="/api/v1/auth/logout" class="block px-4 py-3 rounded-lg text-base text-gray-400 hover:text-white hover:bg-gray-800/30 transition-all">Logout</a>
+                {% else %}
+                <a href="/login" class="block px-4 py-3 rounded-lg text-base text-gray-400 hover:text-white hover:bg-gray-800/30 transition-all">Login</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>

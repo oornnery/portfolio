@@ -1,20 +1,20 @@
 {#def profile #}
 {#import "../ui/social-button.jinja" as SocialButton #}
 
-<header class="flex items-start md:items-center justify-between gap-4 mb-16">
-    <div class="flex-1 space-y-1.5">
-        <h1 class="text-2xl font-bold text-white" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
-        <p class="max-w-md text-pretty font-mono text-sm text-gray-400 print:text-[12px]" aria-labelledby="resume-name">
+<header class="flex flex-col-reverse sm:flex-row items-center sm:items-start md:items-center justify-between gap-4 sm:gap-6 mb-8 sm:mb-12 md:mb-16">
+    <div class="flex-1 space-y-1.5 text-center sm:text-left w-full">
+        <h1 class="text-xl sm:text-2xl font-bold text-white" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
+        <p class="max-w-md mx-auto sm:mx-0 text-pretty font-mono text-xs sm:text-sm text-gray-400 print:text-[12px]" aria-labelledby="resume-name">
             {{ profile.short_bio if profile else 'Experienced telecommunications professional with a focus on voice and data services, specializing in SIP, networking, and DevOps.' }}
         </p>
-        <p class="max-w-md items-center text-pretty font-mono text-xs text-gray-500">
+        <p class="max-w-md mx-auto sm:mx-0 items-center text-pretty font-mono text-[10px] sm:text-xs text-gray-500">
             <a class="inline-flex gap-x-1.5 align-baseline leading-none hover:underline text-gray-400" 
                href="https://www.google.com/maps/search/{{ profile.location if profile else 'São Paulo, Brazil' }}" 
                target="_blank" rel="noopener noreferrer">
                 {{ profile.location if profile else 'São Paulo, Brazil' }}
             </a>
         </p>
-        <div class="flex gap-x-1 pt-1 font-mono text-sm text-gray-400 print:hidden" role="list" aria-label="Contact links">
+        <div class="flex flex-wrap justify-center sm:justify-start gap-1 sm:gap-x-1 pt-1 font-mono text-sm text-gray-400 print:hidden" role="list" aria-label="Contact links">
             {% if profile %}
                 {% if profile.email %}<SocialButton href="mailto:{{ profile.email }}" label="Email" icon="email" />{% endif %}
                 {% if profile.phone %}<SocialButton href="tel:{{ profile.phone }}" label="Phone" icon="phone" />{% endif %}
@@ -29,13 +29,13 @@
                 <SocialButton href="https://x.com/oornnery" label="X" icon="twitter" />
             {% endif %}
         </div>
-        <div class="pt-4">
-            <a href="/about" class="inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors">
+        <div class="pt-3 sm:pt-4">
+            <a href="/about" class="inline-flex items-center text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">
                 View full resume &rarr;
             </a>
         </div>
     </div>
-    <span class="relative flex shrink-0 overflow-hidden rounded-full size-20 md:size-28" aria-hidden="true">
+    <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20 md:size-28" aria-hidden="true">
         <img class="aspect-square h-full w-full" 
              alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture" 
              src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">

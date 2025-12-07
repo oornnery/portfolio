@@ -10,7 +10,7 @@ How: Agrega todos os routers da v1 em um único ponto,
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, blog, comments, projects
+from app.api.v1.endpoints import analytics, auth, blog, comments, projects, resume
 
 api_router = APIRouter()
 
@@ -19,3 +19,5 @@ api_router.include_router(auth.router, prefix="/auth", tags=["Auth"])
 api_router.include_router(blog.router, prefix="/blog", tags=["Blog"])
 api_router.include_router(projects.router, prefix="/projects", tags=["Projects"])
 api_router.include_router(comments.router, prefix="/comments", tags=["Comments"])
+api_router.include_router(resume.router, tags=["Resume"])
+api_router.include_router(analytics.router, tags=["Analytics"])

@@ -2,16 +2,42 @@
 {#import "../ui/button.jinja" as Button #}
 {#import "../ui/input.jinja" as Input #}
 
-<section id="comments-section" class="mt-12 pt-8 border-t border-gray-800">
-    <h2 class="text-xl font-medium text-white mb-6">Comments ({{ comments | length }})</h2>
+<section id="comments-section" class="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-800">
+    <h2 class="text-lg sm:text-xl font-medium text-white mb-4 sm:mb-6">
+        Comments ({{ comments | length }})
+    </h2>
     
-    {% if user %}
+    {# Comment Form - Works for both logged-in users and guests #}
     <form 
         hx-post="/api/v1/comments/{{ post_slug }}" 
         hx-target="#comments-section" 
         hx-swap="outerHTML"
-        class="mb-8 space-y-4"
+        class="mb-6 sm:mb-8 space-y-3 sm:space-y-4"
+        id="comment-form"
     >
+        {% if not user %}
+        {# Guest info fields #}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <Input 
+                name="guest_name" 
+                label="Name"
+                placeholder="Your name" 
+                required
+                size="sm"
+            />
+            <Input 
+                name="guest_email" 
+                type="email"
+                label="Email (optional)"
+                placeholder="email@example.com (for avatar)"
+                size="sm"
+            />
+        </div>
+        <p class="text-xs text-gray-500">
+            Your email is optional and only used to display your avatar via Gravatar.
+        </p>
+        {% endif %}
+        
         <Input 
             name="content" 
             type="textarea" 
@@ -19,25 +45,105 @@
             placeholder="Write a comment..." 
             required 
         />
-        <Button type="submit" variant="primary">Post Comment</Button>
-    </form>
-    {% else %}
-    <p class="text-gray-500 mb-8">
-        <a href="/login" class="text-white hover:underline">Login</a> to leave a comment.
-    </p>
-    {% endif %}
-    
-    <div class="space-y-6">
-        {% for comment in comments %}
-        <div class="p-4 bg-gray-900/50 rounded-lg border border-gray-800">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-medium text-white">{{ comment.author.name if comment.author else 'Anonymous' }}</span>
-                <time class="text-xs text-gray-500">{{ comment.created_at.strftime('%d %b %Y') if comment.created_at else '' }}</time>
-            </div>
-            <p class="text-gray-400 text-sm">{{ comment.content }}</p>
+        
+        <div class="flex items-center justify-between gap-4">
+            <p class="text-xs text-gray-500">
+                {% if user %}
+                Commenting as <span class="text-white">{{ user.name or user.email }}</span>
+                {% else %}
+                <a href="/login" class="text-gray-400 hover:text-white transition-colors">
+                    Login
+                </a> for faster commenting
+                {% endif %}
+            </p>
+            <Button type="submit" variant="primary" size="sm">
+                Post Comment
+            </Button>
         </div>
+    </form>
+    
+    {# Comments List #}
+    <div class="space-y-4 sm:space-y-6">
+        {% for comment in comments %}
+        <article class="p-3 sm:p-4 bg-gray-900/50 rounded-lg border border-gray-800">
+            <div class="flex items-start gap-3">
+                {# Avatar #}
+                <div class="flex-shrink-0">
+                    {% if comment.user_avatar %}
+                    <img 
+                        src="{{ comment.user_avatar }}" 
+                        alt="{{ comment.display_name }}'s avatar"
+                        class="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
+                    />
+                    {% elif comment.guest_email %}
+                    <img 
+                        src="https://www.gravatar.com/avatar/{{ comment.guest_email | lower | trim }}?d=identicon&s=80" 
+                        alt="{{ comment.display_name }}'s avatar"
+                        class="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
+                    />
+                    {% else %}
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-800 flex items-center justify-center">
+                        <span class="text-xs sm:text-sm text-gray-400">
+                            {{ (comment.display_name or 'A')[0] | upper }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {# Content #}
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1 sm:mb-2">
+                        <span class="text-xs sm:text-sm font-medium text-white">
+                            {{ comment.display_name or comment.guest_name or 'Anonymous' }}
+                        </span>
+                        {% if comment.is_guest %}
+                        <span class="text-[10px] sm:text-xs px-1.5 py-0.5 bg-gray-800 text-gray-500 rounded">
+                            Guest
+                        </span>
+                        {% endif %}
+                        <time class="text-[10px] sm:text-xs text-gray-500">
+                            {{ comment.created_at.strftime('%d %b %Y, %H:%M') if comment.created_at else '' }}
+                        </time>
+                    </div>
+                    <p class="text-xs sm:text-sm text-gray-400 break-words">{{ comment.content }}</p>
+                    
+                    {# Reply button (future feature) #}
+                    {# <button class="mt-2 text-xs text-gray-500 hover:text-white transition-colors">
+                        Reply
+                    </button> #}
+                </div>
+            </div>
+            
+            {# Nested replies #}
+            {% if comment.replies %}
+            <div class="ml-8 sm:ml-12 mt-4 space-y-4 border-l-2 border-gray-800 pl-4">
+                {% for reply in comment.replies %}
+                <div class="flex items-start gap-3">
+                    <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-800 flex items-center justify-center flex-shrink-0">
+                        <span class="text-[10px] sm:text-xs text-gray-400">
+                            {{ (reply.display_name or 'A')[0] | upper }}
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+                            <span class="text-xs font-medium text-white">
+                                {{ reply.display_name or 'Anonymous' }}
+                            </span>
+                            <time class="text-[10px] text-gray-500">
+                                {{ reply.created_at.strftime('%d %b %Y') if reply.created_at else '' }}
+                            </time>
+                        </div>
+                        <p class="text-xs text-gray-400 break-words">{{ reply.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </article>
         {% else %}
-        <p class="text-gray-500 text-sm">No comments yet. Be the first to comment!</p>
+        <div class="text-center py-6 sm:py-8">
+            <p class="text-sm text-gray-500">No comments yet. Be the first to comment!</p>
+        </div>
         {% endfor %}
     </div>
 </section>

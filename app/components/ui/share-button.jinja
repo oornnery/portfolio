@@ -1,0 +1,128 @@
+{#def 
+    url="",
+    title="",
+    description="",
+    variant="default",
+    show_pdf=False,
+    pdf_url=""
+#}
+{#-
+Share Button Component
+
+Um botão de compartilhamento com menu dropdown que permite:
+- Copiar URL
+- Compartilhar via Web Share API (mobile)
+- Download PDF (opcional, para páginas como About)
+
+Variants:
+    - default: Botão padrão com borda
+    - ghost: Sem borda, apenas hover
+    - minimal: Apenas ícone
+-#}
+
+{% set base_btn_classes = "flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm transition-all" %}
+
+{% set variant_classes = {
+    "default": "px-2 sm:px-3 py-1.5 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600 rounded-lg",
+    "ghost": "px-2 py-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg",
+    "minimal": "p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md"
+} %}
+
+<div class="relative share-dropdown" data-share-dropdown>
+    {# Main Share Button #}
+    <button 
+        type="button"
+        class="{{ base_btn_classes }} {{ variant_classes[variant] }}"
+        data-share-toggle
+        aria-expanded="false"
+        aria-haspopup="true"
+        title="Share options">
+        {# Share Icon #}
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sm:w-4 sm:h-4">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+        {% if variant != "minimal" %}
+        <span class="hidden sm:inline">Share</span>
+        {% endif %}
+        {# Chevron #}
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="share-chevron transition-transform duration-200">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </button>
+
+    {# Dropdown Menu #}
+    <div 
+        class="share-menu hidden absolute right-0 mt-2 w-44 sm:w-48 py-1 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50"
+        data-share-menu
+        role="menu">
+        
+        {# Copy Link Option #}
+        <button 
+            type="button"
+            class="w-full flex items-center gap-3 px-3 py-2 text-xs sm:text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+            data-action="copy"
+            data-url="{{ url }}"
+            role="menuitem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span class="copy-text">Copy link</span>
+        </button>
+
+        {# Native Share (mobile/supported browsers) #}
+        <button 
+            type="button"
+            class="w-full flex items-center gap-3 px-3 py-2 text-xs sm:text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors share-native-btn"
+            data-action="share"
+            data-url="{{ url }}"
+            data-title="{{ title }}"
+            data-description="{{ description }}"
+            role="menuitem"
+            style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            <span>Share...</span>
+        </button>
+
+        {% if show_pdf and pdf_url %}
+        {# Divider #}
+        <div class="my-1 border-t border-gray-700"></div>
+        
+        {# Download PDF Option #}
+        <a 
+            href="{{ pdf_url }}"
+            download
+            class="w-full flex items-center gap-3 px-3 py-2 text-xs sm:text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+            role="menuitem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download PDF</span>
+        </a>
+        
+        {# Print Option #}
+        <button 
+            type="button"
+            class="w-full flex items-center gap-3 px-3 py-2 text-xs sm:text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+            data-action="print"
+            role="menuitem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span>Print</span>
+        </button>
+        {% endif %}
+    </div>
+</div>

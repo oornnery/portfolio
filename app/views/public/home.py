@@ -7,6 +7,7 @@ Why: Separa as páginas estáticas (home, about, contact) em um módulo próprio
 How: Usa JinjaX catalog para renderizar componentes de página.
 """
 
+import markdown
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -70,11 +71,20 @@ async def about(
     result = await session.execute(query)
     profile = result.scalar_one_or_none()
 
+    # Renderiza o markdown do about para HTML
+    about_html = ""
+    if profile and profile.about_markdown:
+        about_html = markdown.markdown(
+            profile.about_markdown,
+            extensions=["fenced_code", "codehilite", "tables", "nl2br"],
+        )
+
     return catalog.render(
         "pages/about.jinja",
         request=request,
         user=user,
         profile=profile,
+        about_html=about_html,
     )
 
 

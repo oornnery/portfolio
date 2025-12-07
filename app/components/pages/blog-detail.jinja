@@ -2,24 +2,36 @@
 {#import "../layouts/public.jinja" as PublicLayout #}
 {#import "../blog/comments.jinja" as Comments #}
 {#import "../ui/tag.jinja" as Tag #}
+{#import "../ui/button.jinja" as Button #}
+{#import "../ui/share-button.jinja" as ShareButton #}
 
 <PublicLayout request={{ request }} user={{ user }} title={{ post.title }} current_page="blog">
     <article class="prose prose-invert max-w-none">
-        <header class="mb-8 not-prose">
-            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                <time datetime={{ post.published_at.strftime('%Y-%m-%d') if post.published_at else '' }}>
-                    {{ post.published_at.strftime('%B %d, %Y') if post.published_at else '' }}
-                </time>
-                {% if post.category %}
-                <span>&bull;</span>
-                <span>{{ post.category }}</span>
-                {% endif %}
-                {% if post.reading_time %}
-                <span>&bull;</span>
-                <span>{{ post.reading_time }} min read</span>
-                {% endif %}
+        <header class="mb-6 sm:mb-8 not-prose">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                    <time datetime={{ post.published_at.strftime('%Y-%m-%d') if post.published_at else '' }}>
+                        {{ post.published_at.strftime('%B %d, %Y') if post.published_at else '' }}
+                    </time>
+                    {% if post.category %}
+                    <span class="hidden sm:inline">&bull;</span>
+                    <span>{{ post.category }}</span>
+                    {% endif %}
+                    {% if post.reading_time %}
+                    <span class="hidden sm:inline">&bull;</span>
+                    <span>{{ post.reading_time }} min read</span>
+                    {% endif %}
+                </div>
+                
+                {# Share Button Component #}
+                <ShareButton 
+                    url="{{ request.url }}" 
+                    title="{{ post.title }}"
+                    description="{{ post.description or '' }}"
+                    variant="default"
+                />
             </div>
-            <h1 class="text-4xl font-bold text-white mb-4">{{ post.title }}</h1>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">{{ post.title }}</h1>
             {% if post.description %}
             <p class="text-xl text-gray-400">{{ post.description }}</p>
             {% endif %}

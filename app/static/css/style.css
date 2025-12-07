@@ -572,7 +572,9 @@ select:focus-visible {
     scroll-snap-align: start;
     scroll-snap-stop: always;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -640,9 +642,37 @@ select:focus-visible {
     }
 }
 
+/* Mobile: use proximity instead of mandatory for smoother scrolling */
 @media (max-width: 768px) {
+    .scroll-snap-container {
+        scroll-snap-type: y proximity; /* Mais suave no mobile */
+    }
+    
     .snap-section {
+        scroll-snap-stop: normal; /* Permite pular seções */
         padding: 4rem 1rem;
+        min-height: 100dvh;
+        height: auto; /* Permite conteúdo maior que a viewport */
+    }
+}
+
+/* Very small screens: disable snap entirely */
+@media (max-width: 480px), (max-height: 600px) {
+    .scroll-snap-container {
+        scroll-snap-type: none;
+        height: auto;
+        overflow-y: visible;
+    }
+    
+    .snap-section {
+        scroll-snap-align: none;
+        min-height: auto;
+        height: auto;
+        padding: 3rem 1rem;
+    }
+    
+    .scroll-indicator {
+        display: none;
     }
 }
 
@@ -1125,5 +1155,93 @@ input:disabled, textarea:disabled, select:disabled {
     
     .container {
         padding: 0 16px;
+    }
+}
+
+/* ==========================================
+   Print Styles - PDF Resume
+   ========================================== */
+
+@media print {
+    /* Reset background and colors for printing */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    html, body {
+        background: white !important;
+        color: #1a1a1a !important;
+        font-size: 11pt;
+        line-height: 1.4;
+    }
+    
+    /* Hide non-essential elements */
+    nav, footer, .scroll-indicator, .print\\:hidden, 
+    button:not(.print-visible), [data-print-hide] {
+        display: none !important;
+    }
+    
+    /* Page setup */
+    @page {
+        size: A4;
+        margin: 1.5cm 2cm;
+    }
+    
+    /* Main content */
+    #resume-content {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Typography for print */
+    h1 { font-size: 18pt !important; color: #000 !important; }
+    h2 { font-size: 14pt !important; color: #000 !important; margin-top: 16pt !important; }
+    h3 { font-size: 12pt !important; color: #333 !important; }
+    p, li { font-size: 10pt !important; color: #333 !important; }
+    
+    /* Links - show URL in print */
+    a {
+        color: #333 !important;
+        text-decoration: none !important;
+    }
+    
+    /* Tags/Skills */
+    .print\\:bg-gray-200 {
+        background-color: #e5e7eb !important;
+        color: #374151 !important;
+    }
+    
+    /* Remove shadows and borders */
+    .shadow, .border {
+        box-shadow: none !important;
+    }
+    
+    /* Ensure no page breaks in sections */
+    section {
+        page-break-inside: avoid;
+    }
+    
+    /* Profile image */
+    img.aspect-square {
+        filter: grayscale(0) !important;
+    }
+    
+    /* Prose styles for markdown */
+    .prose h1, .prose h2, .prose h3, 
+    .prose p, .prose li, .prose strong {
+        color: #1a1a1a !important;
+    }
+    
+    .prose ul, .prose ol {
+        padding-left: 1.5em !important;
+    }
+    
+    .prose code {
+        background: #f3f4f6 !important;
+        color: #1f2937 !important;
+        padding: 0.1em 0.3em !important;
+        border-radius: 3px !important;
     }
 }

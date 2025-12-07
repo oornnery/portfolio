@@ -3,6 +3,7 @@ Comment models for blog post discussions.
 
 Why: Comentários permitem interação dos leitores com o conteúdo,
      com validação e sanitização para segurança.
+     Suporta comentários anônimos com fingerprinting.
 
 How: SQLModel com validadores Pydantic para sanitização automática
      de input antes de salvar no banco.
@@ -53,16 +54,56 @@ class Comment(CommentBase, table=True):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     post_id: uuid.UUID = Field(foreign_key="posts.id", index=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+
+    # User pode ser null para comentários anônimos
+    user_id: Optional[uuid.UUID] = Field(
+        default=None, foreign_key="users.id", index=True
+    )
+
+    # Visitor para comentários anônimos (fingerprint tracking)
+    visitor_id: Optional[uuid.UUID] = Field(
+        default=None, foreign_key="visitors.id", index=True
+    )
+
+    # Guest info para comentários anônimos
+    guest_name: Optional[str] = Field(default=None, max_length=50)
+    guest_email: Optional[str] = Field(
+        default=None, max_length=254
+    )  # Para gravatar/notificações
+
     parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="comments.id")
     created_at: datetime = Field(default_factory=utc_now)
     updated_at: datetime = Field(default_factory=utc_now)
     is_deleted: bool = Field(default=False)
     is_flagged: bool = Field(default=False)
 
+    # IP e info de segurança
+    ip_address: Optional[str] = Field(default=None, max_length=45)
+    user_agent: Optional[str] = Field(default=None, max_length=500)
+
 
 class CommentCreate(CommentBase):
+    """Schema para criar comentário (authenticated ou guest)."""
+
     parent_id: Optional[uuid.UUID] = None
+    guest_name: Optional[str] = Field(default=None, max_length=50)
+    guest_email: Optional[str] = Field(default=None, max_length=254)
+
+
+class CommentCreateGuest(CommentBase):
+    """Schema específico para comentários de guests."""
+
+    parent_id: Optional[uuid.UUID] = None
+    guest_name: str = Field(min_length=2, max_length=50)
+    guest_email: Optional[str] = Field(default=None, max_length=254)
+
+    @field_validator("guest_name", mode="before")
+    @classmethod
+    def sanitize_guest_name(cls, v: str) -> str:
+        """Sanitiza nome do guest."""
+        if not v:
+            return v
+        return sanitize_html(v.strip())
 
 
 class CommentUpdate(SQLModel):
@@ -71,11 +112,16 @@ class CommentUpdate(SQLModel):
 
 class CommentPublic(CommentBase):
     id: uuid.UUID
-    user_id: uuid.UUID
+    user_id: Optional[uuid.UUID]
+    visitor_id: Optional[uuid.UUID]
+    guest_name: Optional[str]
     parent_id: Optional[uuid.UUID]
     created_at: datetime
     updated_at: datetime
-    # Include user data
-    user_name: str
-    user_avatar: Optional[str]
+    # Include user data (pode ser None para guests)
+    user_name: Optional[str] = None
+    user_avatar: Optional[str] = None
+    # Display name (user.name ou guest_name)
+    display_name: str = ""
+    is_guest: bool = False
     replies: list["CommentPublic"] = []

@@ -7,14 +7,14 @@
 <Base title={{ title }} current_page={{ current_page }}>
     <Navbar user={{ user }} current_page={{ current_page }} />
     
-    <div class="max-w-3xl mx-auto px-6 flex flex-col min-h-screen pt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col min-h-screen pt-16 sm:pt-20">
         {% if show_breadcrumb and request and request.url.path != '/' %}
         <Breadcrumb request={{ request }}>
             {% slot breadcrumb_actions %}{% endslot %}
         </Breadcrumb>
         {% endif %}
         
-        <main class="flex-grow fade-in py-8">
+        <main class="flex-grow fade-in py-6 sm:py-8">
             {{ content }}
         </main>
         
