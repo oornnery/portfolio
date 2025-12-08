@@ -1,0 +1,252 @@
+{#def 
+    request, 
+    user, 
+    overview={},
+    top_pages=[],
+    top_referrers=[],
+    top_ips=[],
+    device_stats={},
+    browser_stats=[],
+    country_stats=[],
+    recent_events=[],
+    recent_visitors=[],
+    pageviews_by_day=[],
+    selected_days=30,
+    title="Analytics" 
+#}
+{#import "../layouts/admin.jinja" as AdminLayout #}
+{#import "../ui/page-header.jinja" as PageHeader #}
+{#import "../ui/stat-card.jinja" as StatCard #}
+{#import "../ui/section.jinja" as Section #}
+{#import "../ui/data-list.jinja" as DataList #}
+{#import "../ui/badge.jinja" as Badge #}
+{#import "../ui/icon.jinja" as Icon #}
+{#import "../ui/progress-bar.jinja" as ProgressBar #}
+{#import "../ui/empty-state.jinja" as EmptyState #}
+
+<AdminLayout request={{ request }} user={{ user }} title={{ title }} current_page="analytics">
+    <div class="space-y-6">
+        {# Header with Period Selector #}
+        <header class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white mb-1">Analytics</h1>
+                <p class="text-sm text-gray-400">Track visitor activity and engagement.</p>
+            </div>
+            <select 
+                onchange="window.location.href='/admin/analytics?days=' + this.value"
+                class="bg-gray-900 border border-gray-700 text-white text-sm rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent/30"
+            >
+                <option value="7" {{ 'selected' if selected_days == 7 else '' }}>Last 7 days</option>
+                <option value="30" {{ 'selected' if selected_days == 30 else '' }}>Last 30 days</option>
+                <option value="90" {{ 'selected' if selected_days == 90 else '' }}>Last 90 days</option>
+                <option value="365" {{ 'selected' if selected_days == 365 else '' }}>Last year</option>
+            </select>
+        </header>
+
+        {# Overview Stats #}
+        <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <StatCard value={{ overview.total_visitors or 0 }} label="Total Visitors" />
+            <StatCard value={{ overview.new_visitors or 0 }} label="New Visitors" color="green" />
+            <StatCard value={{ overview.unique_visitors or 0 }} label="Unique Visitors" color="blue" />
+            <StatCard value={{ overview.total_pageviews or 0 }} label="Page Views" color="purple" />
+            <StatCard value={{ overview.total_events or 0 }} label="Events" color="yellow" />
+            <StatCard value={{ overview.active_sessions or 0 }} label="Active Now" color="cyan" />
+        </section>
+
+        {# Chart #}
+        <Section title="Page Views Over Time" variant="card">
+            {% if pageviews_by_day %}
+            <div class="h-48">
+                <div class="flex items-end justify-between h-full gap-1">
+                    {% set max_views = pageviews_by_day | map(attribute='views') | max or 1 %}
+                    {% for day in pageviews_by_day %}
+                    <div class="flex-1 flex flex-col items-center justify-end h-full group">
+                        <div class="relative w-full">
+                            <div 
+                                class="w-full bg-accent/60 hover:bg-accent rounded-t transition-all"
+                                style="height: {{ (day.views / max_views * 160) | int }}px; min-height: 4px;"
+                                title="{{ day.date }}: {{ day.views }} views"
+                            ></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-between mt-2 text-xs text-gray-500">
+                    <span>{{ pageviews_by_day[0].date }}</span>
+                    <span>{{ pageviews_by_day[-1].date }}</span>
+                </div>
+            </div>
+            {% else %}
+            <EmptyState message="No pageview data available" />
+            {% endif %}
+        </Section>
+
+        {# Two Column: Top Pages & Referrers #}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Section title="Top Pages" variant="card">
+                {% set page_items = [] %}
+                {% for page in top_pages %}
+                    {% set _ = page_items.append({'label': page.title, 'sublabel': page.url, 'value': page.views}) %}
+                {% endfor %}
+                <DataList items={{ page_items }} empty_message="No page data available" />
+            </Section>
+
+            <Section title="Top Referrers" variant="card">
+                {% set ref_items = [] %}
+                {% for ref in top_referrers %}
+                    {% set _ = ref_items.append({'label': ref.url, 'value': ref.count}) %}
+                {% endfor %}
+                <DataList items={{ ref_items }} empty_message="No referrer data available" />
+            </Section>
+        </div>
+
+        {# Top IPs #}
+        <Section title="Top IP Addresses" variant="card">
+            {% if top_ips %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-400 text-left border-b border-gray-800">
+                            <th class="pb-2 font-medium">IP Address</th>
+                            <th class="pb-2 font-medium text-center">Visitors</th>
+                            <th class="pb-2 font-medium text-center">Total Visits</th>
+                            <th class="pb-2 font-medium text-right">Last Seen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        {% for ip_data in top_ips %}
+                        <tr class="text-gray-300 hover:bg-gray-800/50">
+                            <td class="py-2"><code class="text-xs bg-gray-800 px-2 py-1 rounded font-mono">{{ ip_data.ip }}</code></td>
+                            <td class="py-2 text-center">{{ ip_data.visitors }}</td>
+                            <td class="py-2 text-center font-medium text-accent">{{ ip_data.total_visits }}</td>
+                            <td class="py-2 text-right text-xs text-gray-500">{{ ip_data.last_seen.strftime('%Y-%m-%d %H:%M') if ip_data.last_seen else '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <EmptyState message="No IP data available" />
+            {% endif %}
+        </Section>
+
+        {# Device & Browser Stats #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {# Devices #}
+            <Section title="Devices" variant="card">
+                {% set total_devices = (device_stats.desktop or 0) + (device_stats.mobile or 0) + (device_stats.tablet or 0) %}
+                {% if total_devices > 0 %}
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><Icon name="desktop" size="sm" /><span class="text-sm text-gray-300">Desktop</span></div>
+                        <span class="text-sm font-medium text-white">{{ device_stats.desktop or 0 }}</span>
+                    </div>
+                    <ProgressBar value={{ device_stats.desktop or 0 }} max={{ total_devices }} color="blue" />
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><Icon name="mobile" size="sm" /><span class="text-sm text-gray-300">Mobile</span></div>
+                        <span class="text-sm font-medium text-white">{{ device_stats.mobile or 0 }}</span>
+                    </div>
+                    <ProgressBar value={{ device_stats.mobile or 0 }} max={{ total_devices }} color="green" />
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><Icon name="tablet" size="sm" /><span class="text-sm text-gray-300">Tablet</span></div>
+                        <span class="text-sm font-medium text-white">{{ device_stats.tablet or 0 }}</span>
+                    </div>
+                    <ProgressBar value={{ device_stats.tablet or 0 }} max={{ total_devices }} color="purple" />
+                </div>
+                {% else %}
+                <EmptyState message="No device data" />
+                {% endif %}
+            </Section>
+
+            {# Browsers #}
+            <Section title="Browsers" variant="card">
+                {% if browser_stats %}
+                <div class="space-y-3">
+                    {% for browser in browser_stats[:5] %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-300">{{ browser.browser }}</span>
+                        <span class="text-sm font-medium text-white">{{ browser.count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <EmptyState message="No browser data" />
+                {% endif %}
+            </Section>
+
+            {# Countries #}
+            <Section title="Countries" variant="card">
+                {% if country_stats %}
+                <div class="space-y-3">
+                    {% for country in country_stats[:5] %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-300">{{ country.country }}</span>
+                        <span class="text-sm font-medium text-white">{{ country.count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <EmptyState message="No country data" />
+                {% endif %}
+            </Section>
+        </div>
+
+        {# Recent Activity #}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {# Recent Visitors #}
+            <Section title="Recent Visitors" variant="card">
+                {% if recent_visitors %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-gray-400 text-left border-b border-gray-800">
+                                <th class="pb-2 font-medium">Visitor</th>
+                                <th class="pb-2 font-medium">Device</th>
+                                <th class="pb-2 font-medium text-right">Visits</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800">
+                            {% for visitor in recent_visitors %}
+                            <tr class="text-gray-300">
+                                <td class="py-2">
+                                    <div class="flex items-center gap-2">
+                                        {% if visitor.is_bot %}<Badge text="Bot" color="red" size="sm" />{% endif %}
+                                        <span class="truncate max-w-[100px]">{{ visitor.display_name or 'Anonymous' }}</span>
+                                    </div>
+                                </td>
+                                <td class="py-2 text-xs text-gray-500">{{ visitor.browser or '?' }} / {{ visitor.os or '?' }}</td>
+                                <td class="py-2 text-right font-medium">{{ visitor.visit_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <EmptyState message="No visitor data" />
+                {% endif %}
+            </Section>
+
+            {# Recent Events #}
+            <Section title="Recent Events" variant="card">
+                {% if recent_events %}
+                <div class="space-y-2 max-h-64 overflow-y-auto">
+                    {% for event in recent_events %}
+                    {% set badge_color = {'page_view': 'blue', 'click': 'green', 'scroll': 'purple', 'comment': 'yellow', 'reaction': 'pink', 'share': 'cyan'}.get(event.type, 'gray') %}
+                    <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-800/50">
+                        <Badge text={{ event.type }} color={{ badge_color }} />
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm text-gray-300 truncate">{{ event.page_title or event.page_url }}</div>
+                            <div class="text-xs text-gray-500">{{ event.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <EmptyState message="No events recorded" />
+                {% endif %}
+            </Section>
+        </div>
+    </div>
+</AdminLayout>

@@ -49,41 +49,164 @@
                 <Input name="about_markdown" type="textarea" label="About (Markdown)" value={{ profile.about_markdown or '' }} rows="6" />
             </section>
 
-            {# JSON Fields #}
+            {# Work Experience - Structured Form #}
             <section class="space-y-4">
-                <h2 class="text-xl font-semibold text-white">Work Experience</h2>
-                <Input 
-                    name="work_experience_json" 
-                    type="textarea" 
-                    label="Work Experience (JSON)" 
-                    value={{ profile.work_experience | tojson if profile.work_experience else '[]' }} 
-                    rows="4" 
-                />
-                <p class="text-xs text-gray-500">Format: [{"title": "...", "company": "...", "location": "...", "start_date": "...", "end_date": "...", "description": "..."}]</p>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">Work Experience</h2>
+                    <button 
+                        type="button" 
+                        onclick="addWorkExperience()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    >
+                        + Add Experience
+                    </button>
+                </div>
+                
+                <div id="work-experience-container" class="space-y-4">
+                    {% for work in profile.work_experience or [] %}
+                    <div class="work-experience-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-sm font-medium text-gray-400">Experience #{{ loop.index }}</span>
+                            <button 
+                                type="button" 
+                                onclick="removeItem(this, 'work-experience-item')"
+                                class="text-red-400 hover:text-red-300 text-sm"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Input name="work_title[]" label="Job Title" value={{ work.title or '' }} />
+                            <Input name="work_company[]" label="Company" value={{ work.company or '' }} />
+                            <Input name="work_location[]" label="Location" value={{ work.location or '' }} />
+                            <div class="grid grid-cols-2 gap-2">
+                                <Input name="work_start_date[]" label="Start Date" value={{ work.start_date or '' }} placeholder="2020" />
+                                <Input name="work_end_date[]" label="End Date" value={{ work.end_date or '' }} placeholder="Present" />
+                            </div>
+                        </div>
+                        <Input name="work_description[]" type="textarea" label="Description" value={{ work.description or '' }} rows="2" />
+                    </div>
+                    {% else %}
+                    {# Empty state - will be filled by JS when adding #}
+                    {% endfor %}
+                </div>
             </section>
 
+            {# Education - Structured Form #}
             <section class="space-y-4">
-                <h2 class="text-xl font-semibold text-white">Education</h2>
-                <Input 
-                    name="education_json" 
-                    type="textarea" 
-                    label="Education (JSON)" 
-                    value={{ profile.education | tojson if profile.education else '[]' }} 
-                    rows="4" 
-                />
-                <p class="text-xs text-gray-500">Format: [{"school": "...", "degree": "...", "start_date": "...", "end_date": "..."}]</p>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">Education</h2>
+                    <button 
+                        type="button" 
+                        onclick="addEducation()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    >
+                        + Add Education
+                    </button>
+                </div>
+                
+                <div id="education-container" class="space-y-4">
+                    {% for edu in profile.education or [] %}
+                    <div class="education-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-sm font-medium text-gray-400">Education #{{ loop.index }}</span>
+                            <button 
+                                type="button" 
+                                onclick="removeItem(this, 'education-item')"
+                                class="text-red-400 hover:text-red-300 text-sm"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Input name="edu_school[]" label="School/University" value={{ edu.school or '' }} />
+                            <Input name="edu_degree[]" label="Degree" value={{ edu.degree or '' }} />
+                            <Input name="edu_start_date[]" label="Start Date" value={{ edu.start_date or '' }} placeholder="2014" />
+                            <Input name="edu_end_date[]" label="End Date" value={{ edu.end_date or '' }} placeholder="2018" />
+                        </div>
+                    </div>
+                    {% else %}
+                    {# Empty state - will be filled by JS when adding #}
+                    {% endfor %}
+                </div>
             </section>
 
+            {# Certificates - Structured Form #}
             <section class="space-y-4">
-                <h2 class="text-xl font-semibold text-white">Skills</h2>
-                <Input 
-                    name="skills_json" 
-                    type="textarea" 
-                    label="Skills (JSON array)" 
-                    value={{ profile.skills | tojson if profile.skills else '[]' }} 
-                    rows="2" 
-                />
-                <p class="text-xs text-gray-500">Format: ["Python", "JavaScript", "Docker", ...]</p>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">Certificates</h2>
+                    <button 
+                        type="button" 
+                        onclick="addCertificate()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    >
+                        + Add Certificate
+                    </button>
+                </div>
+                
+                <div id="certificates-container" class="space-y-4">
+                    {% for cert in profile.certificates or [] %}
+                    <div class="certificate-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <span class="text-sm font-medium text-gray-400">Certificate #{{ loop.index }}</span>
+                            <button 
+                                type="button" 
+                                onclick="removeItem(this, 'certificate-item')"
+                                class="text-red-400 hover:text-red-300 text-sm"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Input name="cert_name[]" label="Certificate Name" value={{ cert.name or '' }} />
+                            <Input name="cert_issuer[]" label="Issuer" value={{ cert.issuer or '' }} />
+                            <Input name="cert_date[]" label="Date" value={{ cert.date or '' }} placeholder="2023" />
+                            <Input name="cert_credential_id[]" label="Credential ID" value={{ cert.credential_id or '' }} placeholder="Optional" />
+                        </div>
+                        <Input name="cert_url[]" type="url" label="Certificate URL" value={{ cert.url or '' }} placeholder="https://..." />
+                    </div>
+                    {% else %}
+                    {# Empty state - will be filled by JS when adding #}
+                    {% endfor %}
+                </div>
+            </section>
+
+            {# Skills - Tag Input Style #}
+            <section class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-white">Skills</h2>
+                    <button 
+                        type="button" 
+                        onclick="addSkill()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    >
+                        + Add Skill
+                    </button>
+                </div>
+                
+                <div id="skills-container" class="flex flex-wrap gap-2">
+                    {% for skill in profile.skills or [] %}
+                    <div class="skill-item flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-700 bg-gray-800">
+                        <input 
+                            type="text" 
+                            name="skills[]" 
+                            value="{{ skill }}"
+                            class="bg-transparent border-none text-sm text-white focus:outline-none w-24 min-w-0"
+                            placeholder="Skill"
+                        />
+                        <button 
+                            type="button" 
+                            onclick="this.parentElement.remove()"
+                            class="text-gray-500 hover:text-red-400 text-xs"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    {% else %}
+                    {# Empty state - will be filled by JS when adding #}
+                    {% endfor %}
+                </div>
+                <p class="text-xs text-gray-500">Click on a skill to edit it. Press the X to remove.</p>
             </section>
 
             <div class="flex justify-end">
@@ -91,4 +214,159 @@
             </div>
         </form>
     </div>
+
+    {# JavaScript for dynamic form management #}
+    <script>
+        // Counter for unique IDs
+        let workCounter = {{ (profile.work_experience or []) | length }};
+        let eduCounter = {{ (profile.education or []) | length }};
+        let certCounter = {{ (profile.certificates or []) | length }};
+
+        function addWorkExperience() {
+            workCounter++;
+            const container = document.getElementById('work-experience-container');
+            const html = `
+                <div class="work-experience-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
+                    <div class="flex justify-between items-start">
+                        <span class="text-sm font-medium text-gray-400">Experience #${workCounter}</span>
+                        <button type="button" onclick="removeItem(this, 'work-experience-item')" class="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Job Title</label>
+                            <input type="text" name="work_title[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Company</label>
+                            <input type="text" name="work_company[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Location</label>
+                            <input type="text" name="work_location[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1.5">
+                                <label class="block text-sm font-medium text-gray-300">Start Date</label>
+                                <input type="text" name="work_start_date[]" placeholder="2020" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="block text-sm font-medium text-gray-300">End Date</label>
+                                <input type="text" name="work_end_date[]" placeholder="Present" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-medium text-gray-300">Description</label>
+                        <textarea name="work_description[]" rows="2" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent"></textarea>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function addEducation() {
+            eduCounter++;
+            const container = document.getElementById('education-container');
+            const html = `
+                <div class="education-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
+                    <div class="flex justify-between items-start">
+                        <span class="text-sm font-medium text-gray-400">Education #${eduCounter}</span>
+                        <button type="button" onclick="removeItem(this, 'education-item')" class="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">School/University</label>
+                            <input type="text" name="edu_school[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Degree</label>
+                            <input type="text" name="edu_degree[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Start Date</label>
+                            <input type="text" name="edu_start_date[]" placeholder="2014" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">End Date</label>
+                            <input type="text" name="edu_end_date[]" placeholder="2018" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function addSkill() {
+            const container = document.getElementById('skills-container');
+            const html = `
+                <div class="skill-item flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-700 bg-gray-800">
+                    <input type="text" name="skills[]" class="bg-transparent border-none text-sm text-white focus:outline-none w-24 min-w-0" placeholder="Skill" />
+                    <button type="button" onclick="this.parentElement.remove()" class="text-gray-500 hover:text-red-400 text-xs">✕</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+            // Focus the new input
+            container.lastElementChild.querySelector('input').focus();
+        }
+
+        function addCertificate() {
+            certCounter++;
+            const container = document.getElementById('certificates-container');
+            const html = `
+                <div class="certificate-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
+                    <div class="flex justify-between items-start">
+                        <span class="text-sm font-medium text-gray-400">Certificate #${certCounter}</span>
+                        <button type="button" onclick="removeItem(this, 'certificate-item')" class="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Certificate Name</label>
+                            <input type="text" name="cert_name[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Issuer</label>
+                            <input type="text" name="cert_issuer[]" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Date</label>
+                            <input type="text" name="cert_date[]" placeholder="2023" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-300">Credential ID</label>
+                            <input type="text" name="cert_credential_id[]" placeholder="Optional" class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-medium text-gray-300">Certificate URL</label>
+                        <input type="url" name="cert_url[]" placeholder="https://..." class="w-full rounded-md bg-gray-900 border border-gray-700 text-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function removeItem(button, itemClass) {
+            button.closest('.' + itemClass).remove();
+            // Renumber items
+            renumberItems();
+        }
+
+        function renumberItems() {
+            // Renumber work experiences
+            document.querySelectorAll('.work-experience-item').forEach((item, index) => {
+                const label = item.querySelector('.text-gray-400');
+                if (label) label.textContent = `Experience #${index + 1}`;
+            });
+            // Renumber education
+            document.querySelectorAll('.education-item').forEach((item, index) => {
+                const label = item.querySelector('.text-gray-400');
+                if (label) label.textContent = `Education #${index + 1}`;
+            });
+            // Renumber certificates
+            document.querySelectorAll('.certificate-item').forEach((item, index) => {
+                const label = item.querySelector('.text-gray-400');
+                if (label) label.textContent = `Certificate #${index + 1}`;
+            });
+        }
+    </script>
 </AdminLayout>

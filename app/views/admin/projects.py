@@ -6,6 +6,8 @@ Why: Gerenciamento de projetos no admin.
 How: CRUD de Project usando JinjaX.
 """
 
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -85,7 +87,7 @@ async def create_project(
 @router.get("/{project_id}", response_class=HTMLResponse)
 async def edit_project(
     request: Request,
-    project_id: int,
+    project_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_admin_user),
 ):
@@ -108,7 +110,7 @@ async def edit_project(
 @router.post("/{project_id}")
 async def update_project(
     request: Request,
-    project_id: int,
+    project_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_admin_user),
 ) -> RedirectResponse:
@@ -140,7 +142,7 @@ async def update_project(
 @router.post("/{project_id}/delete")
 async def delete_project(
     request: Request,
-    project_id: int,
+    project_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_admin_user),
 ):

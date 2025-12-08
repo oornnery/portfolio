@@ -11,6 +11,8 @@ How: Usa AuthService para lógica de negócio,
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -18,6 +20,9 @@ from app.db import get_session
 from app.services.auth import AuthService
 
 router = APIRouter()
+
+# Rate limiter for auth endpoints (more restrictive)
+limiter = Limiter(key_func=get_remote_address)
 
 # OAuth client configuration
 oauth = OAuth()
@@ -144,7 +149,9 @@ async def oauth_callback(
 
 
 @router.post("/register")
+@limiter.limit("5/minute")  # Previne spam de contas
 async def register(
+    request: Request,
     email: str = Form(...),
     password: str = Form(..., min_length=8),
     name: str = Form(..., min_length=2),
@@ -184,7 +191,9 @@ async def register(
 
 
 @router.post("/login")
+@limiter.limit("10/minute")  # Previne brute force
 async def login(
+    request: Request,
     email: str = Form(...),
     password: str = Form(...),
     session: AsyncSession = Depends(get_session),

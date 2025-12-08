@@ -1,0 +1,46 @@
+{#def 
+    value,
+    max=100,
+    color="accent",
+    size="default",
+    show_label=False
+#}
+{#-
+Progress Bar Component
+
+Visual progress indicator.
+Colors: accent, blue, green, purple, yellow, red
+Sizes: sm, default, lg
+-#}
+
+{% set percentage = ((value / max) * 100) | int if max > 0 else 0 %}
+
+{% set color_classes = {
+    "accent": "bg-accent",
+    "blue": "bg-blue-500",
+    "green": "bg-green-500",
+    "purple": "bg-purple-500",
+    "yellow": "bg-yellow-500",
+    "red": "bg-red-500"
+} %}
+
+{% set size_classes = {
+    "sm": "h-1",
+    "default": "h-2",
+    "lg": "h-3"
+} %}
+
+<div class="w-full">
+    {% if show_label %}
+    <div class="flex justify-between text-xs text-gray-400 mb-1">
+        <span>{{ value }}</span>
+        <span>{{ percentage }}%</span>
+    </div>
+    {% endif %}
+    <div class="w-full bg-gray-800 rounded-full {{ size_classes.get(size, size_classes.default) }}">
+        <div 
+            class="{{ color_classes.get(color, color_classes.accent) }} {{ size_classes.get(size, size_classes.default) }} rounded-full transition-all duration-300"
+            style="width: {{ percentage }}%"
+        ></div>
+    </div>
+</div>

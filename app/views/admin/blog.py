@@ -6,6 +6,8 @@ Why: Gerenciamento de posts do blog no admin.
 How: CRUD de Post usando JinjaX.
 """
 
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -79,7 +81,7 @@ async def create_post(
 @router.get("/{post_id}", response_class=HTMLResponse)
 async def edit_post(
     request: Request,
-    post_id: int,
+    post_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_admin_user),
 ):
@@ -102,7 +104,7 @@ async def edit_post(
 @router.post("/{post_id}")
 async def update_post(
     request: Request,
-    post_id: int,
+    post_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_admin_user),
 ) -> RedirectResponse:
@@ -132,7 +134,7 @@ async def update_post(
 @router.post("/{post_id}/delete")
 async def delete_post(
     request: Request,
-    post_id: int,
+    post_id: uuid.UUID,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(get_admin_user),
 ):

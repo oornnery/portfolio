@@ -25,6 +25,14 @@ class Education(SQLModel):
     end_date: str
 
 
+class Certificate(SQLModel):
+    name: str
+    issuer: str
+    date: str
+    url: Optional[str] = None
+    credential_id: Optional[str] = None
+
+
 class ProfileBase(SQLModel):
     """Base profile model."""
 
@@ -46,6 +54,7 @@ class ProfileBase(SQLModel):
     # Structured data
     work_experience: List[dict] = Field(default=[], sa_column=Column(JSON))
     education: List[dict] = Field(default=[], sa_column=Column(JSON))
+    certificates: List[dict] = Field(default=[], sa_column=Column(JSON))
     skills: List[str] = Field(default=[], sa_column=Column(JSON))
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

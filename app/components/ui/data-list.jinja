@@ -1,0 +1,28 @@
+{#def 
+    items=[],
+    empty_message="No data available"
+#}
+{#-
+Data List Component
+
+Simple list with label/value pairs.
+Items should be list of dicts with 'label' and 'value' keys.
+-#}
+
+{% if items %}
+<div class="space-y-3">
+    {% for item in items %}
+    <div class="flex items-center justify-between">
+        <div class="flex-1 min-w-0 mr-4">
+            <div class="text-sm text-white truncate" title="{{ item.get('label', '') }}">{{ item.get('label', '') }}</div>
+            {% if item.get('sublabel') %}
+            <div class="text-xs text-gray-500 truncate">{{ item.get('sublabel') }}</div>
+            {% endif %}
+        </div>
+        <div class="text-sm font-medium text-accent">{{ item.get('value', '') }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-gray-500 text-sm">{{ empty_message }}</p>
+{% endif %}

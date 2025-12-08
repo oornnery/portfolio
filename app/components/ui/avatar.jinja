@@ -1,0 +1,29 @@
+{#def 
+    name,
+    src="",
+    size="default"
+#}
+{#-
+Avatar Component
+
+Displays user avatar with fallback to initials.
+Sizes: sm, default, lg, xl
+-#}
+
+{% set size_classes = {
+    "sm": "size-8",
+    "default": "size-12",
+    "lg": "size-16",
+    "xl": "size-20",
+    "2xl": "size-28"
+} %}
+
+{% set fallback_url = "https://ui-avatars.com/api/?name=" ~ (name | urlencode) ~ "&background=1a1a1a&color=fff&size=128" %}
+
+<span class="relative flex shrink-0 overflow-hidden rounded-full {{ size_classes.get(size, size_classes.default) }}" aria-hidden="true">
+    <img 
+        class="aspect-square h-full w-full" 
+        alt="{{ name }}'s avatar" 
+        src="{{ src or fallback_url }}"
+    >
+</span>

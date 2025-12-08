@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_DB: str = "portfolio_db"
+    SEED_DB_ON_STARTUP: bool = True
 
     # Security - MUST be set in production
     SECRET_KEY: str = ""
@@ -49,6 +50,9 @@ class Settings(BaseSettings):
 
     # Rate limiting
     RATE_LIMIT_PER_MINUTE: int = 60
+
+    # HTTPS enforcement
+    FORCE_HTTPS: bool = False  # Set True em produção com SSL
 
     @field_validator("SECRET_KEY", mode="before")
     @classmethod

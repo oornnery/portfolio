@@ -3,57 +3,60 @@
 {#import "../profile/header.jinja" as ProfileHeader #}
 {#import "../profile/work-experience.jinja" as WorkExperience #}
 {#import "../profile/education.jinja" as Education #}
+{#import "../profile/certificates.jinja" as Certificates #}
 {#import "../profile/skills.jinja" as Skills #}
 {#import "../ui/share-button.jinja" as ShareButton #}
 
 <PublicLayout request={{ request }} user={{ user }} title="About" current_page="about">
-    <div class="mx-auto w-full max-w-3xl space-y-6 sm:space-y-8 print:space-y-4" aria-label="Resume Content" id="resume-content">
-        {# Action Buttons - Hide on print #}
-        <div class="flex flex-wrap justify-end gap-2 print:hidden">
-            {# Share Button with PDF options #}
-            <ShareButton 
-                url="{{ request.url }}" 
-                title="{{ profile.name if profile else 'Resume' }} - Resume"
-                description="{{ profile.short_bio if profile else '' }}"
-                variant="default"
-                show_pdf=True
-                pdf_url="/api/v1/resume/pdf"
-            />
-        </div>
-
+    <div class="space-y-6 print:space-y-4" aria-label="Resume Content" id="resume-content">
         {# Header with Profile Info #}
-        <div>
-            <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div class="flex-1 space-y-1.5 order-2 sm:order-1">
-                    <h1 class="text-xl sm:text-2xl font-bold text-white print:text-black" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
-                    <p class="max-w-md text-pretty font-mono text-xs sm:text-sm text-gray-400 print:text-gray-600 print:text-[12px]" aria-labelledby="resume-name">
-                        {{ profile.short_bio if profile else 'Experienced telecommunications professional with a focus on voice and data services.' }}
-                    </p>
-                    <p class="max-w-md items-center text-pretty font-mono text-xs text-gray-400 print:text-gray-600">
-                        <a class="inline-flex gap-x-1.5 align-baseline leading-none hover:underline text-gray-400 print:text-gray-600" 
-                           href="https://www.google.com/maps/search/{{ profile.location if profile else 'São Paulo, Brazil' }}" 
-                           target="_blank" rel="noopener noreferrer">
-                            {{ profile.location if profile else 'São Paulo, Brazil' }}
-                        </a>
-                    </p>
-                    {# Contact info for print #}
-                    {% if profile %}
-                    <div class="hidden print:block text-xs text-gray-600 mt-2 space-y-0.5">
-                        {% if profile.email %}<p>{{ profile.email }}</p>{% endif %}
-                        {% if profile.phone %}<p>{{ profile.phone }}</p>{% endif %}
-                        {% if profile.website %}<p>{{ profile.website }}</p>{% endif %}
-                        {% if profile.github %}<p>github.com/{{ profile.github }}</p>{% endif %}
-                        {% if profile.linkedin %}<p>linkedin.com/in/{{ profile.linkedin }}</p>{% endif %}
+        <header class="flex items-start gap-4">
+            {# Avatar #}
+            <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20 print:size-16" aria-hidden="true">
+                <img class="aspect-square h-full w-full" 
+                     alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture" 
+                     src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">
+            </span>
+            
+            {# Info #}
+            <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-white print:text-black" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
+                        <p class="font-mono text-xs sm:text-sm text-gray-400 print:text-gray-600" aria-labelledby="resume-name">
+                            {{ profile.short_bio if profile else 'Full-stack Developer' }}
+                        </p>
+                        <p class="font-mono text-xs text-gray-500 print:text-gray-600">
+                            <a class="hover:underline" 
+                               href="https://www.google.com/maps/search/{{ profile.location if profile else 'São Paulo, Brazil' }}" 
+                               target="_blank" rel="noopener noreferrer">
+                                {{ profile.location if profile else 'São Paulo, Brazil' }}
+                            </a>
+                        </p>
                     </div>
-                    {% endif %}
+                    
+                    {# Share Button - Same line #}
+                    <div class="print:hidden shrink-0">
+                        <ShareButton 
+                            url="{{ request.url }}" 
+                            title="{{ profile.name if profile else 'Resume' }} - Resume"
+                            description="{{ profile.short_bio if profile else '' }}"
+                            variant="default"
+                            show_pdf=True
+                            pdf_url="/api/v1/resume/pdf"
+                        />
+                    </div>
                 </div>
-                <span class="relative flex shrink-0 overflow-hidden rounded-full size-20 md:size-28 print:size-20" aria-hidden="true">
-                    <img class="aspect-square h-full w-full" 
-                         alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture" 
-                         src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">
-                </span>
-            </header>
-        </div>
+                
+                {# Contact info for print #}
+                {% if profile %}
+                <div class="hidden print:block text-xs text-gray-600 mt-1 space-y-0.5">
+                    {% if profile.email %}<p>{{ profile.email }}</p>{% endif %}
+                    {% if profile.phone %}<p>{{ profile.phone }}</p>{% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </header>
 
         {# About Section - Rendered Markdown #}
         <section class="flex min-h-0 flex-col gap-y-3 print:gap-y-1">
@@ -88,6 +91,11 @@
         {# Education #}
         {% if profile and profile.education %}
         <Education education={{ profile.education }} />
+        {% endif %}
+
+        {# Certificates #}
+        {% if profile and profile.certificates %}
+        <Certificates certificates={{ profile.certificates }} />
         {% endif %}
 
         {# Skills #}

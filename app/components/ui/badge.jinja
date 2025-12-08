@@ -1,0 +1,33 @@
+{#def 
+    text,
+    color="gray",
+    size="default"
+#}
+{#-
+Badge Component
+
+Status indicator / label badge.
+Colors: gray, green, yellow, red, blue, purple, pink, cyan, accent
+Sizes: sm, default
+-#}
+
+{% set color_classes = {
+    "gray": "bg-gray-800 text-gray-400",
+    "green": "bg-green-900/50 text-green-400",
+    "yellow": "bg-yellow-900/50 text-yellow-400",
+    "red": "bg-red-900/50 text-red-400",
+    "blue": "bg-blue-900/50 text-blue-400",
+    "purple": "bg-purple-900/50 text-purple-400",
+    "pink": "bg-pink-900/50 text-pink-400",
+    "cyan": "bg-cyan-900/50 text-cyan-400",
+    "accent": "bg-accent/20 text-accent"
+} %}
+
+{% set size_classes = {
+    "sm": "px-1.5 py-0.5 text-[10px]",
+    "default": "px-2 py-0.5 text-xs"
+} %}
+
+<span class="inline-flex items-center rounded font-medium {{ color_classes.get(color, color_classes.gray) }} {{ size_classes.get(size, size_classes.default) }}">
+    {{ text }}
+</span>

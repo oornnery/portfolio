@@ -1,0 +1,39 @@
+{#def 
+    value,
+    label,
+    color="white",
+    href=""
+#}
+{#-
+Stat Card Component
+
+Displays a metric with value and label.
+Colors: white, green, blue, purple, yellow, cyan, red, pink
+-#}
+
+{% set color_classes = {
+    "white": "text-white",
+    "green": "text-green-400",
+    "blue": "text-blue-400",
+    "purple": "text-purple-400",
+    "yellow": "text-yellow-400",
+    "cyan": "text-cyan-400",
+    "red": "text-red-400",
+    "pink": "text-pink-400",
+    "accent": "text-accent"
+} %}
+
+{% set base = "p-4 rounded-lg border border-gray-800 bg-gray-900/50" %}
+{% set hover = "hover:border-gray-700 hover:bg-gray-800/50 transition-colors" if href else "" %}
+
+{% if href %}
+<a href="{{ href }}" class="{{ base }} {{ hover }} block">
+    <div class="text-2xl font-bold {{ color_classes.get(color, 'text-white') }}">{{ value }}</div>
+    <div class="text-sm text-gray-400">{{ label }}</div>
+</a>
+{% else %}
+<div class="{{ base }}">
+    <div class="text-2xl font-bold {{ color_classes.get(color, 'text-white') }}">{{ value }}</div>
+    <div class="text-sm text-gray-400">{{ label }}</div>
+</div>
+{% endif %}

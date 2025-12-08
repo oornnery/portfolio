@@ -24,23 +24,23 @@
     {# Projects & Blog Grid #}
     <section class="snap-section">
         <div class="snap-section-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {# Projects Column #}
-            <section>
-                <a href="/projects" class="group block mb-4 sm:mb-6">
-                    <h2 class="text-lg sm:text-xl font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
+            <section class="flex flex-col min-h-0">
+                <a href="/projects" class="group block mb-3">
+                    <h2 class="text-lg font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
                         Projects
                     </h2>
                 </a>
-                <div class="space-y-4 sm:space-y-6">
+                <div class="space-y-3 flex-1 overflow-hidden">
                     {% for project in projects[:3] %}
-                    <Card href={{ project.demo_url or project.github_url or '#' }}>
+                    <Card href={{ project.demo_url or project.github_url or '#' }} padding="sm">
                         <div class="flex flex-col gap-1">
-                            <h3 class="text-sm sm:text-base text-white font-medium group-hover:text-blue-400 transition-colors">
+                            <h3 class="text-sm text-white font-medium group-hover:text-blue-400 transition-colors line-clamp-1">
                                 {{ project.title }}
                             </h3>
-                            <p class="text-xs sm:text-sm text-gray-500">{{ project.description }}</p>
-                            <div class="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
+                            <p class="text-xs text-gray-500 line-clamp-1">{{ project.description }}</p>
+                            <div class="flex flex-wrap gap-1.5 mt-1">
                                 {% for tech in project.tech_stack[:3] %}
                                 <Tag text={{ tech }} />
                                 {% endfor %}
@@ -50,43 +50,41 @@
                     {% else %}
                     <p class="text-sm text-gray-500">No projects yet.</p>
                     {% endfor %}
-                    <a href="/projects" class="inline-block text-xs sm:text-sm text-gray-500 hover:text-white transition-colors mt-3 sm:mt-4">
-                        View more projects &rarr;
-                    </a>
                 </div>
+                <a href="/projects" class="inline-block text-xs text-gray-500 hover:text-white transition-colors mt-3">
+                    View more projects &rarr;
+                </a>
             </section>
 
             {# Blog Column #}
-            <section>
-                <a href="/blog" class="group block mb-4 sm:mb-6">
-                    <h2 class="text-lg sm:text-xl font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
+            <section class="flex flex-col min-h-0">
+                <a href="/blog" class="group block mb-3">
+                    <h2 class="text-lg font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
                         Blog
                     </h2>
                 </a>
-                <div class="space-y-4 sm:space-y-6">
+                <div class="space-y-3 flex-1 overflow-hidden">
                     {% for post in posts[:3] %}
-                    <Card href={{ "/blog/" ~ post.slug }}>
+                    <Card href={{ "/blog/" ~ post.slug }} padding="sm">
                         <div class="flex flex-col gap-1">
-                            <h3 class="text-sm sm:text-base text-white font-medium group-hover:text-blue-400 transition-colors">
+                            <h3 class="text-sm text-white font-medium group-hover:text-blue-400 transition-colors line-clamp-1">
                                 {{ post.title }}
                             </h3>
-                            <p class="text-xs sm:text-sm text-gray-500 line-clamp-2">{{ post.description }}</p>
-                            <div class="flex items-center justify-between mt-2">
-                                <div class="flex flex-wrap gap-1.5 sm:gap-2">
-                                    {% for tag in post.tags[:3] %}
-                                    <Tag text={{ tag }} />
-                                    {% endfor %}
-                                </div>
+                            <p class="text-xs text-gray-500 line-clamp-1">{{ post.description }}</p>
+                            <div class="flex flex-wrap gap-1.5 mt-1">
+                                {% for tag in post.tags[:3] %}
+                                <Tag text={{ tag }} />
+                                {% endfor %}
                             </div>
                         </div>
                     </Card>
                     {% else %}
                     <p class="text-sm text-gray-500">No posts yet.</p>
                     {% endfor %}
-                    <a href="/blog" class="inline-block text-xs sm:text-sm text-gray-500 hover:text-white transition-colors mt-3 sm:mt-4">
-                        Read all posts &rarr;
-                    </a>
                 </div>
+                <a href="/blog" class="inline-block text-xs text-gray-500 hover:text-white transition-colors mt-3">
+                    Read all posts &rarr;
+                </a>
             </section>
         </div>
         </div>

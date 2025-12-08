@@ -1,0 +1,34 @@
+{#def 
+    title="",
+    id="",
+    variant="default",
+    padding="default"
+#}
+{#-
+Section Component
+
+Wrapper for content sections with optional title.
+Variants: default, card
+-#}
+
+{% set padding_classes = {
+    "none": "",
+    "sm": "p-4",
+    "default": "p-6",
+    "lg": "p-8"
+} %}
+
+{% set variant_classes = {
+    "default": "",
+    "card": "rounded-lg border border-gray-800 bg-gray-900/50"
+} %}
+
+<section 
+    {% if id %}id="{{ id }}"{% endif %}
+    class="{{ variant_classes.get(variant, '') }} {{ padding_classes.get(padding, 'p-6') }}"
+>
+    {% if title %}
+    <h2 class="text-lg font-semibold text-white mb-4">{{ title }}</h2>
+    {% endif %}
+    {{ content }}
+</section>

@@ -16,6 +16,8 @@ from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
@@ -24,7 +26,8 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.api.v1 import api_router
 from app.config import settings
-from app.db import engine, seed_db
+from app.db import engine
+from app.seed import seed_db
 from app.middleware import RequestLoggingMiddleware, SecurityMiddleware
 from app.middleware.analytics import AnalyticsMiddleware
 from app.views import admin_router, public_router
@@ -62,7 +65,8 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(SQLModel.metadata.create_all)
 
     # Seed database with admin user
-    await seed_db()
+    if settings.SEED_DB_ON_STARTUP:
+        await seed_db()
 
     yield
 
@@ -152,6 +156,19 @@ if settings.is_production:
         TrustedHostMiddleware,  # type: ignore[arg-type]
         allowed_hosts=settings.ALLOWED_HOSTS,
     )
+    # HTTPS redirect em produção
+    if settings.FORCE_HTTPS:
+        app.add_middleware(HTTPSRedirectMiddleware)  # type: ignore[arg-type]
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,  # type: ignore[arg-type]
+    allow_origins=settings.ALLOW_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+    expose_headers=["X-Request-ID"],
+)
 
 # ==========================================
 # Static Files

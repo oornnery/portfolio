@@ -25,6 +25,7 @@ COPY . .
 # Production stage - using Chainguard Python (minimal)
 # ============================================
 FROM cgr.dev/chainguard/python:latest AS production
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1

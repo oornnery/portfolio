@@ -5,15 +5,18 @@ Why: Captura automaticamente pageviews e dados de visitantes
      para cada requisição, sem modificar os handlers.
 
 How: Middleware que intercepta requisições, identifica/cria
-     visitors via fingerprint, e registra eventos.
+     visitors via fingerprint, e registra eventos no banco.
 """
 
+import asyncio
 import hashlib
 import logging
 import time
 import uuid
+from datetime import datetime, timezone
 
 from fastapi import Request, Response
+from sqlmodel import select
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from user_agents import parse as parse_user_agent
 
@@ -95,6 +98,77 @@ def generate_server_fingerprint(request: Request) -> str:
     ]
     fingerprint_string = "|".join(components)
     return hashlib.sha256(fingerprint_string.encode()).hexdigest()
+
+
+async def save_analytics_to_db(
+    request: Request,
+    response_status: int,
+    processing_time_ms: int,
+) -> None:
+    """
+    Salva dados de analytics no banco de dados.
+
+    Why: Persistir visitantes e pageviews para análise posterior.
+    """
+    from app.db import async_session_factory
+    from app.models.analytics import AnalyticsEvent, EventType, Visitor
+
+    analytics_data = getattr(request.state, "analytics", {})
+    if not analytics_data:
+        return
+
+    try:
+        async with async_session_factory() as session:
+            fingerprint = analytics_data.get("server_fingerprint", "unknown")
+
+            # Buscar ou criar visitor
+            result = await session.execute(
+                select(Visitor).where(Visitor.fingerprint_hash == fingerprint)
+            )
+            visitor = result.scalar_one_or_none()
+
+            now = datetime.now(timezone.utc)
+
+            if visitor:
+                # Atualizar visitor existente
+                visitor.last_seen_at = now
+                visitor.visit_count += 1
+                visitor.ip_address = analytics_data.get("client_ip")
+            else:
+                # Criar novo visitor
+                visitor = Visitor(
+                    fingerprint_hash=fingerprint,
+                    ip_address=analytics_data.get("client_ip"),
+                    user_agent=analytics_data.get("user_agent"),
+                    browser_name=analytics_data.get("browser_name"),
+                    browser_version=analytics_data.get("browser_version"),
+                    os_name=analytics_data.get("os_name"),
+                    os_version=analytics_data.get("os_version"),
+                    device_type=analytics_data.get("device_type"),
+                    is_bot=analytics_data.get("is_bot", False),
+                    first_seen_at=now,
+                    last_seen_at=now,
+                    visit_count=1,
+                )
+                session.add(visitor)
+                await session.flush()  # Para obter o ID
+
+            # Criar evento de pageview
+            event = AnalyticsEvent(
+                visitor_id=visitor.id,
+                event_type=EventType.PAGE_VIEW,
+                page_url=str(request.url),
+                page_title=None,  # Seria preenchido pelo JS
+                referrer_url=analytics_data.get("referer"),
+                session_id=analytics_data.get("session_id"),
+                page_load_time=processing_time_ms,
+            )
+            session.add(event)
+
+            await session.commit()
+
+    except Exception as e:
+        logger.error(f"Failed to save analytics: {e}")
 
 
 class AnalyticsMiddleware(BaseHTTPMiddleware):
@@ -184,9 +258,14 @@ class AnalyticsMiddleware(BaseHTTPMiddleware):
                 secure=request.url.scheme == "https",
             )
 
-        # Log pageview asynchronously (we'll do this in background)
-        # For now, just log to console in debug
-        if response.status_code < 400:
+        # Salvar analytics no banco de dados (em background)
+        if response.status_code < 400 and request.method == "GET":
+            processing_time_ms = int(processing_time * 1000)
+            # Executa em background para não bloquear a resposta
+            asyncio.create_task(
+                save_analytics_to_db(request, response.status_code, processing_time_ms)
+            )
+
             logger.debug(
                 f"Analytics: {request.method} {path} - "
                 f"{response.status_code} - {processing_time * 1000:.0f}ms - "

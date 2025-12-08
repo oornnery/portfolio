@@ -1,6 +1,7 @@
 # Backend Development Dockerfile
 # Using Chainguard Python image for better security (zero CVEs)
 FROM cgr.dev/chainguard/python:latest-dev
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \

@@ -1,0 +1,30 @@
+{#def 
+    href,
+    title,
+    description="",
+    icon=""
+#}
+{#-
+Action Card Component
+
+Clickable card with icon, title, and description.
+Used for quick actions/navigation.
+-#}
+{#import "./card.jinja" as Card #}
+{#import "./icon.jinja" as Icon #}
+
+<Card href={{ href }} padding="default">
+    <div class="flex items-center gap-4">
+        {% if icon %}
+        <div class="p-3 bg-gray-800 rounded-lg text-gray-400">
+            <Icon name={{ icon }} />
+        </div>
+        {% endif %}
+        <div>
+            <h3 class="text-white font-medium">{{ title }}</h3>
+            {% if description %}
+            <p class="text-sm text-gray-500">{{ description }}</p>
+            {% endif %}
+        </div>
+    </div>
+</Card>
