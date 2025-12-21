@@ -3,13 +3,17 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark light;
+}
+
+html {
+  @apply bg-white text-zinc-900;
+}
+
+html.dark {
+  @apply bg-[#111111] text-[#EDEDED];
 }
 
 body {
-  @apply min-h-screen bg-white text-zinc-900 antialiased;
-}
-
-.dark body {
-  @apply bg-[#111111] text-[#EDEDED];
+  @apply min-h-screen antialiased;
 }
