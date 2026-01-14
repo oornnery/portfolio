@@ -1,9 +1,9 @@
 {#def request, user=None, post, content="", comments=[] #}
-{#import "../layouts/public.jinja" as PublicLayout #}
-{#import "../blog/comments.jinja" as Comments #}
-{#import "../ui/tag.jinja" as Tag #}
-{#import "../ui/button.jinja" as Button #}
-{#import "../ui/share-button.jinja" as ShareButton #}
+{#import "../layouts/Public.jinja" as PublicLayout #}
+{#import "../blog/Comments.jinja" as Comments #}
+{#import "../ui/Tag.jinja" as Tag #}
+{#import "../ui/Button.jinja" as Button #}
+{#import "../ui/ShareButton.jinja" as ShareButton #}
 
 <PublicLayout request={{ request }} user={{ user }} title={{ post.title }} current_page="blog">
     <article class="prose prose-invert max-w-none">

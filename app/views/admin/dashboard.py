@@ -67,7 +67,7 @@ async def admin_dashboard(
     }
 
     return catalog.render(
-        "admin/dashboard.jinja",
+        "admin/Dashboard.jinja",
         request=request,
         user=user,
         stats=stats,

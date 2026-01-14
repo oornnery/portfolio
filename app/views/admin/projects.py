@@ -40,7 +40,7 @@ async def list_projects(
         .all()
     )
     return catalog.render(
-        "admin/projects-list.jinja",
+        "admin/ProjectsList.jinja",
         request=request,
         user=user,
         projects=list(projects),
@@ -51,7 +51,7 @@ async def list_projects(
 async def new_project(request: Request, user: User = Depends(get_admin_user)):
     """Formulário de criação de novo projeto."""
     return catalog.render(
-        "admin/project-edit.jinja",
+        "admin/ProjectEdit.jinja",
         request=request,
         user=user,
         project=None,
@@ -100,7 +100,7 @@ async def edit_project(
         )
 
     return catalog.render(
-        "admin/project-edit.jinja",
+        "admin/ProjectEdit.jinja",
         request=request,
         user=user,
         project=project,

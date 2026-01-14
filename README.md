@@ -10,20 +10,240 @@ Minimalist full-stack portfolio with blog, projects, analytics, and resume manag
 | **Templates**       | [JinjaX](https://jinjax.scaletti.dev/)     | Component-based templating for Jinja2           |
 | **Frontend**        | [HTMX](https://htmx.org/)                  | Dynamic interactions without JavaScript         |
 | **Database**        | [SQLModel](https://sqlmodel.tiangolo.com/) | Async ORM built on SQLAlchemy + Pydantic        |
-| **Styling**         | [Tailwind CSS](https://tailwindcss.com/)   | Utility-first CSS (via CDN)                     |
+| **Styling**         | Custom CSS + Tailwind                      | Design system with dark/light themes            |
 | **Package Manager** | [UV](https://github.com/astral-sh/uv)      | Fast Python package manager (Rust-based)        |
 | **Database**        | PostgreSQL (prod) / SQLite (dev)           | Async with asyncpg/aiosqlite                    |
 
-## Features
+## Current Status & Features
 
-- 📝 **Blog** - Posts with categories, tags, reactions, comments
-- 📁 **Projects** - Portfolio showcase with tech stack tags
-- 📄 **Resume/CV** - Work experience, education, certificates, skills
-- 📊 **Analytics** - Visitor tracking, pageviews, device stats
-- 🔐 **Admin Panel** - Full CRUD for all content
-- 🔑 **Auth** - Cookie-based JWT + optional GitHub/Google OAuth
-- 🛡️ **Security** - OWASP headers, CORS, CSP, rate limiting
-- 🖨️ **PDF Export** - Resume to PDF via WeasyPrint
+### Core Features ✅
+
+- 📝 **Blog** - Full-featured blog with categories, tags, reactions, and HTMX-powered comments.
+- 📁 **Projects** - Portfolio showcase with tech stack tags and featured status.
+- 📄 **Resume/CV** - Structured work experience, education, certificates, and skills.
+- 🔐 **Admin Panel** - Secure dashboard for full content management (CRUD).
+- 🔑 **Auth** - Secure cookie-based JWT authentication + GitHub OAuth support.
+- 🛡️ **Security** - OWASP headers, CSP, rate limiting, and HTMX origin validation.
+- 🌙 **Modern UI** - Component-based CamelCase architecture with responsive design (Dark/Light).
+
+### Recent Revisions (Refactoring Phase) 🛠️
+
+- **Component Architecture**: Renamed all 47 components to **CamelCase** (e.g., `Button.jinja`, `PostCard.jinja`) for better modularity.
+- **Design System**: Implemented `tokens.css` (color palette, spacing, typography) and `motion.css` (animations).
+- **Backend Restructuring**: Decoupled `BlogService` into a dedicated package and moved telemetry to file logs.
+- **Bug Fixes**:
+  - Resolved HTMX JSON rendering issues in comments.
+  - Standardized special character encoding via HTML entities.
+  - Improved Login UX with better placeholders.
+
+### Roadmap (Pending Features) 🚀
+
+- [ ] **Theme Toggle UI** - Dedicated component for manual theme switching (System/Light/Dark).
+- [ ] **Search Improvements** - Enhanced real-time search for blog and projects using HTMX.
+- [ ] **Advanced Analytics** - Detailed charts for pageview trends and visitor demographics.
+- [ ] **Resume PDF Export** - Polished WeasyPrint integration for high-quality CV downloads.
+- [ ] **Activity Log** - Admin-only view for tracking content changes and login attempts.
+
+---
+
+## Design System
+
+### Color Palette
+
+#### Dark Theme (default)
+
+| Token         | Value     | Usage                   |
+| ------------- | --------- | ----------------------- |
+| `--bg`        | `#0b0b0d` | Page background         |
+| `--surface`   | `#121215` | Card backgrounds        |
+| `--surface-2` | `#1a1a1f` | Hover states            |
+| `--text`      | `#ededed` | Primary text            |
+| `--text-2`    | `#a1a1aa` | Secondary text          |
+| `--text-3`    | `#6b7280` | Muted text              |
+| `--border`    | `#1f1f26` | Borders                 |
+| `--accent`    | `#7c7cff` | Primary accent (purple) |
+| `--accent-2`  | `#22c55e` | Success (green)         |
+| `--warn`      | `#f59e0b` | Warning (amber)         |
+| `--danger`    | `#ef4444` | Error (red)             |
+
+#### Light Theme
+
+| Token         | Value     | Usage                   |
+| ------------- | --------- | ----------------------- |
+| `--bg`        | `#fafafa` | Page background         |
+| `--surface`   | `#ffffff` | Card backgrounds        |
+| `--surface-2` | `#f4f4f5` | Hover states            |
+| `--text`      | `#0f172a` | Primary text            |
+| `--accent`    | `#4f46e5` | Primary accent (indigo) |
+
+### Typography
+
+| Class    | Size | Line-height | Weight | Usage           |
+| -------- | ---- | ----------- | ------ | --------------- |
+| `.h1`    | 40px | 48px        | 600    | Page titles     |
+| `.h2`    | 28px | 36px        | 600    | Section headers |
+| `.h3`    | 22px | 30px        | 500    | Card titles     |
+| `.body`  | 16px | 24px        | 400    | Body text       |
+| `.small` | 14px | 20px        | 400    | Meta text       |
+| `.tiny`  | 12px | 16px        | mono   | Tags, badges    |
+
+**Fonts:**
+
+- Sans: Inter, system-ui, -apple-system
+- Mono: JetBrains Mono, Consolas
+
+### Spacing Scale
+
+| Token       | Value | Usage            |
+| ----------- | ----- | ---------------- |
+| `--space-1` | 8px   | Tight padding    |
+| `--space-2` | 16px  | Standard padding |
+| `--space-3` | 24px  | Card padding     |
+| `--space-4` | 32px  | Section gap      |
+| `--space-5` | 48px  | Large sections   |
+| `--space-6` | 64px  | Page sections    |
+
+### Border Radius
+
+| Token           | Value | Usage           |
+| --------------- | ----- | --------------- |
+| `--radius-sm`   | 10px  | Buttons, inputs |
+| `--radius-md`   | 14px  | Cards           |
+| `--radius-lg`   | 18px  | Large cards     |
+| `--radius-pill` | 999px | Tags, badges    |
+
+### Shadows
+
+| Token         | Value                          |
+| ------------- | ------------------------------ |
+| `--shadow-sm` | `0 6px 16px rgba(0,0,0,0.18)`  |
+| `--shadow-md` | `0 10px 30px rgba(0,0,0,0.22)` |
+
+---
+
+## Animations
+
+### Keyframes
+
+| Animation      | Effect                      |
+| -------------- | --------------------------- |
+| `fadeUp`       | Fade in + translate up 10px |
+| `fadeIn`       | Simple opacity fade         |
+| `slideInRight` | Slide from right 20px       |
+| `scaleIn`      | Scale from 0.95 to 1        |
+
+### Utility Classes
+
+| Class            | Effect                           |
+| ---------------- | -------------------------------- |
+| `.t`             | Base transition (180ms ease-out) |
+| `.enter`         | fadeUp animation on mount        |
+| `.hover-lift`    | translateY(-2px) on hover        |
+| `.hover-scale`   | scale(1.02) on hover             |
+| `.card-animated` | Hover lift + shadow              |
+| `.nav-blur`      | backdrop-filter: blur(10px)      |
+
+### Stagger Delays
+
+```css
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+```
+
+---
+
+## UI Components
+
+### Button
+
+Variants: `primary`, `secondary`, `ghost`, `danger`  
+Sizes: `sm`, `md`, `lg`  
+States: `default`, `hover`, `active`, `disabled`, `loading`
+
+```jinja
+<Button variant="primary" size="lg">Click me</Button>
+<Button variant="ghost" href="/about">Learn more →</Button>
+```
+
+### Card
+
+Variants: `default`, `featured`  
+Effects: Hover lift + shadow
+
+```jinja
+<Card title="Project Name" href="/projects/1">
+  Description here
+</Card>
+```
+
+### Tag
+
+Style: Pill shape, mono font
+
+```jinja
+<Tag>Python</Tag>
+<Tag variant="accent">Featured</Tag>
+```
+
+### Input
+
+Types: `text`, `email`, `textarea`  
+States: `default`, `focus`, `error`
+
+```jinja
+<Input name="email" type="email" placeholder="Email" required />
+```
+
+### Icon
+
+Available: `github`, `linkedin`, `email`, `twitter`, `search`, `menu`, `plus`, `edit`, `trash`, `external-link`
+
+```jinja
+<Icon name="github" size="sm" />
+```
+
+### Navbar
+
+Sticky, blur background on scroll
+
+### EmptyState
+
+Icon + message + optional CTA
+
+---
+
+## Pages & Routes
+
+| Route              | Page            | Description                                 |
+| ------------------ | --------------- | ------------------------------------------- |
+| `/`                | Home            | Hero, featured projects, latest blog, CTA   |
+| `/about`           | About           | Profile, experience, skills, certifications |
+| `/projects`        | Projects        | Filterable project grid                     |
+| `/projects/{id}`   | Project Detail  | Overview, features, tech stack              |
+| `/blog`            | Blog            | Searchable post list by category            |
+| `/blog/{slug}`     | Blog Post       | Content, share, comments                    |
+| `/contact`         | Contact         | Social links + contact form                 |
+| `/admin`           | Admin Dashboard | Stats overview                              |
+| `/admin/blog`      | Admin Blog      | Post CRUD                                   |
+| `/admin/projects`  | Admin Projects  | Project CRUD                                |
+| `/admin/profile`   | Admin Profile   | Resume editing                              |
+| `/admin/analytics` | Admin Analytics | Visitor stats                               |
+
+---
+
+## Responsive Breakpoints
+
+| Breakpoint           | Columns | Margin | Gutter | Container  |
+| -------------------- | ------- | ------ | ------ | ---------- |
+| **Desktop (1440px)** | 12      | 160px  | 24px   | 1120px     |
+| **Tablet (768px)**   | 8       | 32px   | 20px   | 704px      |
+| **Mobile (390px)**   | 4       | 16px   | 16px   | full-width |
+
+---
 
 ## Project Structure
 
@@ -38,25 +258,36 @@ app/
 │   ├── auth.py             # OAuth & login
 │   ├── blog.py             # Posts & reactions CRUD
 │   ├── comments.py         # Comments CRUD
+│   ├── contact.py          # Contact form API
 │   ├── projects.py         # Projects CRUD
 │   ├── analytics.py        # Analytics data API
 │   └── resume.py           # Resume PDF export
 ├── views/                  # HTML template views
-│   ├── public/             # Public pages (blog, projects, about)
+│   ├── public/             # Public pages
 │   └── admin/              # Admin panel routes
 ├── components/             # JinjaX components
-│   ├── layouts/            # Base layouts (admin, public, home)
+│   ├── layouts/            # Base, Public, Admin, Home
 │   ├── pages/              # Full page templates
-│   ├── ui/                 # Reusable UI components
-│   ├── blog/               # Blog-specific components
-│   ├── profile/            # Profile/resume components
-│   └── admin/              # Admin panel components
+│   ├── ui/                 # Button, Card, Input, Tag, Icon...
+│   ├── blog/               # PostCard, Comments
+│   ├── projects/           # ProjectCard
+│   ├── profile/            # Header, Skills, Experience...
+│   └── admin/              # Dashboard, forms
 ├── services/               # Business logic layer
+│   └── blog/               # post_service, github_service
 ├── models/                 # SQLModel database schemas
-├── core/                   # Auth, security, dependencies
+├── core/                   # Auth, security, telemetry
 ├── middleware/             # Security headers, logging, analytics
-└── static/                 # CSS, JS (htmx.min.js)
+└── static/
+    ├── css/
+    │   ├── tokens.css      # Design system tokens
+    │   ├── motion.css      # Animations
+    │   └── style.css       # Main styles
+    └── js/                 # HTMX, theme toggle
+logs/                       # Telemetry logs (gitignored)
 ```
+
+---
 
 ## Getting Started
 
@@ -107,85 +338,47 @@ Access points:
 - **Admin**: <http://localhost:8000/admin>
   - Login: `admin@example.com` / `admin123`
 
-## Production Deployment
+---
 
-### Security Checklist
+## API Endpoints
 
-Before deploying to production, ensure:
+### Public API
 
-- [ ] **SECRET_KEY** - Generate strong key: `python -c "import secrets; print(secrets.token_urlsafe(32))"`
-- [ ] **ALLOWED_HOSTS** - Set to your domain(s)
-- [ ] **ENV=production** - Disables debug features
-- [ ] **FORCE_HTTPS=true** - Enable HTTPS redirect
-- [ ] **Database passwords** - Use strong, unique passwords
-- [ ] **SEED_DB_ON_STARTUP=false** - Disable after first run
-- [ ] **Reverse proxy** - Use nginx/Caddy for SSL termination
+| Method | Endpoint                       | Description         |
+| ------ | ------------------------------ | ------------------- |
+| GET    | `/api/v1/posts`                | List blog posts     |
+| GET    | `/api/v1/posts/{slug}`         | Get post by slug    |
+| POST   | `/api/v1/posts/{id}/reactions` | Add reaction        |
+| GET    | `/api/v1/projects`             | List projects       |
+| GET    | `/api/v1/projects/{id}`        | Get project         |
+| POST   | `/api/v1/contact`              | Submit contact form |
+| GET    | `/api/v1/comments/{post_id}`   | Get post comments   |
+| POST   | `/api/v1/comments`             | Create comment      |
 
-### Docker Production
+### Auth API
 
-1. **Create production `.env`:**
+| Method | Endpoint              | Description  |
+| ------ | --------------------- | ------------ |
+| POST   | `/api/v1/auth/login`  | Login        |
+| POST   | `/api/v1/auth/logout` | Logout       |
+| GET    | `/api/v1/auth/me`     | Current user |
+| GET    | `/api/v1/auth/github` | GitHub OAuth |
 
-```env
-# .env.prod
-ENV=production
-SECRET_KEY=your-super-secret-key-here
-DATABASE_URL=postgresql+asyncpg://postgres:strong_password@db:5432/portfolio_db
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=strong_password
-POSTGRES_DB=portfolio_db
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-FORCE_HTTPS=true
-SEED_DB_ON_STARTUP=false
-```
+### Admin API (authenticated)
 
-2. **Run with Docker Compose:**
+| Method | Endpoint                | Description    |
+| ------ | ----------------------- | -------------- |
+| POST   | `/api/v1/posts`         | Create post    |
+| PUT    | `/api/v1/posts/{id}`    | Update post    |
+| DELETE | `/api/v1/posts/{id}`    | Delete post    |
+| POST   | `/api/v1/projects`      | Create project |
+| PUT    | `/api/v1/projects/{id}` | Update project |
+| DELETE | `/api/v1/projects/{id}` | Delete project |
+| GET    | `/api/v1/analytics`     | Get analytics  |
 
-```bash
-# Load environment and start
-export $(cat .env.prod | xargs)
-docker compose -f docker/docker-compose.prod.yml up --build -d
-```
-
-### Recommended: Nginx Reverse Proxy
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name yourdomain.com;
-
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-
-    # Security headers
-    add_header X-Frame-Options DENY always;
-    add_header X-Content-Type-Options nosniff always;
-    add_header X-XSS-Protection "1; mode=block" always;
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /static/ {
-        alias /path/to/portfolio/app/static/;
-        expires 30d;
-        add_header Cache-Control "public, immutable";
-    }
-}
-```
+---
 
 ## Security Features
-
-### Implemented
 
 | Feature              | Description                                               |
 | -------------------- | --------------------------------------------------------- |
@@ -195,9 +388,8 @@ server {
 | **HTTPS Redirect**   | Automatic redirect in production                          |
 | **JWT Auth**         | Secure cookie-based authentication                        |
 | **Rate Limiting**    | slowapi with per-endpoint limits                          |
-| **Trusted Hosts**    | Host header injection prevention                          |
+| **HTMX Validation**  | Origin validation for HTMX requests                       |
 | **Input Validation** | Pydantic models for all inputs                            |
-| **SQL Injection**    | Protected via SQLModel ORM                                |
 
 ### Rate Limits
 
@@ -206,6 +398,9 @@ server {
 | Global   | 60/minute |
 | Login    | 10/minute |
 | Register | 5/minute  |
+| Contact  | 10/minute |
+
+---
 
 ## Development Commands
 
@@ -227,6 +422,25 @@ uv add <package>
 uv add --dev <dev-package>
 ```
 
+---
+
+## Docker
+
+### Development
+
+```bash
+docker compose -f docker/docker-compose.yml up
+```
+
+### Production
+
+```bash
+export $(cat .env.prod | xargs)
+docker compose -f docker/docker-compose.prod.yml up --build -d
+```
+
+---
+
 ## Environment Variables
 
 | Variable                | Required       | Default       | Description                |
@@ -242,26 +456,8 @@ uv add --dev <dev-package>
 | `GITHUB_CLIENT_SECRET`  | No             | -             | GitHub OAuth secret        |
 | `SEED_DB_ON_STARTUP`    | No             | `true`        | Auto-seed database         |
 
-## API Documentation
-
-When running in development, interactive API docs are available:
-
-- **Swagger UI**: <http://localhost:8000/docs>
-- **ReDoc**: <http://localhost:8000/redoc>
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Run linting (`uv run ruff format . && uv run ruff check . --fix`)
-4. Commit changes (`git commit -m 'Add amazing feature'`)
-5. Push to branch (`git push origin feature/amazing-feature`)
-6. Open Pull Request
+---
 
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
-
-## Documentation
-
-See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for detailed architecture, patterns, and conventions.

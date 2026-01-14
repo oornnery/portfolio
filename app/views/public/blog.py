@@ -60,14 +60,14 @@ async def blog_list(
     # HTMX partial response
     if request.headers.get("HX-Request"):
         return catalog.render(
-            "blog/post-list.jinja",
+            "blog/PostList.jinja",
             posts=posts,
             categories=categories,
             current_category=category or "",
         )
 
     return catalog.render(
-        "pages/blog-list.jinja",
+        "pages/BlogList.jinja",
         request=request,
         user=user,
         posts=posts,
@@ -117,7 +117,7 @@ async def blog_detail(
         comments.append(c_dict)
 
     return catalog.render(
-        "pages/blog-detail.jinja",
+        "pages/BlogDetail.jinja",
         request=request,
         user=user,
         post=post,
@@ -158,7 +158,7 @@ async def get_comments(
         comments.append(c_dict)
 
     return catalog.render(
-        "blog/comments.jinja",
+        "blog/Comments.jinja",
         comments=comments,
         post_slug=slug,
         user=user,

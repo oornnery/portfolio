@@ -14,9 +14,11 @@ import uuid
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Path, Request, status
+from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import col, select
 
+from app.catalog import catalog
 from app.core.deps import get_current_user_optional
 from app.db import get_session
 from app.models.blog import Post
@@ -219,7 +221,7 @@ async def create_comment(
         else:
             user_avatar = None
 
-    return CommentPublic(
+    comment_public = CommentPublic(
         id=comment.id,
         content=comment.content,
         user_id=comment.user_id,
@@ -234,6 +236,73 @@ async def create_comment(
         is_guest=is_guest,
         replies=[],
     )
+
+    # If HTMX request, return rendered HTML component
+    if request.headers.get("HX-Request"):
+        # Fetch all comments to re-render the section
+        all_comments = await _get_comments_for_post(post, session)
+        html = catalog.render(
+            "blog/Comments.jinja",
+            comments=all_comments,
+            post_slug=post_slug,
+            user=user,
+        )
+        return HTMLResponse(content=html, status_code=201)
+
+    return comment_public
+
+
+async def _get_comments_for_post(
+    post: Post, session: AsyncSession
+) -> list[CommentPublic]:
+    """Helper to fetch and format comments for a post."""
+    query = (
+        select(Comment, User)
+        .outerjoin(User, Comment.user_id == User.id)
+        .where(Comment.post_id == post.id)
+        .where(Comment.is_deleted == False)  # noqa: E712
+        .where(Comment.parent_id == None)  # noqa: E711
+        .order_by(col(Comment.created_at).desc())
+    )
+    result = await session.execute(query)
+
+    comments = []
+    for comment, user in result.all():
+        is_guest = comment.user_id is None
+
+        if user:
+            display_name = user.name or user.email.split("@")[0]
+            user_avatar = user.avatar_url
+        else:
+            display_name = comment.guest_name or "Anonymous"
+            if comment.guest_email:
+                email_hash = hashlib.md5(
+                    comment.guest_email.lower().strip().encode()
+                ).hexdigest()
+                user_avatar = (
+                    f"https://www.gravatar.com/avatar/{email_hash}?d=identicon&s=80"
+                )
+            else:
+                user_avatar = None
+
+        comments.append(
+            CommentPublic(
+                id=comment.id,
+                content=comment.content,
+                user_id=comment.user_id,
+                visitor_id=comment.visitor_id,
+                guest_name=comment.guest_name,
+                parent_id=comment.parent_id,
+                created_at=comment.created_at,
+                updated_at=comment.updated_at,
+                user_name=user.name if user else None,
+                user_avatar=user_avatar,
+                display_name=display_name,
+                is_guest=is_guest,
+                replies=[],
+            )
+        )
+    return comments
 
 
 @router.delete("/{post_slug}/{comment_id}", status_code=status.HTTP_204_NO_CONTENT)

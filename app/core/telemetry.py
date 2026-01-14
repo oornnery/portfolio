@@ -5,31 +5,27 @@ Why: Observabilidade completa com traces distribuídos,
      métricas e logs correlacionados.
 
 How: Configura OpenTelemetry SDK com exporters para
-     console (dev) ou OTLP (prod).
+     arquivo (dev) ou OTLP (prod). Telemetry não aparece no terminal.
 """
 
 import logging
-from typing import Optional
 
 from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
-    ConsoleSpanExporter,
     SimpleSpanProcessor,
 )
+
+from app.core.telemetry_exporter import FileSpanExporter
 
 logger = logging.getLogger(__name__)
 
 
 def setup_telemetry(
     service_name: str = "portfolio",
-    otlp_endpoint: Optional[str] = None,
+    otlp_endpoint: str | None = None,
     enable_console_export: bool = True,
 ) -> trace.Tracer:
     """
@@ -38,7 +34,7 @@ def setup_telemetry(
     Args:
         service_name: Nome do serviço para identificação
         otlp_endpoint: Endpoint OTLP (ex: "localhost:4317")
-        enable_console_export: Se deve exportar para console (dev)
+        enable_console_export: Se deve exportar para arquivo (dev)
 
     Returns:
         Tracer configurado para criar spans
@@ -59,16 +55,20 @@ def setup_telemetry(
 
     # Exporters
     if otlp_endpoint:
-        # Produção: exporta para OTLP collector
+        # Produção: exporta para OTLP collector (lazy import)
+        from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
+            OTLPSpanExporter,
+        )
+
         otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
         provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
         logger.info(f"OpenTelemetry: OTLP exporter configured to {otlp_endpoint}")
 
     if enable_console_export:
-        # Dev: exporta para console
-        console_exporter = ConsoleSpanExporter()
-        provider.add_span_processor(SimpleSpanProcessor(console_exporter))
-        logger.info("OpenTelemetry: Console exporter enabled")
+        # Dev: exporta para arquivo (não terminal)
+        file_exporter = FileSpanExporter(log_file="logs/telemetry.log")
+        provider.add_span_processor(SimpleSpanProcessor(file_exporter))
+        logger.info("OpenTelemetry: File exporter enabled (logs/telemetry.log)")
 
     # Registra provider global
     trace.set_tracer_provider(provider)
@@ -84,6 +84,11 @@ def instrument_app(app, engine=None):
         app: Instância do FastAPI
         engine: SQLAlchemy engine (opcional)
     """
+    # Lazy imports to avoid hanging on startup
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+    from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+
     # FastAPI auto-instrumentation
     FastAPIInstrumentor.instrument_app(app)
     logger.info("OpenTelemetry: FastAPI instrumented")
@@ -98,7 +103,7 @@ def instrument_app(app, engine=None):
         logger.info("OpenTelemetry: SQLAlchemy instrumented")
 
 
-def create_span(name: str, attributes: Optional[dict] = None):
+def create_span(name: str, attributes: dict | None = None):
     """
     Cria um span para tracing manual.
 
@@ -141,7 +146,7 @@ def add_span_attributes(attributes: dict):
             span.set_attribute(key, value)
 
 
-def record_exception(exception: Exception, attributes: Optional[dict] = None):
+def record_exception(exception: Exception, attributes: dict | None = None):
     """
     Registra uma exceção no span atual.
 

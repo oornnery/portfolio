@@ -374,7 +374,7 @@ async def analytics_dashboard(
     pageviews_by_day = await get_pageviews_by_day(session, days)
 
     return catalog.render(
-        "admin/analytics.jinja",
+        "admin/Analytics.jinja",
         request=request,
         user=user,
         overview=overview,

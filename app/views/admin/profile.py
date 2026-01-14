@@ -152,7 +152,7 @@ async def edit_profile(
         await session.refresh(profile)
 
     return catalog.render(
-        "admin/profile.jinja",
+        "admin/Profile.jinja",
         request=request,
         user=user,
         profile=profile,

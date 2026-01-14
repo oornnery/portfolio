@@ -26,7 +26,7 @@ async def login_page(
         return RedirectResponse(url="/")
 
     return catalog.render(
-        "pages/login.jinja",
+        "pages/Login.jinja",
         request=request,
         user=user,
     )

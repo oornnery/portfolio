@@ -1,7 +1,7 @@
 {#def request, user, profile, title="Edit Profile" #}
-{#import "../layouts/admin.jinja" as AdminLayout #}
-{#import "../ui/input.jinja" as Input #}
-{#import "../ui/button.jinja" as Button #}
+{#import "../layouts/Admin.jinja" as AdminLayout #}
+{#import "../ui/Input.jinja" as Input #}
+{#import "../ui/Button.jinja" as Button #}
 
 <AdminLayout request={{ request }} user={{ user }} title={{ title }} current_page="profile">
     <div class="space-y-8">
@@ -20,7 +20,8 @@
                     <Input name="name" label="Name" value={{ profile.name or '' }} required />
                     <Input name="location" label="Location" value={{ profile.location or '' }} />
                 </div>
-                <Input name="short_bio" type="textarea" label="Short Bio" value={{ profile.short_bio or '' }} rows="2" />
+                <Input name="short_bio" type="textarea" label="Short Bio" value={{ profile.short_bio or '' }}
+                    rows="2" />
             </section>
 
             {# Contact Info #}
@@ -46,32 +47,27 @@
             {# About (Markdown) #}
             <section class="space-y-4">
                 <h2 class="text-xl font-semibold text-white">About</h2>
-                <Input name="about_markdown" type="textarea" label="About (Markdown)" value={{ profile.about_markdown or '' }} rows="6" />
+                <Input name="about_markdown" type="textarea" label="About (Markdown)" value={{ profile.about_markdown
+                    or '' }} rows="6" />
             </section>
 
             {# Work Experience - Structured Form #}
             <section class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold text-white">Work Experience</h2>
-                    <button 
-                        type="button" 
-                        onclick="addWorkExperience()"
-                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-                    >
+                    <button type="button" onclick="addWorkExperience()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
                         + Add Experience
                     </button>
                 </div>
-                
+
                 <div id="work-experience-container" class="space-y-4">
                     {% for work in profile.work_experience or [] %}
                     <div class="work-experience-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
                         <div class="flex justify-between items-start">
                             <span class="text-sm font-medium text-gray-400">Experience #{{ loop.index }}</span>
-                            <button 
-                                type="button" 
-                                onclick="removeItem(this, 'work-experience-item')"
-                                class="text-red-400 hover:text-red-300 text-sm"
-                            >
+                            <button type="button" onclick="removeItem(this, 'work-experience-item')"
+                                class="text-red-400 hover:text-red-300 text-sm">
                                 Remove
                             </button>
                         </div>
@@ -80,11 +76,14 @@
                             <Input name="work_company[]" label="Company" value={{ work.company or '' }} />
                             <Input name="work_location[]" label="Location" value={{ work.location or '' }} />
                             <div class="grid grid-cols-2 gap-2">
-                                <Input name="work_start_date[]" label="Start Date" value={{ work.start_date or '' }} placeholder="2020" />
-                                <Input name="work_end_date[]" label="End Date" value={{ work.end_date or '' }} placeholder="Present" />
+                                <Input name="work_start_date[]" label="Start Date" value={{ work.start_date or '' }}
+                                    placeholder="2020" />
+                                <Input name="work_end_date[]" label="End Date" value={{ work.end_date or '' }}
+                                    placeholder="Present" />
                             </div>
                         </div>
-                        <Input name="work_description[]" type="textarea" label="Description" value={{ work.description or '' }} rows="2" />
+                        <Input name="work_description[]" type="textarea" label="Description" value={{ work.description
+                            or '' }} rows="2" />
                     </div>
                     {% else %}
                     {# Empty state - will be filled by JS when adding #}
@@ -96,33 +95,29 @@
             <section class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold text-white">Education</h2>
-                    <button 
-                        type="button" 
-                        onclick="addEducation()"
-                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-                    >
+                    <button type="button" onclick="addEducation()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
                         + Add Education
                     </button>
                 </div>
-                
+
                 <div id="education-container" class="space-y-4">
                     {% for edu in profile.education or [] %}
                     <div class="education-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
                         <div class="flex justify-between items-start">
                             <span class="text-sm font-medium text-gray-400">Education #{{ loop.index }}</span>
-                            <button 
-                                type="button" 
-                                onclick="removeItem(this, 'education-item')"
-                                class="text-red-400 hover:text-red-300 text-sm"
-                            >
+                            <button type="button" onclick="removeItem(this, 'education-item')"
+                                class="text-red-400 hover:text-red-300 text-sm">
                                 Remove
                             </button>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <Input name="edu_school[]" label="School/University" value={{ edu.school or '' }} />
                             <Input name="edu_degree[]" label="Degree" value={{ edu.degree or '' }} />
-                            <Input name="edu_start_date[]" label="Start Date" value={{ edu.start_date or '' }} placeholder="2014" />
-                            <Input name="edu_end_date[]" label="End Date" value={{ edu.end_date or '' }} placeholder="2018" />
+                            <Input name="edu_start_date[]" label="Start Date" value={{ edu.start_date or '' }}
+                                placeholder="2014" />
+                            <Input name="edu_end_date[]" label="End Date" value={{ edu.end_date or '' }}
+                                placeholder="2018" />
                         </div>
                     </div>
                     {% else %}
@@ -135,25 +130,19 @@
             <section class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold text-white">Certificates</h2>
-                    <button 
-                        type="button" 
-                        onclick="addCertificate()"
-                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-                    >
+                    <button type="button" onclick="addCertificate()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
                         + Add Certificate
                     </button>
                 </div>
-                
+
                 <div id="certificates-container" class="space-y-4">
                     {% for cert in profile.certificates or [] %}
                     <div class="certificate-item p-4 rounded-lg border border-gray-700 bg-gray-900/50 space-y-3">
                         <div class="flex justify-between items-start">
                             <span class="text-sm font-medium text-gray-400">Certificate #{{ loop.index }}</span>
-                            <button 
-                                type="button" 
-                                onclick="removeItem(this, 'certificate-item')"
-                                class="text-red-400 hover:text-red-300 text-sm"
-                            >
+                            <button type="button" onclick="removeItem(this, 'certificate-item')"
+                                class="text-red-400 hover:text-red-300 text-sm">
                                 Remove
                             </button>
                         </div>
@@ -161,9 +150,11 @@
                             <Input name="cert_name[]" label="Certificate Name" value={{ cert.name or '' }} />
                             <Input name="cert_issuer[]" label="Issuer" value={{ cert.issuer or '' }} />
                             <Input name="cert_date[]" label="Date" value={{ cert.date or '' }} placeholder="2023" />
-                            <Input name="cert_credential_id[]" label="Credential ID" value={{ cert.credential_id or '' }} placeholder="Optional" />
+                            <Input name="cert_credential_id[]" label="Credential ID" value={{ cert.credential_id or ''
+                                }} placeholder="Optional" />
                         </div>
-                        <Input name="cert_url[]" type="url" label="Certificate URL" value={{ cert.url or '' }} placeholder="https://..." />
+                        <Input name="cert_url[]" type="url" label="Certificate URL" value={{ cert.url or '' }}
+                            placeholder="https://..." />
                     </div>
                     {% else %}
                     {# Empty state - will be filled by JS when adding #}
@@ -175,31 +166,22 @@
             <section class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold text-white">Skills</h2>
-                    <button 
-                        type="button" 
-                        onclick="addSkill()"
-                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-                    >
+                    <button type="button" onclick="addSkill()"
+                        class="text-sm px-3 py-1.5 rounded-md border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
                         + Add Skill
                     </button>
                 </div>
-                
+
                 <div id="skills-container" class="flex flex-wrap gap-2">
                     {% for skill in profile.skills or [] %}
-                    <div class="skill-item flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-700 bg-gray-800">
-                        <input 
-                            type="text" 
-                            name="skills[]" 
-                            value="{{ skill }}"
+                    <div
+                        class="skill-item flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-700 bg-gray-800">
+                        <input type="text" name="skills[]" value="{{ skill }}"
                             class="bg-transparent border-none text-sm text-white focus:outline-none w-24 min-w-0"
-                            placeholder="Skill"
-                        />
-                        <button 
-                            type="button" 
-                            onclick="this.parentElement.remove()"
-                            class="text-gray-500 hover:text-red-400 text-xs"
-                        >
-                            ✕
+                            placeholder="Skill" />
+                        <button type="button" onclick="this.parentElement.remove()"
+                            class="text-gray-500 hover:text-red-400 text-xs">
+                            &times;
                         </button>
                     </div>
                     {% else %}
@@ -218,9 +200,9 @@
     {# JavaScript for dynamic form management #}
     <script>
         // Counter for unique IDs
-        let workCounter = {{ (profile.work_experience or []) | length }};
-        let eduCounter = {{ (profile.education or []) | length }};
-        let certCounter = {{ (profile.certificates or []) | length }};
+        let workCounter = {{ (profile.work_experience or[]) | length }};
+        let eduCounter = {{ (profile.education or[]) | length }};
+        let certCounter = {{ (profile.certificates or[]) | length }};
 
         function addWorkExperience() {
             workCounter++;

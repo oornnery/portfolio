@@ -51,7 +51,7 @@ async def home(
     posts_list = list(posts_result.scalars().all())
 
     return catalog.render(
-        "pages/home.jinja",
+        "pages/Home.jinja",
         request=request,
         user=user,
         profile=profile,
@@ -80,7 +80,7 @@ async def about(
         )
 
     return catalog.render(
-        "pages/about.jinja",
+        "pages/About.jinja",
         request=request,
         user=user,
         profile=profile,
@@ -95,7 +95,7 @@ async def contact(
 ):
     """Página de contato."""
     return catalog.render(
-        "pages/contact.jinja",
+        "pages/Contact.jinja",
         request=request,
         user=user,
     )

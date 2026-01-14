@@ -1,7 +1,7 @@
 {#def request, user=None, error="" #}
-{#import "../layouts/base.jinja" as BaseLayout #}
-{#import "../ui/button.jinja" as Button #}
-{#import "../ui/input.jinja" as Input #}
+{#import "../layouts/Base.jinja" as BaseLayout #}
+{#import "../ui/Button.jinja" as Button #}
+{#import "../ui/Input.jinja" as Input #}
 
 <BaseLayout title="Login">
     <div class="min-h-screen flex items-center justify-center px-4">
@@ -39,7 +39,7 @@
 
             <form action="/api/v1/auth/login" method="post" class="space-y-4">
                 <Input name="email" type="email" label="Email" placeholder="your@email.com" required />
-                <Input name="password" type="password" label="Password" placeholder="••••••••" required />
+                <Input name="password" type="password" label="Password" placeholder="Enter your password" required />
                 <Button type="submit" variant="default" class="w-full">Sign In</Button>
             </form>
 

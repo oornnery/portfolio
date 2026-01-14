@@ -40,12 +40,12 @@ async def projects_list(
     # HTMX partial response
     if request.headers.get("HX-Request"):
         return catalog.render(
-            "projects/project-list.jinja",
+            "projects/ProjectList.jinja",
             projects=projects_list,
         )
 
     return catalog.render(
-        "pages/projects.jinja",
+        "pages/Projects.jinja",
         request=request,
         user=user,
         projects=projects_list,
@@ -75,7 +75,7 @@ async def project_detail(
     )
 
     return catalog.render(
-        "pages/project-detail.jinja",
+        "pages/ProjectDetail.jinja",
         request=request,
         user=user,
         project=project,

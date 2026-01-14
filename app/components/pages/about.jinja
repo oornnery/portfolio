@@ -1,53 +1,52 @@
 {#def request, user=None, profile=None, about_html="" #}
-{#import "../layouts/public.jinja" as PublicLayout #}
-{#import "../profile/header.jinja" as ProfileHeader #}
-{#import "../profile/work-experience.jinja" as WorkExperience #}
-{#import "../profile/education.jinja" as Education #}
-{#import "../profile/certificates.jinja" as Certificates #}
-{#import "../profile/skills.jinja" as Skills #}
-{#import "../ui/share-button.jinja" as ShareButton #}
+{#import "../layouts/Public.jinja" as PublicLayout #}
+{#import "../profile/Header.jinja" as ProfileHeader #}
+{#import "../profile/WorkExperience.jinja" as WorkExperience #}
+{#import "../profile/Education.jinja" as Education #}
+{#import "../profile/Certificates.jinja" as Certificates #}
+{#import "../profile/Skills.jinja" as Skills #}
+{#import "../ui/ShareButton.jinja" as ShareButton #}
 
 <PublicLayout request={{ request }} user={{ user }} title="About" current_page="about">
     <div class="space-y-6 print:space-y-4" aria-label="Resume Content" id="resume-content">
         {# Header with Profile Info #}
         <header class="flex items-start gap-4">
             {# Avatar #}
-            <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20 print:size-16" aria-hidden="true">
-                <img class="aspect-square h-full w-full" 
-                     alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture" 
-                     src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">
+            <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20 print:size-16"
+                aria-hidden="true">
+                <img class="aspect-square h-full w-full"
+                    alt="{{ profile.name if profile else 'Fabio Souza' }}'s profile picture"
+                    src="https://ui-avatars.com/api/?name={{ (profile.name if profile else 'Fabio Souza') | urlencode }}&background=1a1a1a&color=fff&size=128">
             </span>
-            
+
             {# Info #}
             <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h1 class="text-xl sm:text-2xl font-bold text-white print:text-black" id="resume-name">{{ profile.name if profile else 'Fabio Souza' }}</h1>
-                        <p class="font-mono text-xs sm:text-sm text-gray-400 print:text-gray-600" aria-labelledby="resume-name">
+                        <h1 class="text-xl sm:text-2xl font-bold text-white print:text-black" id="resume-name">{{
+                            profile.name if profile else 'Fabio Souza' }}</h1>
+                        <p class="font-mono text-xs sm:text-sm text-gray-400 print:text-gray-600"
+                            aria-labelledby="resume-name">
                             {{ profile.short_bio if profile else 'Full-stack Developer' }}
                         </p>
                         <p class="font-mono text-xs text-gray-500 print:text-gray-600">
-                            <a class="hover:underline" 
-                               href="https://www.google.com/maps/search/{{ profile.location if profile else 'São Paulo, Brazil' }}" 
-                               target="_blank" rel="noopener noreferrer">
-                                {{ profile.location if profile else 'São Paulo, Brazil' }}
+                            <a class="hover:underline"
+                                href="https://www.google.com/maps/search/{{ profile.location if profile else 'S&#227;o Paulo, Brazil' }}"
+                                target="_blank" rel="noopener noreferrer">
+                                {{ profile.location if profile else 'S&#227;o Paulo, Brazil' }}
                             </a>
                         </p>
                     </div>
-                    
+
                     {# Share Button - Same line #}
                     <div class="print:hidden shrink-0">
-                        <ShareButton 
-                            url="{{ request.url }}" 
+                        <ShareButton url="{{ request.url }}"
                             title="{{ profile.name if profile else 'Resume' }} - Resume"
-                            description="{{ profile.short_bio if profile else '' }}"
-                            variant="default"
-                            show_pdf=True
-                            pdf_url="/api/v1/resume/pdf"
-                        />
+                            description="{{ profile.short_bio if profile else '' }}" variant="default" show_pdf=True
+                            pdf_url="/api/v1/resume/pdf" />
                     </div>
                 </div>
-                
+
                 {# Contact info for print #}
                 {% if profile %}
                 <div class="hidden print:block text-xs text-gray-600 mt-1 space-y-0.5">
@@ -72,13 +71,13 @@
                         prose-code:text-blue-400 prose-code:bg-gray-900 prose-code:px-1 prose-code:rounded
                         prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
                         print:prose-headings:text-black print:prose-p:text-gray-700 print:prose-ul:text-gray-700 print:prose-strong:text-black"
-                 aria-labelledby="about-section">
+                aria-labelledby="about-section">
                 {% if about_html %}
-                    {{ about_html | safe }}
+                {{ about_html | safe }}
                 {% elif profile and profile.about_markdown %}
-                    {{ profile.about_markdown | safe }}
+                {{ profile.about_markdown | safe }}
                 {% else %}
-                    <p>Experienced telecommunications engineer with a strong focus on voice and data services.</p>
+                <p>Experienced telecommunications engineer with a strong focus on voice and data services.</p>
                 {% endif %}
             </div>
         </section>

@@ -58,6 +58,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+logs/
 
 # Testes / Cobertura
 coverage/
@@ -83,6 +84,7 @@ docker-compose.override.yml
 *~
 .DS_Store
 Thumbs.db
-.history/
+.history
 .zed
 .github
+.gemini

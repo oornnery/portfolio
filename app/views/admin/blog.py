@@ -36,7 +36,7 @@ async def list_posts(
         .all()
     )
     return catalog.render(
-        "admin/blog-list.jinja",
+        "admin/BlogList.jinja",
         request=request,
         user=user,
         posts=list(posts),
@@ -47,7 +47,7 @@ async def list_posts(
 async def new_post(request: Request, user: User = Depends(get_admin_user)):
     """Formulário de criação de novo post."""
     return catalog.render(
-        "admin/blog-edit.jinja",
+        "admin/BlogEdit.jinja",
         request=request,
         user=user,
         post=None,
@@ -94,7 +94,7 @@ async def edit_post(
         )
 
     return catalog.render(
-        "admin/blog-edit.jinja",
+        "admin/BlogEdit.jinja",
         request=request,
         user=user,
         post=post,
