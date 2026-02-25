@@ -1,0 +1,39 @@
+{#import "../layouts/base.jinja" as Base #}
+{#import "../markdown/prose.jinja" as Prose #}
+{#import "../tags/tag_badge.jinja" as TagBadge #}
+{#def seo, project, current_path="/projects" #}
+
+<Base seo={{ seo }} current_path={{ current_path }}>
+    <article class="project-detail">
+        <header class="project-detail__header">
+            <p><a href="/projects">Back to Projects</a></p>
+            <h1>{{ project.title }}</h1>
+            {% if project.description %}
+            <p>{{ project.description }}</p>
+            {% endif %}
+
+            {% if project.date %}
+            <p>Published on {{ project.date }}</p>
+            {% endif %}
+
+            {% if project.tags %}
+            <div class="project-detail__tags">
+                {% for tag in project.tags %}
+                <TagBadge label={{ tag }} />
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <p>
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">GitHub</a>
+                {% endif %}
+                {% if project.live_url %}
+                <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                {% endif %}
+            </p>
+        </header>
+
+        <Prose html_content={{ project.content_html }} />
+    </article>
+</Base>

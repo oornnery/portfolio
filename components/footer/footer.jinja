@@ -1,0 +1,16 @@
+<footer class="footer">
+    <div class="footer__inner">
+        <p class="footer__copy">&copy; {{ site_name }}</p>
+        {% if social_links %}
+        <ul class="footer__social">
+            {% for label, url in social_links.items() %}
+            <li>
+                <a href="{{ url }}" target="_blank" rel="noopener noreferrer">
+                    {{ label | title }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</footer>

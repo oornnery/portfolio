@@ -1,0 +1,31 @@
+{#import "../layouts/base.jinja" as Base #}
+{#import "../hero/hero.jinja" as Hero #}
+{#import "../cards/project_card.jinja" as ProjectCard #}
+{#def seo, featured=(), current_path="/" #}
+
+<Base seo={{ seo }} current_path={{ current_path }}>
+    <Hero
+        title={{ site_name }}
+        subtitle="Python developer focused on practical backend systems."
+    >
+        <a href="/projects">View Projects</a>
+        <a href="/contact">Contact</a>
+    </Hero>
+
+    <section class="section">
+        <header class="section__header">
+            <h2>Featured Projects</h2>
+            <a href="/projects">See all projects</a>
+        </header>
+
+        {% if featured %}
+        <div class="projects-grid">
+            {% for project in featured %}
+            <ProjectCard project={{ project }} />
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No featured projects available yet.</p>
+        {% endif %}
+    </section>
+</Base>

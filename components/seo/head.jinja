@@ -1,0 +1,38 @@
+{#def title, description, canonical_url="", og_image="", og_type="website", keywords=[] #}
+
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+{% if keywords %}
+<meta name="keywords" content="{{ keywords | join(', ') }}">
+{% endif %}
+{% if canonical_url %}
+<link rel="canonical" href="{{ canonical_url }}">
+{% endif %}
+
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:type" content="{{ og_type }}">
+{% if canonical_url %}
+<meta property="og:url" content="{{ canonical_url }}">
+{% endif %}
+{% if og_image %}
+<meta property="og:image" content="{{ og_image }}">
+{% endif %}
+<meta property="og:site_name" content="{{ site_name }}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ title }}">
+<meta name="twitter:description" content="{{ description }}">
+{% if og_image %}
+<meta name="twitter:image" content="{{ og_image }}">
+{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{% if og_type == 'article' %}Article{% else %}WebPage{% endif %}",
+  "name": "{{ title }}",
+  "description": "{{ description }}",
+  "url": "{{ canonical_url }}"
+}
+</script>

@@ -1,0 +1,22 @@
+{#import "../layouts/base.jinja" as Base #}
+{#import "../cards/project_card.jinja" as ProjectCard #}
+{#def seo, projects=(), current_path="/projects" #}
+
+<Base seo={{ seo }} current_path={{ current_path }}>
+    <section class="section">
+        <header class="section__header">
+            <h1>Projects</h1>
+            <p>{{ projects | length }} project(s)</p>
+        </header>
+
+        {% if projects %}
+        <div class="projects-grid">
+            {% for project in projects %}
+            <ProjectCard project={{ project }} />
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No projects were published yet.</p>
+        {% endif %}
+    </section>
+</Base>

@@ -1,0 +1,15 @@
+{#def title, subtitle="" #}
+
+<section {{ attrs.render(class="hero") }}>
+    <div class="hero__inner">
+        <h1 class="hero__title">{{ title }}</h1>
+        {% if subtitle %}
+        <p class="hero__subtitle">{{ subtitle }}</p>
+        {% endif %}
+        {% if content %}
+        <div class="hero__actions">
+            {{ content }}
+        </div>
+        {% endif %}
+    </div>
+</section>

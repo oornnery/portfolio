@@ -1,0 +1,12 @@
+{#import "../layouts/base.jinja" as Base #}
+{#import "../markdown/prose.jinja" as Prose #}
+{#def seo, content_html, current_path="/about" #}
+
+<Base seo={{ seo }} current_path={{ current_path }}>
+    <section class="section">
+        <header class="section__header">
+            <h1>About</h1>
+        </header>
+        <Prose html_content={{ content_html }} />
+    </section>
+</Base>

@@ -1,0 +1,30 @@
+{#import "../seo/head.jinja" as SeoHead #}
+{#import "../nav/navbar.jinja" as Navbar #}
+{#import "../footer/footer.jinja" as Footer #}
+{#def seo, current_path="" #}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <SeoHead
+        title={{ seo.title }}
+        description={{ seo.description }}
+        canonical_url={{ seo.canonical_url }}
+        og_image={{ seo.og_image }}
+        og_type={{ seo.og_type }}
+        keywords={{ seo.keywords }}
+    />
+    <link rel="stylesheet" href="/static/css/global.css">
+    {{ assets.render_css() }}
+</head>
+<body>
+    <Navbar current_path={{ current_path }} />
+    <main class="site-main">
+        {{ content }}
+    </main>
+    <Footer />
+    {{ assets.render_js() }}
+</body>
+</html>

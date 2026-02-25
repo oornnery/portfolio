@@ -1,0 +1,84 @@
+{#def csrf_token, success="", errors={}, form_data={} #}
+
+{% if success %}
+<div class="alert alert--success" role="status">{{ success }}</div>
+{% endif %}
+
+{% if errors.get('csrf') %}
+<div class="alert alert--danger" role="alert">{{ errors.get('csrf') }}</div>
+{% endif %}
+
+{% if errors.get('form') %}
+<div class="alert alert--danger" role="alert">{{ errors.get('form') }}</div>
+{% endif %}
+
+<form {{ attrs.render(class="contact-form") }} method="post" action="/contact" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input
+            id="name"
+            name="name"
+            type="text"
+            value="{{ form_data.get('name', '') }}"
+            required
+            minlength="2"
+            maxlength="100"
+            class="{% if errors.get('name') %}input-error{% endif %}"
+        >
+        {% if errors.get('name') %}
+        <span class="error-text">{{ errors.get('name') }}</span>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input
+            id="email"
+            name="email"
+            type="email"
+            value="{{ form_data.get('email', '') }}"
+            required
+            class="{% if errors.get('email') %}input-error{% endif %}"
+        >
+        {% if errors.get('email') %}
+        <span class="error-text">{{ errors.get('email') }}</span>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="subject">Subject</label>
+        <input
+            id="subject"
+            name="subject"
+            type="text"
+            value="{{ form_data.get('subject', '') }}"
+            required
+            minlength="3"
+            maxlength="200"
+            class="{% if errors.get('subject') %}input-error{% endif %}"
+        >
+        {% if errors.get('subject') %}
+        <span class="error-text">{{ errors.get('subject') }}</span>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="message">Message</label>
+        <textarea
+            id="message"
+            name="message"
+            rows="7"
+            required
+            minlength="10"
+            maxlength="5000"
+            class="{% if errors.get('message') %}input-error{% endif %}"
+        >{{ form_data.get('message', '') }}</textarea>
+        {% if errors.get('message') %}
+        <span class="error-text">{{ errors.get('message') }}</span>
+        {% endif %}
+    </div>
+
+    <button type="submit">Send Message</button>
+</form>

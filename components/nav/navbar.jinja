@@ -1,0 +1,19 @@
+{#def current_path="" #}
+
+<nav class="navbar">
+    <div class="navbar__inner">
+        <a href="/" class="navbar__brand">{{ site_name }}</a>
+        <ul class="navbar__links">
+            {% for link in nav_links %}
+            <li class="navbar__item">
+                <a
+                    href="{{ link.href }}"
+                    class="navbar__link {% if current_path == link.href %}is-active{% endif %}"
+                >
+                    {{ link.label }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</nav>

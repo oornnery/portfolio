@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">API Observability Hub</title>
+  <desc id="desc">Placeholder project thumbnail</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#115e59"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <g fill="#e6fffb" opacity="0.2">
+    <circle cx="180" cy="120" r="120"/>
+    <circle cx="1020" cy="560" r="170"/>
+  </g>
+  <g fill="#ffffff">
+    <text x="70" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="58" font-weight="700">API Observability Hub</text>
+    <text x="70" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="30" opacity="0.95">FastAPI • Structured Logs • Trace Context</text>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+{#import "../tags/tag_badge.jinja" as TagBadge #}
+{#def project #}
+
+<article {{ attrs.render(class="project-card") }}>
+    {% if project.thumbnail %}
+    <a href="/projects/{{ project.slug }}" class="project-card__media">
+        <img
+            src="{{ project.thumbnail }}"
+            alt="{{ project.title }}"
+            class="project-card__image"
+            loading="lazy"
+        >
+    </a>
+    {% endif %}
+
+    <div class="project-card__body">
+        <h3 class="project-card__title">
+            <a href="/projects/{{ project.slug }}">{{ project.title }}</a>
+        </h3>
+        {% if project.description %}
+        <p class="project-card__description">{{ project.description }}</p>
+        {% endif %}
+
+        {% if project.tags %}
+        <div class="project-card__tags">
+            {% for tag in project.tags %}
+            <TagBadge label={{ tag }} />
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</article>

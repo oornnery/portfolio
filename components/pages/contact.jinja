@@ -1,0 +1,19 @@
+{#import "../layouts/base.jinja" as Base #}
+{#import "../contact/contact_form.jinja" as ContactForm #}
+{#def seo, csrf_token, success="", errors={}, form_data={}, current_path="/contact" #}
+
+<Base seo={{ seo }} current_path={{ current_path }}>
+    <section class="section">
+        <header class="section__header">
+            <h1>Contact</h1>
+            <p>Send a message for collaborations, freelance work, or questions.</p>
+        </header>
+
+        <ContactForm
+            csrf_token={{ csrf_token }}
+            success={{ success }}
+            errors={{ errors }}
+            form_data={{ form_data }}
+        />
+    </section>
+</Base>
