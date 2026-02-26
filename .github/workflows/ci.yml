@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ci-local-secret-key-please-change
+      DEBUG: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Ruff
+        run: uv run ruff check app tests static/js
+
+      - name: Ty
+        run: uv run ty check app
+
+      - name: Pytest
+        run: uv run pytest -q
+
+      - name: Rumdl
+        run: uv run rumdl check .
+
+      - name: Jx component check
+        run: DEBUG=true PYTHONPATH=. uv run jx check app/jx_catalog.py:catalog
+

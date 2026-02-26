@@ -166,7 +166,8 @@ This document is a full refactor backlog for future iterations.
 - [ ] Add dashboards and alerts (SLO-oriented).
   - Error rate, p95 latency, contact success ratio, webhook/email failure rate.
   - Alert on abnormal spike of 4xx/5xx or notification channel degradation.
-  - isso deve ser configurado e enviado para opentelemetry e usado em ferramentas de observabilidade como Grafana, Datadog, etc.
+  - This should be configured and exported through OpenTelemetry and consumed
+    by observability tools like Grafana and Datadog.
 
 ## P3 (Quality / Testability / DX)
 
@@ -183,7 +184,7 @@ This document is a full refactor backlog for future iterations.
 - [ ] Add snapshot-like rendering tests for critical pages.
   - Validate key sections exist and avoid accidental UI regressions.
 
-- [ ] Add CI pipeline for `ruff`, `ty`, tests, and markdown lint.
+- [x] Add CI pipeline for `ruff`, `ty`, tests, and markdown lint.
 
 - [ ] Add architecture decision records (ADR-lite).
   - Document why chosen for CSP policy, analytics policy, content schema, and
@@ -283,10 +284,13 @@ components/
 
 ## Recent Progress (2026-02-26)
 
-- [x] Standardize home section start alignment so home/projects/contact start on the same visual line.
-- [x] Anchor home contact footer inside the contact section and remove oversized footer gap.
+- [x] Standardize home section start alignment so home/projects/contact start
+  on the same visual line.
+- [x] Anchor home contact footer inside the contact section and remove
+  oversized footer gap.
 - [x] Reduce footer visual height to match the about page density and spacing.
-- [x] Fine-tune home contact vertical offset (moved slightly lower for better balance with navbar and footer).
+- [x] Fine-tune home contact vertical offset (moved slightly lower for better
+  balance with navbar and footer).
 
 ## Definition of Done for Refactor
 
@@ -296,6 +300,6 @@ components/
 - [ ] Page templates are composed from smaller feature components.
 - [ ] Contact flow has explicit delivery policy and tests.
 - [ ] CSP is strict and compatible with actual assets.
-- [ ] CI checks lint + types + tests on every change.
+- [x] CI checks lint + types + tests on every change.
 - [ ] OTel traces, metrics, and logs are correlated and queryable.
 - [ ] Analytics events are typed, privacy-safe, and backed by dashboards.
