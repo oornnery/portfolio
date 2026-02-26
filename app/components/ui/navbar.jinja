@@ -4,7 +4,7 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         <a
             href="/"
-            class="text-base sm:text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors"
+            class="text-base sm:text-lg font-medium text-white tracking-tight hover:text-blue-400 transition-colors"
             data-analytics-event="click"
             data-analytics-id="nav-logo"
             data-analytics-label="logo"
@@ -16,7 +16,7 @@
             {% for link in nav_links %}
             <a
                 href="{{ link.href }}"
-                class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_path == link.href else 'hover:text-white hover:bg-gray-800/30' }} transition-all"
+                class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_path == link.href else 'hover:text-blue-400 hover:bg-gray-800/30' }} transition-all"
                 data-analytics-event="click"
                 data-analytics-id="nav-{{ link.label | lower }}"
                 data-analytics-label="{{ link.label }}"
@@ -32,7 +32,7 @@
             data-analytics-event="click"
             data-analytics-id="nav-menu-toggle"
             data-analytics-label="menu toggle"
-            class="md:hidden p-2 -mr-2 text-gray-400 hover:text-white transition-colors"
+            class="md:hidden p-2 -mr-2 text-gray-400 hover:text-blue-400 transition-colors"
             aria-label="Toggle menu"
             aria-expanded="false"
         >
@@ -53,7 +53,7 @@
             {% for link in nav_links %}
             <a
                 href="{{ link.href }}"
-                class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_path == link.href else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all"
+                class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_path == link.href else 'text-gray-400 hover:text-blue-400 hover:bg-gray-800/30' }} transition-all"
                 data-analytics-event="click"
                 data-analytics-id="nav-mobile-{{ link.label | lower }}"
                 data-analytics-label="{{ link.label }}"
