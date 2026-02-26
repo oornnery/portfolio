@@ -65,7 +65,7 @@ This document is a full refactor backlog for future iterations.
   - Instrument FastAPI, HTTPX, and internal service spans.
   - Emit trace IDs in logs and response headers for correlation.
 
-- [ ] Add data protection rules for telemetry.
+- [x] Add data protection rules for telemetry.
   - Redact or hash PII in logs, traces, and analytics payloads.
   - Define sampling strategy for traces and high-volume events.
 

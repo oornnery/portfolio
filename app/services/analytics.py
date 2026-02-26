@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
+import hashlib
+import hmac
 import logging
 from typing import Any
 
@@ -43,14 +45,36 @@ class AnalyticsService:
             "password",
             "token",
             "secret",
+            "subject",
+            "client_ip",
+            "ip",
+            "user_agent",
         }
         for key, value in metadata.items():
             normalized_key = str(key).strip().lower()
             if normalized_key in sensitive_keys:
                 redacted[normalized_key] = "[redacted]"
                 continue
-            redacted[normalized_key] = value
+            if isinstance(value, str):
+                redacted[normalized_key] = value[:256]
+                continue
+            if isinstance(value, (int, float, bool)) or value is None:
+                redacted[normalized_key] = value
+                continue
+            redacted[normalized_key] = str(value)[:256]
         return redacted
+
+    @staticmethod
+    def _hash_identifier(value: str, *, namespace: str) -> str:
+        normalized = value.strip().lower()
+        if not normalized:
+            return "unknown"
+        digest = hmac.new(
+            settings.secret_key.encode(),
+            f"{namespace}:{normalized}".encode(),
+            hashlib.sha256,
+        ).hexdigest()
+        return digest[:16]
 
     def ingest_events(
         self,
@@ -74,8 +98,14 @@ class AnalyticsService:
         with self._tracer.start_as_current_span("analytics.ingest_batch") as span:
             span.set_attribute("analytics.event_count", len(events))
             span.set_attribute("http.request_id", request_id)
-            span.set_attribute("client.ip", client_ip)
-            span.set_attribute("client.user_agent", user_agent[:256])
+            span.set_attribute(
+                "client.ip_hash",
+                self._hash_identifier(client_ip, namespace="client_ip"),
+            )
+            span.set_attribute(
+                "client.user_agent_hash",
+                self._hash_identifier(user_agent, namespace="user_agent"),
+            )
 
             for event in events:
                 try:

@@ -65,7 +65,7 @@ async def contact_post(
             AnalyticsTrackEvent(
                 event_name=AnalyticsEventName.CONTACT_ATTEMPT,
                 page_path="/contact",
-                metadata={"subject": subject[:120]},
+                metadata={"source": "contact_form"},
             )
         ],
         request_id=request_id,

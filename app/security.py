@@ -25,6 +25,18 @@ def _csrf_user_agent_hash(user_agent: str) -> str:
     return hashlib.sha256(normalized.encode()).hexdigest()[:16]
 
 
+def _anonymize_identifier(value: str, *, namespace: str) -> str:
+    normalized = value.strip().lower()
+    if not normalized:
+        return "unknown"
+    digest = hmac.new(
+        settings.secret_key.encode(),
+        f"{namespace}:{normalized}".encode(),
+        hashlib.sha256,
+    ).hexdigest()
+    return digest[:16]
+
+
 def generate_csrf_token(*, user_agent: str = "") -> str:
     """Generate a timestamped CSRF token signed with HMAC-SHA256."""
     timestamp = str(int(time.time()))
@@ -95,7 +107,8 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
         request_id = (
             request.headers.get(settings.request_id_header, "").strip() or uuid4().hex
         )
-        client_ip = request.client.host if request.client else "unknown"
+        raw_client_ip = request.client.host if request.client else "unknown"
+        client_ip = _anonymize_identifier(raw_client_ip, namespace="ip")
         tokens = bind_request_context(
             request_id=request_id,
             method=request.method,
