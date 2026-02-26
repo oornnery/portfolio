@@ -22,7 +22,9 @@ class Settings(BaseSettings):
     telemetry_traces_sample_ratio: float = Field(default=1.0, ge=0.0, le=1.0)
     telemetry_exporter_otlp_endpoint: str = ""
     telemetry_exporter_otlp_insecure: bool = True
+    telemetry_exporter_otlp_headers: str = ""
     telemetry_console_exporters: bool = False
+    telemetry_logs_enabled: bool = True
 
     # Site
     site_name: str = "Fabio Souza"
