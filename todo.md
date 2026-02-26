@@ -280,6 +280,13 @@ components/
 - [x] Add trace/log correlation (`trace_id`, `span_id`, `request_id`) in log output.
 - [x] Create initial analytics event schema and instrument `page_view` + `click`.
 
+## Recent Progress (2026-02-26)
+
+- [x] Standardize home section start alignment so home/projects/contact start on the same visual line.
+- [x] Anchor home contact footer inside the contact section and remove oversized footer gap.
+- [x] Reduce footer visual height to match the about page density and spacing.
+- [x] Fine-tune home contact vertical offset (moved slightly lower for better balance with navbar and footer).
+
 ## Definition of Done for Refactor
 
 - [ ] No dead runtime assets.
