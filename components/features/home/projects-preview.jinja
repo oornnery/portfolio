@@ -1,0 +1,44 @@
+{#import "@ui/card.jinja" as Card #}
+{#import "@ui/tag.jinja" as Tag #}
+{#import "@ui/section-link.jinja" as SectionLink #}
+{#def featured=() #}
+
+<section class="flex flex-col min-h-0">
+    <a
+        href="/projects"
+        class="group block mb-3"
+        data-analytics-event="click"
+        data-analytics-id="home-projects-heading"
+        data-analytics-label="projects"
+        data-analytics-target="/projects"
+    >
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
+            Projects
+        </h2>
+    </a>
+
+    <div class="space-y-3 flex-1 overflow-hidden">
+        {% for project in featured %}
+        <Card href={{ '/projects/' ~ project.slug }} padding="sm">
+            <div class="flex flex-col gap-1">
+                <h3 class="text-sm text-white font-medium group-hover:text-blue-400 transition-colors line-clamp-1">
+                    {{ project.title }}
+                </h3>
+                <p class="text-xs text-gray-500 line-clamp-1">{{ project.description }}</p>
+                <div class="flex flex-wrap gap-1.5 mt-1">
+                    {% for tech in (project.tech_stack if project.tech_stack else project.tags)[:3] %}
+                    <Tag text={{ tech }} />
+                    {% endfor %}
+                </div>
+            </div>
+        </Card>
+        {% else %}
+        <p class="text-sm text-gray-500">No projects yet.</p>
+        {% endfor %}
+    </div>
+
+    <div class="mt-3">
+        <SectionLink href="/projects" label="View more projects" />
+    </div>
+</section>
+

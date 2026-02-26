@@ -6,7 +6,10 @@ from opentelemetry import metrics, trace
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import ConsoleMetricExporter, PeriodicExportingMetricReader
+from opentelemetry.sdk.metrics.export import (
+    ConsoleMetricExporter,
+    PeriodicExportingMetricReader,
+)
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
@@ -32,6 +35,7 @@ try:
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
         OTLPSpanExporter,
     )
+
     otlp_metric_exporter_factory = OTLPMetricExporter
     otlp_span_exporter_factory = OTLPSpanExporter
 except Exception:  # pragma: no cover
@@ -85,7 +89,10 @@ def _configure_tracing(resource: Resource) -> None:
     tracer_provider = TracerProvider(resource=resource, sampler=sampler)
     headers = _otlp_headers()
 
-    if settings.telemetry_exporter_otlp_endpoint and otlp_span_exporter_factory is not None:
+    if (
+        settings.telemetry_exporter_otlp_endpoint
+        and otlp_span_exporter_factory is not None
+    ):
         span_exporter = otlp_span_exporter_factory(
             endpoint=settings.telemetry_exporter_otlp_endpoint,
             insecure=settings.telemetry_exporter_otlp_insecure,
@@ -105,7 +112,10 @@ def _configure_tracing(resource: Resource) -> None:
 def _configure_metrics(resource: Resource) -> None:
     metric_readers: list[Any] = []
     headers = _otlp_headers()
-    if settings.telemetry_exporter_otlp_endpoint and otlp_metric_exporter_factory is not None:
+    if (
+        settings.telemetry_exporter_otlp_endpoint
+        and otlp_metric_exporter_factory is not None
+    ):
         metric_exporter = otlp_metric_exporter_factory(
             endpoint=settings.telemetry_exporter_otlp_endpoint,
             insecure=settings.telemetry_exporter_otlp_insecure,
@@ -117,7 +127,9 @@ def _configure_metrics(resource: Resource) -> None:
         )
     elif settings.telemetry_console_exporters:
         metric_readers.append(
-            PeriodicExportingMetricReader(ConsoleMetricExporter(), export_interval_millis=15000)
+            PeriodicExportingMetricReader(
+                ConsoleMetricExporter(), export_interval_millis=15000
+            )
         )
 
     meter_provider = MeterProvider(resource=resource, metric_readers=metric_readers)
@@ -145,7 +157,10 @@ def _configure_logs(resource: Resource) -> None:
     headers = _otlp_headers()
     exporter_configured = False
 
-    if settings.telemetry_exporter_otlp_endpoint and otlp_log_exporter_factory is not None:
+    if (
+        settings.telemetry_exporter_otlp_endpoint
+        and otlp_log_exporter_factory is not None
+    ):
         log_exporter = otlp_log_exporter_factory(
             endpoint=settings.telemetry_exporter_otlp_endpoint,
             insecure=settings.telemetry_exporter_otlp_insecure,
@@ -158,7 +173,10 @@ def _configure_logs(resource: Resource) -> None:
         logger.info(
             f"Log exporter configured with OTLP endpoint={settings.telemetry_exporter_otlp_endpoint}."
         )
-    elif settings.telemetry_console_exporters and otel_console_log_exporter_factory is not None:
+    elif (
+        settings.telemetry_console_exporters
+        and otel_console_log_exporter_factory is not None
+    ):
         logger_provider.add_log_record_processor(
             otel_batch_log_record_processor_factory(otel_console_log_exporter_factory())
         )

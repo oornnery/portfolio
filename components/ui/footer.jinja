@@ -1,0 +1,14 @@
+{#import "@ui/social-links.jinja" as SocialLinks #}
+
+<footer class="py-3 sm:py-4 text-sm text-gray-500 flex justify-between items-center border-t border-gray-900">
+    <p>&copy; <span data-current-year>2026</span> {{ site_name }}</p>
+    {% if social_links %}
+    <SocialLinks
+        links={{ social_links }}
+        variant="labels_inline"
+        container_class="flex flex-wrap items-center gap-4"
+        link_class="text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5"
+        icon_size="sm"
+    />
+    {% endif %}
+</footer>

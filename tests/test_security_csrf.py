@@ -33,4 +33,3 @@ def test_csrf_rejects_expired_token() -> None:
     token = f"{payload}:{signature}"
 
     assert validate_csrf_token(token, user_agent="pytest-agent") is False
-

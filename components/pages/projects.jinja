@@ -1,0 +1,31 @@
+{#import "@layouts/public.jinja" as PublicLayout #}
+{#import "@features/projects/project-card.jinja" as ProjectCard #}
+{#import "@ui/header.jinja" as Header #}
+{#import "@ui/breadcrumb.jinja" as Breadcrumb #}
+{#def seo, projects=(), current_path="/projects" #}
+
+<PublicLayout seo={{ seo }} current_path={{ current_path }}>
+    {% set breadcrumb_items = (
+        {"label": "Home", "href": "/"},
+        {"label": "Projects", "current": true},
+    ) %}
+
+    <div class="space-y-6 sm:space-y-8">
+        <Breadcrumb items={{ breadcrumb_items }} class_name="text-sm text-gray-500 -mt-2 sm:-mt-3 mb-4 sm:mb-5 fade-in flex items-center" />
+
+        <Header
+            title="Projects"
+            description="A collection of projects I've worked on."
+        />
+
+        <div class="space-y-3 sm:space-y-4">
+            {% for project in projects %}
+            <ProjectCard project={{ project }} />
+            {% else %}
+            <div class="text-center py-8 sm:py-12">
+                <p class="text-sm sm:text-base text-gray-500">No projects yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</PublicLayout>

@@ -148,7 +148,9 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
             status_code = response.status_code
             route = request.scope.get("route")
             route_path = (
-                getattr(route, "path", request.url.path) if route is not None else request.url.path
+                getattr(route, "path", request.url.path)
+                if route is not None
+                else request.url.path
             )
             response.headers[settings.request_id_header] = request_id
             span_context = get_current_span().get_span_context()

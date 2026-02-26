@@ -5,7 +5,7 @@ from collections.abc import Iterator
 
 from fastapi.testclient import TestClient
 
-from app.app import create_app
+from app.main import create_app
 from app.infrastructure.markdown import load_all_projects
 
 

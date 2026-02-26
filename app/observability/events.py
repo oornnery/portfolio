@@ -13,4 +13,3 @@ class LogEvent(StrEnum):
 
     ANALYTICS_EVENT_ACCEPTED = "analytics.event.accepted"
     ANALYTICS_EVENT_REJECTED = "analytics.event.rejected"
-

@@ -2,7 +2,7 @@ from datetime import date
 
 from app.core.config import settings
 from app.domain.models import Project
-from app.application.services.seo import seo_for_page, seo_for_project
+from app.services.seo import seo_for_page, seo_for_project
 
 
 def test_seo_for_page_builds_canonical_and_absolute_og_image() -> None:

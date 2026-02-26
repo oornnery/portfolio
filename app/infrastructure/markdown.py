@@ -11,7 +11,8 @@ import yaml
 from app.domain.models import Project
 from app.domain.schemas import AboutContent, AboutFrontmatter, ProjectFrontmatter
 
-CONTENT_DIR = Path("content")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CONTENT_DIR = PROJECT_ROOT / "content"
 PROJECTS_DIR = CONTENT_DIR / "projects"
 logger = logging.getLogger(__name__)
 

@@ -1,4 +1,4 @@
-from app.application.use_cases import ContactSubmissionService
+from app.services import ContactSubmissionService
 
 
 def test_contact_submission_success_normalizes_fields() -> None:
@@ -27,7 +27,9 @@ def test_contact_submission_success_normalizes_fields() -> None:
 
 
 def test_contact_submission_rejects_invalid_csrf() -> None:
-    service = ContactSubmissionService(csrf_validator=lambda token, user_agent="": False)
+    service = ContactSubmissionService(
+        csrf_validator=lambda token, user_agent="": False
+    )
 
     result = service.process(
         name="Alice",
