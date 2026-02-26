@@ -1,0 +1,36 @@
+{#import "@ui/social_links.jinja" as SocialLinks #}
+{#import "@ui/section_link.jinja" as SectionLink #}
+{#def profile_name, site_name, profile_role, profile_location, profile_summary, social_links #}
+
+<div class="flex-1 text-center lg:text-left">
+    <h1 class="text-2xl sm:text-3xl font-bold text-white mb-0">{{ profile_name or site_name }}</h1>
+    <p class="text-sm sm:text-base text-gray-400 font-mono mb-1">
+        {{ profile_role }}
+    </p>
+    <p class="text-xs sm:text-sm text-gray-500 font-mono mb-1.5">
+        <a
+            class="hover:underline"
+            href="https://www.google.com/maps/search/{{ profile_location | urlencode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-analytics-event="outbound_click"
+            data-analytics-id="profile-location"
+            data-analytics-label="{{ profile_location }}"
+            data-analytics-target="https://www.google.com/maps/search/{{ profile_location | urlencode }}"
+        >
+            {{ profile_location }}
+        </a>
+    </p>
+    <p class="text-xs sm:text-sm text-gray-500 mb-4 max-w-xl">
+        {{ profile_summary }}
+    </p>
+
+    <SocialLinks
+        links={{ social_links }}
+        variant="icons_inline"
+        container_class="flex flex-wrap justify-center lg:justify-start gap-2 mb-3"
+    />
+
+    <SectionLink href="/about" label="View full resume" />
+</div>
+

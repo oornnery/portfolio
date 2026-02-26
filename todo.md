@@ -293,6 +293,8 @@ components/
   balance with navbar and footer).
 - [x] Add unit tests for CSRF token validation and SEO metadata composition.
 - [x] Add a shared test bootstrap (`tests/conftest.py`) for stable test env.
+- [x] Start feature-level template decomposition in home page:
+  `features/home/profile_summary`, `projects_preview`, and `contact_preview`.
 
 ## Definition of Done for Refactor
 

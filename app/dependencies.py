@@ -61,6 +61,7 @@ def get_catalog() -> Catalog:
         (Path("components/footer"), "footer"),
         (Path("components/cards"), "cards"),
         (Path("components/contact"), "contact"),
+        (Path("components/features"), "features"),
         (Path("components/markdown"), "markdown"),
         (Path("components/tags"), "tags"),
         (Path("components/pages"), "pages"),
