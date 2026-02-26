@@ -3,7 +3,11 @@ import logging
 from app.models import Project
 from app.services.markdown import get_project_by_slug, load_all_projects
 from app.services.seo import seo_for_page, seo_for_project
-from app.services.use_cases.types import PageRenderData
+from app.services.use_cases.types import (
+    PageRenderData,
+    ProjectDetailPageContext,
+    ProjectsListPageContext,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -21,11 +25,10 @@ class ProjectsPageService:
         )
         return PageRenderData(
             template="pages/projects.jinja",
-            context={
-                "seo": seo,
-                "projects": all_projects,
-                "current_path": "/projects",
-            },
+            context=ProjectsListPageContext(
+                seo=seo,
+                projects=all_projects,
+            ),
         )
 
     def get_project(self, slug: str) -> Project | None:
@@ -35,10 +38,8 @@ class ProjectsPageService:
         seo = seo_for_project(project)
         return PageRenderData(
             template="pages/project_detail.jinja",
-            context={
-                "seo": seo,
-                "project": project,
-                "current_path": "/projects",
-            },
+            context=ProjectDetailPageContext(
+                seo=seo,
+                project=project,
+            ),
         )
-

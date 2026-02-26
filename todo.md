@@ -112,7 +112,7 @@ This document is a full refactor backlog for future iterations.
     - `features/resume/header.jinja`
     - `features/resume/experience_list.jinja`
 
-- [ ] Introduce strict context contracts for page templates.
+- [x] Introduce strict context contracts for page templates.
   - Avoid passing raw mixed dictionaries.
   - Use explicit structures so each page gets only what it needs.
 
@@ -167,7 +167,7 @@ This document is a full refactor backlog for future iterations.
   - Error rate, p95 latency, contact success ratio, webhook/email failure rate.
   - Alert on abnormal spike of 4xx/5xx or notification channel degradation.
   - This should be configured and exported through OpenTelemetry and consumed
-    by observability tools like Grafana and Datadog.
+    by observability tools like Grafana and Datadog and signoz.
 
 ## P3 (Quality / Testability / DX)
 

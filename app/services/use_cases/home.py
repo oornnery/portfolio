@@ -4,7 +4,7 @@ from typing import Callable
 from app.security import generate_csrf_token
 from app.services.markdown import load_all_projects
 from app.services.seo import seo_for_page
-from app.services.use_cases.types import PageRenderData
+from app.services.use_cases.types import HomePageContext, PageRenderData
 
 logger = logging.getLogger(__name__)
 
@@ -33,11 +33,9 @@ class HomePageService:
         )
         return PageRenderData(
             template="pages/home.jinja",
-            context={
-                "seo": seo,
-                "featured": featured,
-                "csrf_token": csrf_token,
-                "current_path": "/",
-            },
+            context=HomePageContext(
+                seo=seo,
+                featured=tuple(featured),
+                csrf_token=csrf_token,
+            ),
         )
-

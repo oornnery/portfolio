@@ -2,7 +2,7 @@ import logging
 
 from app.services.markdown import load_about
 from app.services.seo import seo_for_page
-from app.services.use_cases.types import PageRenderData
+from app.services.use_cases.types import AboutPageContext, PageRenderData
 
 logger = logging.getLogger(__name__)
 
@@ -21,11 +21,9 @@ class AboutPageService:
         )
         return PageRenderData(
             template="pages/about.jinja",
-            context={
-                "seo": seo,
-                "meta": frontmatter,
-                "content_html": about_content.body_html,
-                "current_path": "/about",
-            },
+            context=AboutPageContext(
+                seo=seo,
+                meta=frontmatter,
+                content_html=about_content.body_html,
+            ),
         )
-

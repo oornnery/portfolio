@@ -6,7 +6,11 @@ from pydantic import ValidationError
 from app.schemas import ContactForm
 from app.security import generate_csrf_token, validate_csrf_token
 from app.services.seo import seo_for_page
-from app.services.use_cases.types import ContactSubmissionResult, PageRenderData
+from app.services.use_cases.types import (
+    ContactPageContext,
+    ContactSubmissionResult,
+    PageRenderData,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,14 +38,13 @@ class ContactPageService:
         csrf_token = current_csrf or self._csrf_token_factory(user_agent=user_agent)
         return PageRenderData(
             template="pages/contact.jinja",
-            context={
-                "seo": seo,
-                "csrf_token": csrf_token,
-                "success": success,
-                "errors": errors or {},
-                "form_data": form_data or {},
-                "current_path": "/contact",
-            },
+            context=ContactPageContext(
+                seo=seo,
+                csrf_token=csrf_token,
+                success=success,
+                errors=errors or {},
+                form_data=form_data or {},
+            ),
         )
 
 
@@ -127,4 +130,3 @@ class ContactSubmissionService:
                 errors=errors,
                 status_code=422,
             )
-
