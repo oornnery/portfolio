@@ -36,6 +36,7 @@ def get_profile_service() -> ProfileService:
 def get_catalog() -> Catalog:
     logger.info("Initializing Jx catalog.")
     profile_globals = get_profile_service().get_profile_globals()
+    components_root = Path(__file__).resolve().parents[1] / "components"
     catalog = Catalog(
         auto_reload=settings.debug,
         site_name=profile_globals.site_name,
@@ -54,10 +55,10 @@ def get_catalog() -> Catalog:
         analytics_enabled=settings.analytics_enabled,
     )
     prefixed_folders = (
-        (Path("components/ui"), "ui"),
-        (Path("components/layouts"), "layouts"),
-        (Path("components/features"), "features"),
-        (Path("components/pages"), "pages"),
+        (components_root / "ui", "ui"),
+        (components_root / "layouts", "layouts"),
+        (components_root / "features", "features"),
+        (components_root / "pages", "pages"),
     )
     for folder_path, prefix in prefixed_folders:
         if folder_path.exists():

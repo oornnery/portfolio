@@ -27,7 +27,7 @@ jobs:
         run: uv sync --all-groups
 
       - name: Ruff
-        run: uv run ruff check app tests static/js
+        run: uv run ruff check app tests app/static/js
 
       - name: Ty
         run: uv run ty check app

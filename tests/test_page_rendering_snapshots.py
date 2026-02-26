@@ -4,7 +4,7 @@ from collections.abc import Iterator
 
 from fastapi.testclient import TestClient
 
-from app.main import create_app
+from app.app import create_app
 
 
 def _build_client() -> Iterator[TestClient]:
