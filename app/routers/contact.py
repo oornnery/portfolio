@@ -9,8 +9,8 @@ from app.dependencies import (
     get_contact_notification_service,
     get_contact_submission_service,
     limiter,
-    render_template,
 )
+from app.render import render_page
 from app.schemas import AnalyticsEventName, AnalyticsTrackEvent
 from app.services.contact import (
     ContactNotificationContext,
@@ -32,8 +32,7 @@ async def contact_get(
     logger.info("Contact page rendered.")
     user_agent = request.headers.get("user-agent", "")
     page = page_service.build_page(user_agent=user_agent)
-    html = render_template(page.template, **page.context)
-    return HTMLResponse(content=html)
+    return render_page(page)
 
 
 @router.post("/contact", response_class=HTMLResponse)
@@ -86,7 +85,6 @@ async def contact_post(
                 "message": message,
             },
         )
-        html = render_template(page.template, **page.context)
         analytics_service.ingest_events(
             [
                 AnalyticsTrackEvent(
@@ -99,7 +97,7 @@ async def contact_post(
             client_ip=client_ip,
             user_agent=user_agent,
         )
-        return HTMLResponse(content=html, status_code=415)
+        return render_page(page, status_code=415)
 
     submission = submission_service.process(
         name=name,
@@ -117,7 +115,6 @@ async def contact_post(
             errors=submission.errors,
             form_data=submission.form_data,
         )
-        html = render_template(page.template, **page.context)
         analytics_service.ingest_events(
             [
                 AnalyticsTrackEvent(
@@ -130,14 +127,13 @@ async def contact_post(
             client_ip=client_ip,
             user_agent=user_agent,
         )
-        return HTMLResponse(content=html, status_code=submission.status_code)
+        return render_page(page, status_code=submission.status_code)
     if submission.contact is None:
         page = page_service.build_page(
             user_agent=user_agent,
             errors={"form": "Unexpected contact submission state."},
             form_data=submission.form_data,
         )
-        html = render_template(page.template, **page.context)
         analytics_service.ingest_events(
             [
                 AnalyticsTrackEvent(
@@ -150,7 +146,7 @@ async def contact_post(
             client_ip=client_ip,
             user_agent=user_agent,
         )
-        return HTMLResponse(content=html, status_code=500)
+        return render_page(page, status_code=500)
 
     notification_context = ContactNotificationContext(
         request_id=request_id,
@@ -174,7 +170,6 @@ async def contact_post(
             },
             form_data=submission.form_data,
         )
-        html = render_template(page.template, **page.context)
         analytics_service.ingest_events(
             [
                 AnalyticsTrackEvent(
@@ -187,14 +182,13 @@ async def contact_post(
             client_ip=client_ip,
             user_agent=user_agent,
         )
-        return HTMLResponse(content=html, status_code=503)
+        return render_page(page, status_code=503)
 
     logger.info(f"Contact form submitted successfully by {client_ip}.")
     page = page_service.build_page(
         user_agent=user_agent,
         success="Message sent successfully. Thank you for reaching out.",
     )
-    html = render_template(page.template, **page.context)
     analytics_service.ingest_events(
         [
             AnalyticsTrackEvent(
@@ -206,4 +200,4 @@ async def contact_post(
         client_ip=client_ip,
         user_agent=user_agent,
     )
-    return HTMLResponse(content=html)
+    return render_page(page)

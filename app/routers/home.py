@@ -3,7 +3,8 @@ import logging
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 
-from app.dependencies import get_home_page_service, render_template
+from app.dependencies import get_home_page_service
+from app.render import render_page
 from app.services.use_cases import HomePageService
 
 router = APIRouter()
@@ -17,6 +18,5 @@ async def home(
 ) -> HTMLResponse:
     user_agent = request.headers.get("user-agent", "")
     page = page_service.build_page(user_agent=user_agent)
-    html = render_template(page.template, **page.context)
     logger.info("Home page rendered.")
-    return HTMLResponse(content=html)
+    return render_page(page)
