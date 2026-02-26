@@ -199,12 +199,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             )
             response.headers["Content-Security-Policy"] = (
                 "default-src 'self'; "
-                "style-src 'self' 'unsafe-inline'; "
+                "style-src 'self'; "
                 "script-src 'self' https://cdn.tailwindcss.com; "
                 "img-src 'self' data: https:; "
                 "font-src 'self' data:; "
                 "connect-src 'self'; "
                 "frame-ancestors 'none'; "
                 "base-uri 'self'; "
+                "form-action 'self'; "
+                "object-src 'none'; "
+                "frame-src 'none'; "
             )
         return response

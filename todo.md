@@ -37,7 +37,7 @@ This document is a full refactor backlog for future iterations.
   - Script sends requests to `/api/v1/analytics/*`, but those routes are not implemented.
   - It also performs invasive fingerprint collection by default.
 
-- [ ] Harden CSP strategy in `app/security.py` + `components/layouts/base.jinja`.
+- [x] Harden CSP strategy in `app/security.py` + `components/layouts/base.jinja`.
   - Current policy depends on CDN scripts and allows inline styles.
   - Inline JSON-LD script should be nonce/hash-safe or rendered in a
     CSP-compatible way.
@@ -301,7 +301,7 @@ components/
 - [ ] Content parsing is typed and validated.
 - [ ] Page templates are composed from smaller feature components.
 - [ ] Contact flow has explicit delivery policy and tests.
-- [ ] CSP is strict and compatible with actual assets.
+- [x] CSP is strict and compatible with actual assets.
 - [x] CI checks lint + types + tests on every change.
 - [ ] OTel traces, metrics, and logs are correlated and queryable.
 - [ ] Analytics events are typed, privacy-safe, and backed by dashboards.

@@ -26,13 +26,3 @@
 {% if og_image %}
 <meta name="twitter:image" content="{{ og_image }}">
 {% endif %}
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "{% if og_type == 'article' %}Article{% else %}WebPage{% endif %}",
-  "name": "{{ title }}",
-  "description": "{{ description }}",
-  "url": "{{ canonical_url }}"
-}
-</script>
