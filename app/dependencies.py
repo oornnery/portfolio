@@ -8,7 +8,6 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 from app.config import settings
-from app.services.markdown import load_about
 from app.services.analytics import AnalyticsService, build_analytics_service
 from app.services.contact import (
     ContactNotificationService,
@@ -16,6 +15,7 @@ from app.services.contact import (
     EmailNotificationConfig,
     WebhookNotificationChannel,
 )
+from app.services.profile import ProfileService
 from app.services.use_cases import (
     AboutPageService,
     ContactPageService,
@@ -27,55 +27,18 @@ from app.services.use_cases import (
 logger = logging.getLogger(__name__)
 
 
-def _normalize_social_links(raw: Any) -> dict[str, str]:
-    fallback_links = {key: str(value) for key, value in settings.social_links.items()}
-    if not isinstance(raw, dict):
-        return fallback_links
-
-    normalized: dict[str, str] = {}
-    for key, value in raw.items():
-        normalized_key = str(key).strip().lower()
-        normalized_value = str(value).strip()
-        if normalized_key and normalized_value:
-            normalized[normalized_key] = normalized_value
-
-    return normalized or fallback_links
-
-
 @lru_cache(maxsize=1)
-def get_profile_globals() -> dict[str, Any]:
-    about_content = load_about()
-    frontmatter = about_content.frontmatter
-    profile_name = str(frontmatter.name or settings.site_name).strip()
-    profile_role = str(frontmatter.role or "Backend Engineer").strip()
-    profile_location = str(frontmatter.location or "Sao Paulo, Brazil").strip()
-    profile_summary = str(
-        frontmatter.description
-        or "I build reliable backend systems with Python, FastAPI, and PostgreSQL."
-    ).strip()
-    profile_social_links = _normalize_social_links(frontmatter.social_links)
-
-    logger.info(
-        f"Profile globals loaded from content with name={profile_name} and social_links_count={len(profile_social_links)}."
-    )
-    return {
-        "site_name": profile_name or settings.site_name,
-        "profile_name": profile_name or settings.site_name,
-        "profile_role": profile_role or "Backend Engineer",
-        "profile_location": profile_location or "Sao Paulo, Brazil",
-        "profile_summary": profile_summary
-        or "I build reliable backend systems with Python, FastAPI, and PostgreSQL.",
-        "social_links": profile_social_links,
-    }
+def get_profile_service() -> ProfileService:
+    return ProfileService()
 
 
 @lru_cache(maxsize=1)
 def get_catalog() -> Catalog:
     logger.info("Initializing Jx catalog.")
-    profile_globals = get_profile_globals()
+    profile_globals = get_profile_service().get_profile_globals()
     catalog = Catalog(
         auto_reload=settings.debug,
-        site_name=profile_globals["site_name"],
+        site_name=profile_globals.site_name,
         base_url=str(settings.base_url),
         nav_links=[
             {"href": "/", "label": "Home"},
@@ -83,11 +46,11 @@ def get_catalog() -> Catalog:
             {"href": "/projects", "label": "Projects"},
             {"href": "/contact", "label": "Contact"},
         ],
-        social_links=profile_globals["social_links"],
-        profile_name=profile_globals["profile_name"],
-        profile_role=profile_globals["profile_role"],
-        profile_location=profile_globals["profile_location"],
-        profile_summary=profile_globals["profile_summary"],
+        social_links=profile_globals.social_links,
+        profile_name=profile_globals.profile_name,
+        profile_role=profile_globals.profile_role,
+        profile_location=profile_globals.profile_location,
+        profile_summary=profile_globals.profile_summary,
         analytics_enabled=settings.analytics_enabled,
     )
     prefixed_folders = (

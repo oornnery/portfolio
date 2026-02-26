@@ -13,6 +13,7 @@ from app.services.markdown import (
     load_about,
     load_all_projects,
 )
+from app.services.profile import ProfileGlobals, ProfileService
 from app.services.seo import seo_for_page, seo_for_project
 from app.services.use_cases import (
     AboutPageService,
@@ -37,6 +38,8 @@ __all__ = [
     "WebhookNotificationChannel",
     "AnalyticsService",
     "AnalyticsIngestResult",
+    "ProfileService",
+    "ProfileGlobals",
     "PageRenderData",
     "ContactSubmissionResult",
     "HomePageService",
