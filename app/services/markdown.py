@@ -4,10 +4,12 @@ import logging
 from pathlib import Path
 from typing import Any
 
+import bleach
 import markdown
 import yaml
 
 from app.models import Project
+from app.schemas import AboutContent, AboutFrontmatter
 
 CONTENT_DIR = Path("content")
 PROJECTS_DIR = CONTENT_DIR / "projects"
@@ -46,6 +48,45 @@ def _render_md(content: str) -> str:
     )
 
 
+_BLEACH_ALLOWED_TAGS = sorted(
+    {
+        *bleach.sanitizer.ALLOWED_TAGS,
+        "p",
+        "pre",
+        "code",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "blockquote",
+        "hr",
+        "span",
+        "img",
+    }
+)
+_BLEACH_ALLOWED_ATTRS = {
+    **bleach.sanitizer.ALLOWED_ATTRIBUTES,
+    "a": ["href", "title", "target", "rel"],
+    "img": ["src", "alt", "title", "width", "height", "loading"],
+    "span": ["class"],
+    "code": ["class"],
+}
+_BLEACH_ALLOWED_PROTOCOLS = ["http", "https", "mailto"]
+
+
+def _sanitize_html(html: str) -> str:
+    cleaned = bleach.clean(
+        html,
+        tags=_BLEACH_ALLOWED_TAGS,
+        attributes=_BLEACH_ALLOWED_ATTRS,
+        protocols=_BLEACH_ALLOWED_PROTOCOLS,
+        strip=True,
+    )
+    return bleach.linkify(cleaned, skip_tags={"pre", "code"})
+
+
 def _parse_date(raw: Any) -> date | None:
     if isinstance(raw, date):
         return raw
@@ -68,17 +109,21 @@ def _as_str_list(raw: Any) -> list[str]:
 
 
 @lru_cache(maxsize=1)
-def load_about() -> tuple[dict[str, Any], str]:
+def load_about() -> AboutContent:
     about_path = CONTENT_DIR / "about.md"
     meta, body = _parse_frontmatter(about_path)
-    full_description = str(meta.get("full_description") or "").strip()
-    if full_description:
-        body = full_description
-    if not body:
-        body = "Content coming soon."
-    rendered = _render_md(body)
+    frontmatter = AboutFrontmatter.model_validate(meta)
+
+    full_description = frontmatter.full_description.strip()
+    body_markdown = full_description or body or "Content coming soon."
+    rendered = _render_md(body_markdown)
+    sanitized = _sanitize_html(rendered)
     logger.info(f"About content loaded from {about_path}.")
-    return meta, rendered
+    return AboutContent(
+        frontmatter=frontmatter,
+        body_markdown=body_markdown,
+        body_html=sanitized,
+    )
 
 
 @lru_cache(maxsize=1)

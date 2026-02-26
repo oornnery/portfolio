@@ -1,3 +1,3 @@
-from app.routers import about, contact, home, projects
+from app.routers import about, analytics, contact, home, projects
 
-__all__ = ["home", "about", "projects", "contact"]
+__all__ = ["home", "about", "projects", "contact", "analytics"]

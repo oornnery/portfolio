@@ -11,9 +11,10 @@ from slowapi.errors import RateLimitExceeded
 from app.config import settings
 from app.dependencies import limiter, render_template
 from app.logger import configure_logging
-from app.routers import about, contact, home, projects
+from app.routers import about, analytics, contact, home, projects
 from app.security import RequestTracingMiddleware, SecurityHeadersMiddleware
 from app.services.seo import seo_for_page
+from app.telemetry import configure_telemetry
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
         redoc_url=None,
         openapi_url="/openapi.json" if settings.debug else None,
     )
+    configure_telemetry(app)
 
     static_dir = Path("static")
     if static_dir.exists():
@@ -53,7 +55,8 @@ def create_app() -> FastAPI:
     app.include_router(about.router)
     app.include_router(projects.router)
     app.include_router(contact.router)
-    logger.info("Routers registered: home | about | projects | contact.")
+    app.include_router(analytics.router)
+    logger.info("Routers registered: home | about | projects | contact | analytics.")
 
     @app.exception_handler(404)
     async def not_found_handler(request: Request, exc: Exception) -> HTMLResponse:

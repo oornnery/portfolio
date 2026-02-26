@@ -19,6 +19,37 @@ class ContactNotificationContext:
 
 
 @dataclass(frozen=True)
+class NotificationChannelResult:
+    channel: str
+    success: bool
+    error: str = ""
+
+
+@dataclass(frozen=True)
+class NotificationDispatchResult:
+    results: tuple[NotificationChannelResult, ...]
+
+    @property
+    def any_success(self) -> bool:
+        return any(result.success for result in self.results)
+
+    @property
+    def all_failed(self) -> bool:
+        return bool(self.results) and not self.any_success
+
+    @property
+    def has_channels(self) -> bool:
+        return bool(self.results)
+
+    @property
+    def all_skipped(self) -> bool:
+        return bool(self.results) and all(
+            (not result.success and "not configured" in result.error.lower())
+            for result in self.results
+        )
+
+
+@dataclass(frozen=True)
 class EmailNotificationConfig:
     smtp_host: str
     smtp_port: int
@@ -38,7 +69,7 @@ class ContactNotificationChannel(Protocol):
         self,
         contact: ContactForm,
         context: ContactNotificationContext,
-    ) -> None: ...
+    ) -> NotificationChannelResult: ...
 
 
 class WebhookNotificationChannel:
@@ -80,9 +111,13 @@ class WebhookNotificationChannel:
 
     async def send(
         self, contact: ContactForm, context: ContactNotificationContext
-    ) -> None:
+    ) -> NotificationChannelResult:
         if not self._is_configured():
-            return
+            return NotificationChannelResult(
+                channel="webhook",
+                success=False,
+                error="Webhook channel is not configured.",
+            )
 
         payload = self._build_payload(contact)
         try:
@@ -97,14 +132,23 @@ class WebhookNotificationChannel:
             logger.info(
                 f"Webhook notification sent successfully for request_id={context.request_id}."
             )
+            return NotificationChannelResult(channel="webhook", success=True)
         except httpx.HTTPStatusError as exc:
+            error = f"Webhook returned HTTP {exc.response.status_code}."
             logger.warning(
-                f"Webhook notification returned HTTP {exc.response.status_code} "
+                f"{error} "
                 f"for request_id={context.request_id}."
             )
+            return NotificationChannelResult(
+                channel="webhook", success=False, error=error
+            )
         except httpx.RequestError:
+            error = "Webhook request failed."
             logger.exception(
-                f"Webhook notification request failed for request_id={context.request_id}."
+                f"{error} request_id={context.request_id}."
+            )
+            return NotificationChannelResult(
+                channel="webhook", success=False, error=error
             )
 
 
@@ -167,9 +211,13 @@ class EmailNotificationChannel:
 
     async def send(
         self, contact: ContactForm, context: ContactNotificationContext
-    ) -> None:
+    ) -> NotificationChannelResult:
         if not self._is_configured():
-            return
+            return NotificationChannelResult(
+                channel="email",
+                success=False,
+                error="Email channel is not configured.",
+            )
 
         message = EmailMessage()
         message["From"] = self._config.smtp_from
@@ -184,10 +232,13 @@ class EmailNotificationChannel:
             logger.info(
                 f"Email notification sent successfully for request_id={context.request_id}."
             )
+            return NotificationChannelResult(channel="email", success=True)
         except (smtplib.SMTPException, OSError):
+            error = "Email notification failed."
             logger.exception(
-                f"Email notification failed for request_id={context.request_id}."
+                f"{error} request_id={context.request_id}."
             )
+            return NotificationChannelResult(channel="email", success=False, error=error)
 
 
 class ContactNotificationService:
@@ -198,15 +249,15 @@ class ContactNotificationService:
         self,
         contact: ContactForm,
         context: ContactNotificationContext,
-    ) -> None:
+    ) -> NotificationDispatchResult:
         if not self._channels:
             logger.info("No notification channels registered. Nothing to dispatch.")
-            return
+            return NotificationDispatchResult(results=())
 
         logger.info(
             f"Dispatching contact notifications for request_id={context.request_id}."
         )
-        results = await asyncio.gather(
+        channel_results = await asyncio.gather(
             *(
                 channel.send(contact=contact, context=context)
                 for channel in self._channels
@@ -214,12 +265,24 @@ class ContactNotificationService:
             return_exceptions=True,
         )
 
-        for result in results:
-            if isinstance(result, Exception):
+        normalized_results: list[NotificationChannelResult] = []
+        for result in channel_results:
+            if isinstance(result, BaseException):
+                normalized_results.append(
+                    NotificationChannelResult(
+                        channel="unknown",
+                        success=False,
+                        error=f"Unhandled channel exception: {result.__class__.__name__}",
+                    )
+                )
                 logger.error(
                     f"A notification channel raised an unhandled exception: {result!r}"
                 )
+                continue
+            normalized_results.append(result)
 
+        dispatch_result = NotificationDispatchResult(results=tuple(normalized_results))
         logger.info(
             f"Contact notifications finished for request_id={context.request_id}."
         )
+        return dispatch_result

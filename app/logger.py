@@ -1,7 +1,9 @@
 from contextvars import ContextVar, Token
 import logging
-import logging.config
-from typing import Any
+from types import ModuleType
+
+from opentelemetry.trace import get_current_span
+from rich.logging import RichHandler
 
 _request_id_ctx: ContextVar[str] = ContextVar("request_id", default="-")
 _method_ctx: ContextVar[str] = ContextVar("method", default="-")
@@ -17,7 +19,36 @@ class RequestContextFilter(logging.Filter):
         record.trace_method = _method_ctx.get()
         record.trace_path = _path_ctx.get()
         record.trace_client_ip = _client_ip_ctx.get()
+        span = get_current_span()
+        context = span.get_span_context() if span is not None else None
+        if context and context.is_valid:
+            record.trace_id = f"{context.trace_id:032x}"
+            record.span_id = f"{context.span_id:016x}"
+        else:
+            record.trace_id = "-"
+            record.span_id = "-"
         return True
+
+
+def _build_rich_handler(level: str) -> RichHandler:
+    traceback_suppress: list[str | ModuleType] = []
+    try:
+        import click
+
+        traceback_suppress.append(click)
+    except Exception:
+        traceback_suppress = []
+
+    handler = RichHandler(
+        level=level,
+        rich_tracebacks=True,
+        tracebacks_suppress=traceback_suppress,
+        log_time_format="[%X]",
+        show_path=False,
+        markup=False,
+        omit_repeated_times=False,
+    )
+    return handler
 
 
 def configure_logging(level: str) -> None:
@@ -26,44 +57,24 @@ def configure_logging(level: str) -> None:
         return
 
     normalized_level = level.upper().strip() or "INFO"
-    config: dict[str, Any] = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "filters": {
-            "request_context": {
-                "()": "app.logger.RequestContextFilter",
-            }
-        },
-        "formatters": {
-            "default": {
-                "format": (
-                    "{asctime} | {levelname:<8} | {name} | "
-                    "req_id={trace_request_id} method={trace_method} "
-                    "path={trace_path} ip={trace_client_ip} | {message}"
-                ),
-                "style": "{",
-                "datefmt": "%Y-%m-%d %H:%M:%S",
-            }
-        },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "formatter": "default",
-                "filters": ["request_context"],
-                "stream": "ext://sys.stdout",
-            }
-        },
-        "root": {
-            "handlers": ["console"],
-            "level": normalized_level,
-        },
-        "loggers": {
-            "httpx": {"level": "WARNING"},
-            "httpcore": {"level": "WARNING"},
-            "watchfiles": {"level": "WARNING"},
-        },
-    }
-    logging.config.dictConfig(config)
+    handler = _build_rich_handler(normalized_level)
+    handler.addFilter(RequestContextFilter())
+    logging.basicConfig(
+        level=normalized_level,
+        format=(
+            "%(name)s | %(message)s | "
+            "req_id=%(trace_request_id)s method=%(trace_method)s "
+            "path=%(trace_path)s ip=%(trace_client_ip)s "
+            "trace_id=%(trace_id)s span_id=%(span_id)s"
+        ),
+        datefmt="[%X]",
+        handlers=[handler],
+        force=True,
+    )
+
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("watchfiles").setLevel(logging.WARNING)
     _configured = True
 
 

@@ -6,6 +6,7 @@ import time
 from uuid import uuid4
 
 from fastapi import Request
+from opentelemetry.trace import get_current_span
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
@@ -15,11 +16,19 @@ from app.logger import bind_request_context, reset_request_context
 logger = logging.getLogger(__name__)
 
 
-def generate_csrf_token() -> str:
+def _csrf_user_agent_hash(user_agent: str) -> str:
+    normalized = user_agent.strip().lower()
+    if not normalized:
+        return "na"
+    return hashlib.sha256(normalized.encode()).hexdigest()[:16]
+
+
+def generate_csrf_token(*, user_agent: str = "") -> str:
     """Generate a timestamped CSRF token signed with HMAC-SHA256."""
     timestamp = str(int(time.time()))
     random_part = secrets.token_hex(16)
-    payload = f"{timestamp}:{random_part}"
+    user_agent_hash = _csrf_user_agent_hash(user_agent)
+    payload = f"{timestamp}:{random_part}:{user_agent_hash}"
     signature = hmac.new(
         settings.secret_key.encode(),
         payload.encode(),
@@ -28,15 +37,15 @@ def generate_csrf_token() -> str:
     return f"{payload}:{signature}"
 
 
-def validate_csrf_token(token: str) -> bool:
+def validate_csrf_token(token: str, *, user_agent: str = "") -> bool:
     """Validate CSRF token signature and expiry."""
     try:
-        parts = token.rsplit(":", 2)
-        if len(parts) != 3:
+        parts = token.rsplit(":", 3)
+        if len(parts) != 4:
             logger.debug("CSRF token has an invalid format.")
             return False
-        timestamp_str, random_part, signature = parts
-        payload = f"{timestamp_str}:{random_part}"
+        timestamp_str, random_part, user_agent_hash, signature = parts
+        payload = f"{timestamp_str}:{random_part}:{user_agent_hash}"
         expected = hmac.new(
             settings.secret_key.encode(),
             payload.encode(),
@@ -54,10 +63,23 @@ def validate_csrf_token(token: str) -> bool:
         if age > settings.csrf_token_expiry:
             logger.debug(f"CSRF token expired (age={age:.2f}s).")
             return False
+        expected_user_agent_hash = _csrf_user_agent_hash(user_agent)
+        if not hmac.compare_digest(user_agent_hash, expected_user_agent_hash):
+            logger.debug("CSRF token user-agent binding validation failed.")
+            return False
     except (TypeError, ValueError):
         logger.debug("CSRF token parsing failed.")
         return False
     return True
+
+
+def is_allowed_form_content_type(content_type: str) -> bool:
+    normalized = content_type.strip().lower()
+    if not normalized:
+        return False
+    return normalized.startswith(
+        ("application/x-www-form-urlencoded", "multipart/form-data")
+    )
 
 
 class RequestTracingMiddleware(BaseHTTPMiddleware):
@@ -91,6 +113,9 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
         else:
             elapsed_ms = (time.perf_counter() - started_at) * 1000
             response.headers[settings.request_id_header] = request_id
+            span_context = get_current_span().get_span_context()
+            if span_context.is_valid:
+                response.headers["X-Trace-ID"] = f"{span_context.trace_id:032x}"
             logger.info(
                 f"Request completed with status_code={response.status_code} "
                 f"duration_ms={elapsed_ms:.2f}."
@@ -111,8 +136,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         response.headers["Permissions-Policy"] = (
             "camera=(), microphone=(), geolocation=()"
         )
@@ -123,9 +149,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             )
             response.headers["Content-Security-Policy"] = (
                 "default-src 'self'; "
-                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+                "style-src 'self' 'unsafe-inline'; "
                 "script-src 'self' https://cdn.tailwindcss.com; "
                 "img-src 'self' data: https:; "
-                "font-src 'self' data: https://fonts.gstatic.com https:; "
+                "font-src 'self' data:; "
+                "connect-src 'self'; "
+                "frame-ancestors 'none'; "
+                "base-uri 'self'; "
             )
         return response

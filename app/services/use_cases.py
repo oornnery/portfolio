@@ -32,14 +32,19 @@ class ContactSubmissionResult:
 
 
 class HomePageService:
-    def build_page(self) -> PageRenderData:
+    def __init__(
+        self, csrf_token_factory: Callable[..., str] = generate_csrf_token
+    ) -> None:
+        self._csrf_token_factory = csrf_token_factory
+
+    def build_page(self, *, user_agent: str = "") -> PageRenderData:
         all_projects = list(load_all_projects())
         featured_projects = [project for project in all_projects if project.featured]
         non_featured_projects = [
             project for project in all_projects if not project.featured
         ]
         featured = (featured_projects + non_featured_projects)[:3]
-        csrf_token = generate_csrf_token()
+        csrf_token = self._csrf_token_factory(user_agent=user_agent)
         seo = seo_for_page(
             title="Home",
             description="Python developer portfolio with projects, experience, and contact details.",
@@ -61,19 +66,22 @@ class HomePageService:
 
 class AboutPageService:
     def build_page(self) -> PageRenderData:
-        meta, content_html = load_about()
+        about_content = load_about()
+        frontmatter = about_content.frontmatter
         seo = seo_for_page(
             title="About",
-            description=meta.get("description", "About me"),
+            description=frontmatter.description or "About me",
             path="/about",
         )
-        logger.debug(f"About use-case built with html_length={len(content_html)}")
+        logger.debug(
+            f"About use-case built with html_length={len(about_content.body_html)}"
+        )
         return PageRenderData(
             template="pages/about.jinja",
             context={
                 "seo": seo,
-                "meta": meta,
-                "content_html": content_html,
+                "meta": frontmatter.model_dump(mode="json"),
+                "content_html": about_content.body_html,
                 "current_path": "/about",
             },
         )
@@ -116,13 +124,14 @@ class ProjectsPageService:
 
 class ContactPageService:
     def __init__(
-        self, csrf_token_factory: Callable[[], str] = generate_csrf_token
+        self, csrf_token_factory: Callable[..., str] = generate_csrf_token
     ) -> None:
         self._csrf_token_factory = csrf_token_factory
 
     def build_page(
         self,
         *,
+        user_agent: str = "",
         current_csrf: str | None = None,
         success: str = "",
         errors: dict[str, str] | None = None,
@@ -133,7 +142,7 @@ class ContactPageService:
             description="Get in touch with me.",
             path="/contact",
         )
-        csrf_token = current_csrf or self._csrf_token_factory()
+        csrf_token = current_csrf or self._csrf_token_factory(user_agent=user_agent)
         return PageRenderData(
             template="pages/contact.jinja",
             context={
@@ -150,7 +159,7 @@ class ContactPageService:
 class ContactSubmissionService:
     def __init__(
         self,
-        csrf_validator: Callable[[str], bool] = validate_csrf_token,
+        csrf_validator: Callable[..., bool] = validate_csrf_token,
     ) -> None:
         self._csrf_validator = csrf_validator
 
@@ -178,6 +187,7 @@ class ContactSubmissionService:
         message: str,
         csrf_token: str,
         client_ip: str,
+        user_agent: str,
     ) -> ContactSubmissionResult:
         form_data = self._normalize_input(
             name=name,
@@ -186,7 +196,7 @@ class ContactSubmissionService:
             message=message,
         )
 
-        if not self._csrf_validator(csrf_token):
+        if not self._csrf_validator(csrf_token, user_agent=user_agent):
             logger.warning(
                 f"Invalid or expired CSRF token for contact form submission from {client_ip}."
             )

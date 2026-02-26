@@ -3,8 +3,11 @@ from app.services.contact import (
     ContactNotificationService,
     EmailNotificationChannel,
     EmailNotificationConfig,
+    NotificationChannelResult,
+    NotificationDispatchResult,
     WebhookNotificationChannel,
 )
+from app.services.analytics import AnalyticsIngestResult, AnalyticsService
 from app.services.markdown import (
     get_project_by_slug,
     load_about,
@@ -29,7 +32,11 @@ __all__ = [
     "ContactNotificationService",
     "EmailNotificationChannel",
     "EmailNotificationConfig",
+    "NotificationChannelResult",
+    "NotificationDispatchResult",
     "WebhookNotificationChannel",
+    "AnalyticsService",
+    "AnalyticsIngestResult",
     "PageRenderData",
     "ContactSubmissionResult",
     "HomePageService",

@@ -16,6 +16,13 @@ class Settings(BaseSettings):
     debug: bool = False
     log_level: str = "INFO"
     request_id_header: str = "X-Request-ID"
+    telemetry_enabled: bool = True
+    telemetry_service_name: str = "portfolio-backend"
+    telemetry_service_namespace: str = "portfolio"
+    telemetry_traces_sample_ratio: float = Field(default=1.0, ge=0.0, le=1.0)
+    telemetry_exporter_otlp_endpoint: str = ""
+    telemetry_exporter_otlp_insecure: bool = True
+    telemetry_console_exporters: bool = False
 
     # Site
     site_name: str = "Fabio Souza"
@@ -32,6 +39,8 @@ class Settings(BaseSettings):
     )
     default_language: str = "en"
     supported_languages: list[str] = Field(default_factory=lambda: ["en", "pt"])
+    analytics_enabled: bool = True
+    analytics_log_events: bool = True
 
     # Security
     secret_key: str = Field(min_length=16)
