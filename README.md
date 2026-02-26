@@ -1,204 +1,374 @@
-# Portfolio (Backend + Frontend)
+# Portfolio (FastAPI + Jx)
 
-## Overview
+Server-side portfolio built with FastAPI, Jx components, markdown content,
+and a service-driven backend architecture.
 
-This project is a server-rendered portfolio built with FastAPI and Jx.
-The backend handles routing, validation, security, and business flows.
-The frontend is component-based (`.jinja`) and rendered on the server through
-`Catalog.render(...)`.
+## Highlights
 
-## Stack
+- FastAPI app factory with dependency injection and thin routers.
+- Jx component catalog (`Catalog.render`) for SSR HTML pages.
+- Content-driven profile and pages from markdown + YAML frontmatter.
+- Contact flow with CSRF protection, strict validation, rate limiting,
+  and decoupled notifications.
+- Structured request tracing logs with request ID propagation.
+- Reusable UI component layer (buttons, icons, breadcrumb, cards, tags,
+  inputs, alerts).
+
+## Tech Stack
 
 ### Backend
 
-| Technology              | Responsibility                                      |
-| ----------------------- | --------------------------------------------------- |
-| FastAPI                 | HTTP routing, dependency injection, middleware      |
-| Uvicorn                 | ASGI runtime                                        |
-| Pydantic v2             | Input and schema validation                         |
-| pydantic-settings       | Environment-based app configuration                 |
-| SlowAPI                 | Rate limiting on contact submissions                |
-| httpx                   | Outbound webhook notifications                      |
-| smtplib + email.message | SMTP email notification channel                     |
-| markdown + pygments     | Markdown parsing with code highlighting             |
-| PyYAML                  | YAML frontmatter parsing                            |
+| Technology              | Purpose                                     |
+| ----------------------- | ------------------------------------------- |
+| FastAPI                 | Routing, DI, middleware, exception handling |
+| Uvicorn                 | ASGI runtime                                |
+| Pydantic v2             | Schema validation for forms and SEO         |
+| pydantic-settings       | Environment-driven settings                 |
+| SlowAPI                 | Per-IP rate limiting (`POST /contact`)      |
+| httpx                   | Async webhook notifications                 |
+| smtplib + email.message | SMTP notifications                          |
+| markdown + pygments     | Markdown rendering + syntax highlight       |
+| PyYAML                  | YAML frontmatter parsing                    |
 
-### Frontend and Rendering
+### Frontend / Rendering
 
-| Technology | Responsibility                                      |
-| ---------- | --------------------------------------------------- |
-| Jx         | Component system on top of Jinja2                   |
-| Jinja2     | Template runtime used by Jx                         |
-| CSS        | Styling in `static/css/global.css`                  |
-| JS         | Small client bootstrapping in `static/js/main.js`   |
-| Markdown   | Content source for About and Project detail pages   |
+| Technology                             | Purpose                                |
+| -------------------------------------- | -------------------------------------- |
+| Jx                                     | Component abstraction on top of Jinja2 |
+| Jinja2                                 | Template runtime used by Jx            |
+| Tailwind (runtime config) + custom CSS | UI styling + responsive behavior       |
+| Vanilla JS                             | Menu, snap navigation, UX scripts      |
 
-### Quality and Tooling
+### Quality
 
-| Tool    | Responsibility                |
-| ------- | ----------------------------- |
-| Ruff    | Python linting                |
-| ty      | Static type checking          |
-| rumdl   | Markdown linting/formatting   |
+| Tool  | Purpose              |
+| ----- | -------------------- |
+| Ruff  | Linting              |
+| ty    | Static type checks   |
+| rumdl | Markdown lint/format |
 
-## Project Structure
+## Architecture
 
-```text
-app/
-  main.py
-  config.py
-  dependencies.py
-  logger.py
-  security.py
-  routers/
-  services/
-  schemas.py
-  models.py
-components/
-  layouts/
-  seo/
-  nav/
-  footer/
-  hero/
-  cards/
-  tags/
-  markdown/
-  contact/
-  pages/
-content/
-  about.md
-  projects/*.md
-static/
-  css/global.css
-  js/main.js
-  images/
-```
-
-## Backend Architecture
-
-### Entry and Runtime
-
-- `app/main.py`: app factory, middleware, exception handlers, and router setup.
-- `app/config.py`: typed settings loaded from environment.
-- `app/logger.py`: structured logs and request context.
-- `app/security.py`: CSRF helpers and security/tracing middleware.
-
-### Thin HTTP Routers
-
-- `app/routers/home.py`
-- `app/routers/about.py`
-- `app/routers/projects.py`
-- `app/routers/contact.py`
-
-Routers delegate logic to injected services (`Depends(...)`).
-
-### Use-Case Layer
-
-- `app/services/use_cases.py`
-  - `HomePageService`
-  - `AboutPageService`
-  - `ProjectsPageService`
-  - `ContactPageService`
-  - `ContactSubmissionService`
-
-### Domain and Infra Services
-
-- `app/services/seo.py`: SEO metadata generation.
-- `app/services/markdown.py`: markdown + frontmatter loading.
-- `app/services/contact.py`: notification channels and dispatch.
-- `app/dependencies.py`: DI providers, singleton catalog, and service graph.
-
-## Frontend Architecture (Jx)
-
-### Component Layers
-
-- `components/layouts/base.jinja`: root layout, SEO head, navbar, footer.
-- `components/seo/head.jinja`: meta tags, Open Graph, Twitter tags, JSON-LD.
-- `components/nav/navbar.jinja`: main navigation with active route state.
-- `components/footer/footer.jinja`: footer and social links.
-- `components/hero/hero.jinja`: home intro section.
-- `components/cards/project_card.jinja`: project list cards.
-- `components/tags/tag_badge.jinja`: reusable tag badges.
-- `components/markdown/prose.jinja`: markdown HTML wrapper (`| safe`).
-- `components/contact/contact_form.jinja`: contact form with CSRF field.
-- `components/pages/*.jinja`: route-level page composition.
-
-### Static Assets
-
-- `static/css/global.css`: global UI tokens and component styles.
-- `static/js/main.js`: lightweight client initialization.
-- `static/images/projects/*.svg`: project thumbnails.
-- `static/images/og-default.png`: default Open Graph image.
-
-### Content Source
-
-- `content/about.md`
-- `content/projects/*.md`
-
-Each markdown file can include YAML frontmatter:
-`title`, `slug`, `description`, `thumbnail`, `tags`, `tech_stack`, `date`,
-`featured`, and external links.
-
-## Route to Template Mapping
-
-| Method | Path               | Template                                | Main Services                                            |
-| ------ | ------------------ | --------------------------------------- | -------------------------------------------------------- |
-| GET    | `/`                | `components/pages/home.jinja`           | `HomePageService`, `markdown`, `seo`                     |
-| GET    | `/about`           | `components/pages/about.jinja`          | `AboutPageService`, `markdown`, `seo`                    |
-| GET    | `/projects`        | `components/pages/projects.jinja`       | `ProjectsPageService`, `markdown`, `seo`                 |
-| GET    | `/projects/{slug}` | `components/pages/project_detail.jinja` | `ProjectsPageService`, `seo`                             |
-| GET    | `/contact`         | `components/pages/contact.jinja`        | `ContactPageService`, CSRF generation                    |
-| POST   | `/contact`         | `components/pages/contact.jinja`        | `ContactSubmissionService`, `ContactNotificationService` |
-| GET    | `*` (404)          | `components/pages/not_found.jinja`      | `seo`                                                    |
-
-## End-to-End SSR Flow (Mermaid)
+### High-level flow
 
 ```mermaid
 flowchart TD
-    A[Browser Request] --> B[FastAPI Router]
-    B --> C[Use-Case Service]
+    A[HTTP Request] --> B[FastAPI Router]
+    B --> C[Use-case Service]
     C --> D[Domain Services]
     D --> D1[markdown.py]
     D --> D2[seo.py]
-    C --> E[Page Context]
-    E --> F[Jx Catalog.render]
-    F --> G[Page Component]
-    G --> H[Layout + Shared Components]
-    H --> I[HTML Response]
+    C --> E[Template + Context]
+    E --> F[dependencies.render_template]
+    F --> G[Jx Catalog.render]
+    G --> H[Composed Jx Components]
+    H --> I[HTMLResponse]
     I --> J[Security Headers + Request ID]
-
-    K[POST /contact] --> L[ContactSubmissionService]
-    L --> M{CSRF + Validation OK?}
-    M -->|No| E
-    M -->|Yes| N[ContactNotificationService]
-    N --> N1[Webhook Channel]
-    N --> N2[Email Channel]
-    N --> E
 ```
 
-## Security Highlights
+### Contact submission flow
 
-- CSRF token with HMAC signature and expiration.
-- Pydantic validation with strict schema (`extra="forbid"`).
-- Rate limiting on contact form POST.
-- Security headers middleware (CSP, HSTS, X-Frame-Options, etc.).
-- Request tracing with `X-Request-ID`.
+```mermaid
+flowchart TD
+    A[POST /contact] --> B[ContactSubmissionService]
+    B --> C{CSRF valid?}
+    C -->|No| D[Return contact page with errors 403]
+    C -->|Yes| E[Pydantic ContactForm validation]
+    E --> F{Valid?}
+    F -->|No| G[Return contact page with errors 422]
+    F -->|Yes| H[ContactNotificationService]
+    H --> I[WebhookNotificationChannel]
+    H --> J[EmailNotificationChannel]
+    H --> K[Return success page with fresh CSRF]
+```
 
-## Local Commands
+## Current Project Structure
+
+```text
+app/
+  __init__.py
+  config.py
+  dependencies.py
+  logger.py
+  main.py
+  models.py
+  schemas.py
+  security.py
+  routers/
+    __init__.py
+    about.py
+    contact.py
+    home.py
+    projects.py
+  services/
+    __init__.py
+    contact.py
+    markdown.py
+    seo.py
+    use_cases.py
+
+components/
+  layouts/
+    base.jinja
+    home.jinja
+    public.jinja
+  pages/
+    about.jinja
+    contact.jinja
+    home.jinja
+    maintenance.jinja
+    not_found.jinja
+    project_detail.jinja
+    projects.jinja
+  ui/
+    alert.jinja
+    breadcrumb.jinja
+    button.jinja
+    card.jinja
+    header.jinja
+    icon.jinja
+    input.jinja
+    section_link.jinja
+    tag.jinja
+  seo/
+    head.jinja
+  nav/
+    navbar.jinja
+  footer/
+    footer.jinja
+  cards/
+    project_card.jinja
+  contact/
+    contact_form.jinja
+  hero/
+    hero.jinja
+  markdown/
+    prose.jinja
+  tags/
+    tag_badge.jinja
+
+content/
+  about.md
+  projects/
+    api-observability-hub.md
+    distributed-task-orchestrator.md
+    markdown-knowledge-base.md
+    secure-contact-pipeline.md
+
+static/
+  css/
+    global.css
+    motion.css
+    style.css
+    tokens.css
+  js/
+    analytics.js
+    htmx.js
+    htmx.min.js
+    main.js
+    tailwind.config.js
+  images/
+    og-default.png
+    projects/*.svg
+```
+
+## Backend Design
+
+### App lifecycle (`app/main.py`)
+
+- Configures structured logging.
+- Creates FastAPI instance with docs enabled only in debug mode.
+- Mounts `/static` if directory exists.
+- Registers middleware:
+  - `RequestTracingMiddleware`
+  - `SecurityHeadersMiddleware`
+- Wires SlowAPI rate limit exception handler.
+- Registers routers (`home`, `about`, `projects`, `contact`).
+- Handles 404 with rendered `pages/not_found.jinja`.
+
+### Dependency graph (`app/dependencies.py`)
+
+- `get_catalog()` builds a singleton Jx catalog.
+- Profile globals are loaded from `content/about.md` and injected globally:
+  - `site_name`
+  - `profile_name`
+  - `profile_role`
+  - `profile_location`
+  - `profile_summary` (from `description`)
+  - `social_links`
+- `render_template()` wraps `catalog.render(...)` and falls back to
+  `pages/maintenance.jinja` if render fails.
+- Services are provided as singleton dependencies:
+  - page use-cases
+  - contact submission service
+  - notification service with channels
+
+### Use-cases (`app/services/use_cases.py`)
+
+- `HomePageService`: builds featured project context and CSRF token.
+- `AboutPageService`: loads markdown profile content and metadata.
+- `ProjectsPageService`: list and detail page composition.
+- `ContactPageService`: page context with CSRF, form state, and messages.
+- `ContactSubmissionService`: normalization, CSRF validation, and Pydantic validation.
+
+## Routing Matrix
+
+| Method | Path               | Router            | Template                     | Notes                                       |
+| ------ | ------------------ | ----------------- | ---------------------------- | ------------------------------------------- |
+| GET    | `/`                | `home.py`         | `pages/home.jinja`           | Featured projects + profile hero            |
+| GET    | `/about`           | `about.py`        | `pages/about.jinja`          | Resume-style sections from frontmatter      |
+| GET    | `/projects`        | `projects.py`     | `pages/projects.jinja`       | Project cards list                          |
+| GET    | `/projects/{slug}` | `projects.py`     | `pages/project_detail.jinja` | Detail page + action buttons                |
+| GET    | `/contact`         | `contact.py`      | `pages/contact.jinja`        | Contact form + CSRF                         |
+| POST   | `/contact`         | `contact.py`      | `pages/contact.jinja`        | CSRF, validation, notifications, rate limit |
+| GET    | `*`                | exception handler | `pages/not_found.jinja`      | Rendered 404 page                           |
+
+## Frontend / Jx Layer
+
+### Layouts
+
+- `layouts/base.jinja`: HTML shell, SEO component, CSS/JS includes.
+- `layouts/public.jinja`: navbar + content container + footer.
+- `layouts/home.jinja`: full-viewport scroll-snap homepage shell.
+
+### Reusable UI components
+
+- `ui/breadcrumb.jinja`: reusable breadcrumb with dynamic items.
+- `ui/button.jinja`: variants/sizes for links and buttons.
+- `ui/icon.jinja`: single icon system (glyph + social links variants).
+- `ui/card.jinja`, `ui/tag.jinja`, `ui/input.jinja`, `ui/alert.jinja`,
+  `ui/section_link.jinja`, `ui/header.jinja`.
+
+### Page composition
+
+- Home: profile hero, projects section, contact section.
+- About: profile header + work, education, certificates, skills.
+- Projects: list page and detail page with tech chips and CTA buttons.
+- Contact: social links + form.
+
+## Content Model
+
+### `content/about.md` frontmatter
+
+Key fields used by the app:
+
+- `name`
+- `role`
+- `location`
+- `description` (short profile summary; used on Home)
+- `full_description` (long profile text; used as About body)
+- `social_links` (`github`, `linkedin`, `x`, optional `email`)
+- `work_experience[]`
+- `education[]`
+- `certificates[]`
+- `skills[]`
+
+`load_about()` prioritizes `full_description` as rendered markdown body.
+
+### `content/projects/*.md` frontmatter
+
+Supported fields:
+
+- `title`, `slug`, `description`, `thumbnail`
+- `tags`, `tech_stack`
+- `github_url`, `live_url`
+- `date`, `featured`
+
+## Security and Reliability
+
+- CSRF token generation + validation with HMAC-SHA256 + expiry.
+- Strict Pydantic form validation (`extra="forbid"`).
+- IP-based rate limit on contact submissions.
+- Security headers middleware:
+  - `X-Content-Type-Options`
+  - `X-Frame-Options`
+  - `Referrer-Policy`
+  - `Permissions-Policy`
+  - `HSTS` + `CSP` in non-debug mode
+- Request tracing middleware with request ID header propagation.
+- Render fallback to maintenance page if template rendering fails.
+
+## Logging and Tracing
+
+`app/logger.py` configures structured logs with request context fields:
+
+- `req_id`
+- `method`
+- `path`
+- `ip`
+
+Example format:
+
+```text
+2026-02-26 01:00:00 | INFO | app.routers.home |
+req_id=... method=GET path=/ ip=... | Home page rendered.
+```
+
+## Configuration
+
+Settings are defined in `app/config.py` and loaded from `.env`.
+
+### Required
+
+| Variable     | Description              |
+| ------------ | ------------------------ |
+| `SECRET_KEY` | Used to sign CSRF tokens |
+
+### Common optional
+
+| Variable              | Description                                |
+| --------------------- | ------------------------------------------ |
+| `DEBUG`               | Enables docs/openapi and dev behavior      |
+| `APP_NAME`            | FastAPI title                              |
+| `APP_DESCRIPTION`     | FastAPI description                        |
+| `SITE_NAME`           | Fallback site/profile name                 |
+| `BASE_URL`            | Canonical URL base                         |
+| `RATE_LIMIT`          | SlowAPI format (example `10/minute`)       |
+| `CONTACT_WEBHOOK_URL` | Webhook endpoint for contact notifications |
+| `CONTACT_EMAIL_TO`    | Target email for SMTP notifications        |
+| `SMTP_*`              | SMTP transport settings                    |
+
+### Example `.env`
+
+```env
+SECRET_KEY=replace-with-a-strong-random-secret
+DEBUG=true
+SITE_NAME=Fabio Souza
+BASE_URL=http://localhost:8000
+CONTACT_WEBHOOK_URL=
+CONTACT_EMAIL_TO=
+```
+
+## Development
+
+### Install dependencies
 
 ```bash
-# Python lint
-uv run ruff check app
+uv sync
+```
 
-# Static type check
-uv run ty check app
+### Run app
 
-# Markdown lint
-uv run rumdl check .
-
-# Optional: markdown format
-uv run rumdl fmt README.md
-
-# Run app
+```bash
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+### Quality checks
+
+```bash
+uv run ruff check app
+uv run ty check app
+uv run rumdl check .
+```
+
+### Optional markdown formatting
+
+```bash
+uv run rumdl fmt README.md
+```
+
+## Notes
+
+- This project intentionally uses SSR with Jx and does not depend on a SPA framework.
+- Profile identity and social links are content-driven from `content/about.md`.
+- The `portfolio-bak/` directory is a reference source and not part of runtime architecture.
