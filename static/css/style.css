@@ -401,9 +401,17 @@ input:disabled, textarea:disabled, select:disabled {
     padding: 0 1rem;
 }
 
-.home-hero-section .home-hero-content {
-    padding-top: 4rem;
+.home-footer-section {
+    min-height: auto;
+    scroll-snap-align: end;
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
 }
+
+.home-footer-section .footer {
+    margin-top: 0;
+}
+
 
 /* Scroll indicator */
 .scroll-indicator {
@@ -451,9 +459,6 @@ input:disabled, textarea:disabled, select:disabled {
         bottom: 1.25rem;
     }
 
-    .home-hero-section .home-hero-content {
-        padding-top: 2rem;
-    }
 }
 
 @media (max-width: 1024px) {

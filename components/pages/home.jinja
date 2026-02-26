@@ -6,6 +6,7 @@
 {#import "@ui/button.jinja" as Button #}
 {#import "@ui/social_links.jinja" as SocialLinks #}
 {#import "@ui/section_link.jinja" as SectionLink #}
+{#import "@footer/footer.jinja" as Footer #}
 
 <HomeLayout seo={{ seo }} current_path={{ current_path }}>
     <section class="snap-section home-hero-section">
@@ -121,6 +122,12 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="snap-section home-footer-section">
+        <div class="snap-section-content">
+            <Footer />
         </div>
     </section>
 </HomeLayout>
