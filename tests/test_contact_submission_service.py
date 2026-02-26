@@ -1,7 +1,3 @@
-import os
-
-os.environ["DEBUG"] = "false"
-
 from app.services.use_cases import ContactSubmissionService
 
 
