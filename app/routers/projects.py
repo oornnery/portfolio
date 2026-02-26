@@ -3,7 +3,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 
-from app.dependencies import get_projects_page_service, render_or_fallback
+from app.dependencies import get_projects_page_service, render_template
 from app.services.use_cases import ProjectsPageService
 
 router = APIRouter(prefix="/projects")
@@ -15,11 +15,7 @@ async def projects_list(
     page_service: ProjectsPageService = Depends(get_projects_page_service),
 ) -> HTMLResponse:
     page = page_service.build_list_page()
-    html = render_or_fallback(
-        page.template,
-        page.fallback_html,
-        **page.context,
-    )
+    html = render_template(page.template, **page.context)
     logger.info("Projects list page rendered.")
     return HTMLResponse(content=html)
 
@@ -34,10 +30,6 @@ async def project_detail(
         logger.info(f"Project detail not found for slug={slug}.")
         raise HTTPException(status_code=404, detail="Project not found")
     page = page_service.build_detail_page(project)
-    html = render_or_fallback(
-        page.template,
-        page.fallback_html,
-        **page.context,
-    )
+    html = render_template(page.template, **page.context)
     logger.info(f"Project detail page rendered for slug={slug}.")
     return HTMLResponse(content=html)

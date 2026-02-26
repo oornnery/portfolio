@@ -9,7 +9,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
-from app.dependencies import limiter, render_or_fallback
+from app.dependencies import limiter, render_template
 from app.logger import configure_logging
 from app.routers import about, contact, home, projects
 from app.security import RequestTracingMiddleware, SecurityHeadersMiddleware
@@ -59,12 +59,7 @@ def create_app() -> FastAPI:
     async def not_found_handler(request: Request, exc: Exception) -> HTMLResponse:
         logger.info(f"Route not found for path={request.url.path}")
         seo = seo_for_page("404 - Not Found", "Page not found")
-        html = render_or_fallback(
-            "pages/not_found.jinja",
-            "<h1>404</h1><p>Page not found.</p>",
-            seo=seo,
-            current_path="",
-        )
+        html = render_template("pages/not_found.jinja", seo=seo, current_path="")
         return HTMLResponse(content=html, status_code=404)
 
     logger.info("FastAPI application created successfully.")

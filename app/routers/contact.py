@@ -8,7 +8,7 @@ from app.dependencies import (
     get_contact_notification_service,
     get_contact_submission_service,
     limiter,
-    render_or_fallback,
+    render_template,
 )
 from app.services.contact import (
     ContactNotificationContext,
@@ -26,7 +26,7 @@ async def contact_get(
 ) -> HTMLResponse:
     logger.info("Contact page rendered.")
     page = page_service.build_page()
-    html = render_or_fallback(page.template, page.fallback_html, **page.context)
+    html = render_template(page.template, **page.context)
     return HTMLResponse(content=html)
 
 
@@ -64,14 +64,14 @@ async def contact_post(
             errors=submission.errors,
             form_data=submission.form_data,
         )
-        html = render_or_fallback(page.template, page.fallback_html, **page.context)
+        html = render_template(page.template, **page.context)
         return HTMLResponse(content=html, status_code=submission.status_code)
     if submission.contact is None:
         page = page_service.build_page(
             errors={"form": "Unexpected contact submission state."},
             form_data=submission.form_data,
         )
-        html = render_or_fallback(page.template, page.fallback_html, **page.context)
+        html = render_template(page.template, **page.context)
         return HTMLResponse(content=html, status_code=500)
 
     notification_context = ContactNotificationContext(
@@ -87,5 +87,5 @@ async def contact_post(
     page = page_service.build_page(
         success="Message sent successfully. Thank you for reaching out.",
     )
-    html = render_or_fallback(page.template, page.fallback_html, **page.context)
+    html = render_template(page.template, **page.context)
     return HTMLResponse(content=html)

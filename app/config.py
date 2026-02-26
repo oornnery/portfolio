@@ -18,13 +18,11 @@ class Settings(BaseSettings):
     request_id_header: str = "X-Request-ID"
 
     # Site
-    site_name: str = "Your Name"
+    site_name: str = "Fabio Souza"
     base_url: AnyHttpUrl = cast(AnyHttpUrl, "http://localhost:8000")
     default_og_image: str = "/static/images/og-default.png"
 
-    # Custom profile data
-    author_name: str = "Fabio Souza"
-    author_email: str = "contato@fabiohcsouza.com"
+    # Profile fallback data (used only if content/about.md does not define them)
     social_links: dict[str, AnyHttpUrl] = Field(
         default_factory=lambda: {
             "github": cast(AnyHttpUrl, "https://github.com/oornnery"),

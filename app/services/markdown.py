@@ -71,6 +71,9 @@ def _as_str_list(raw: Any) -> list[str]:
 def load_about() -> tuple[dict[str, Any], str]:
     about_path = CONTENT_DIR / "about.md"
     meta, body = _parse_frontmatter(about_path)
+    full_description = str(meta.get("full_description") or "").strip()
+    if full_description:
+        body = full_description
     if not body:
         body = "Content coming soon."
     rendered = _render_md(body)

@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class PageRenderData:
     template: str
-    fallback_html: str
     context: dict[str, Any]
 
 
@@ -34,19 +33,27 @@ class ContactSubmissionResult:
 
 class HomePageService:
     def build_page(self) -> PageRenderData:
-        featured = [project for project in load_all_projects() if project.featured][:3]
+        all_projects = list(load_all_projects())
+        featured_projects = [project for project in all_projects if project.featured]
+        non_featured_projects = [
+            project for project in all_projects if not project.featured
+        ]
+        featured = (featured_projects + non_featured_projects)[:3]
+        csrf_token = generate_csrf_token()
         seo = seo_for_page(
             title="Home",
             description="Python developer portfolio with projects, experience, and contact details.",
             path="/",
         )
-        logger.debug(f"Home use-case built with featured_count={len(featured)}")
+        logger.debug(
+            f"Home use-case built with featured_count={len(featured)} total_projects={len(all_projects)}"
+        )
         return PageRenderData(
             template="pages/home.jinja",
-            fallback_html="<h1>Home</h1><p>Jx components have not been added yet.</p>",
             context={
                 "seo": seo,
                 "featured": featured,
+                "csrf_token": csrf_token,
                 "current_path": "/",
             },
         )
@@ -63,9 +70,9 @@ class AboutPageService:
         logger.debug(f"About use-case built with html_length={len(content_html)}")
         return PageRenderData(
             template="pages/about.jinja",
-            fallback_html=f"<h1>About</h1>{content_html}",
             context={
                 "seo": seo,
+                "meta": meta,
                 "content_html": content_html,
                 "current_path": "/about",
             },
@@ -85,7 +92,6 @@ class ProjectsPageService:
         )
         return PageRenderData(
             template="pages/projects.jinja",
-            fallback_html="<h1>Projects</h1><p>Jx components have not been added yet.</p>",
             context={
                 "seo": seo,
                 "projects": all_projects,
@@ -100,7 +106,6 @@ class ProjectsPageService:
         seo = seo_for_project(project)
         return PageRenderData(
             template="pages/project_detail.jinja",
-            fallback_html=f"<h1>{project.title}</h1>{project.content_html}",
             context={
                 "seo": seo,
                 "project": project,
@@ -131,7 +136,6 @@ class ContactPageService:
         csrf_token = current_csrf or self._csrf_token_factory()
         return PageRenderData(
             template="pages/contact.jinja",
-            fallback_html="<h1>Contact</h1><p>Jx components have not been added yet.</p>",
             context={
                 "seo": seo,
                 "csrf_token": csrf_token,
