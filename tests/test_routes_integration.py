@@ -6,7 +6,7 @@ from collections.abc import Iterator
 from fastapi.testclient import TestClient
 
 from app.main import create_app
-from app.services.markdown import load_all_projects
+from app.infrastructure.markdown import load_all_projects
 
 
 def _extract_csrf_token(html: str) -> str:

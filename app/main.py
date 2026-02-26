@@ -8,13 +8,13 @@ from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
-from app.config import settings
-from app.dependencies import limiter, render_template
-from app.logger import configure_logging
-from app.routers import about, analytics, contact, home, projects
-from app.security import RequestTracingMiddleware, SecurityHeadersMiddleware
-from app.services.seo import seo_for_page
-from app.telemetry import configure_telemetry
+from app.core.config import settings
+from app.presentation.dependencies import limiter, render_template
+from app.core.logger import configure_logging
+from app.presentation.routers import about, analytics, contact, home, projects
+from app.core.security import RequestTracingMiddleware, SecurityHeadersMiddleware
+from app.application.services.seo import seo_for_page
+from app.observability.telemetry import configure_telemetry
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ import hmac
 import secrets
 import time
 
-from app.config import settings
-from app.security import generate_csrf_token, validate_csrf_token
+from app.core.config import settings
+from app.core.security import generate_csrf_token, validate_csrf_token
 
 
 def test_csrf_roundtrip_valid_for_same_user_agent() -> None:

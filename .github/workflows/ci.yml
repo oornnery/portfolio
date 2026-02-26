@@ -39,5 +39,4 @@ jobs:
         run: uv run rumdl check .
 
       - name: Jx component check
-        run: DEBUG=true PYTHONPATH=. uv run jx check app/jx_catalog.py:catalog
-
+        run: DEBUG=true PYTHONPATH=. uv run jx check app/presentation/jx_catalog.py:catalog

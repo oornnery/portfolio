@@ -1,4 +1,4 @@
-from app.services.markdown import _render_md, _sanitize_html
+from app.infrastructure.markdown import _render_md, _sanitize_html
 
 
 def test_markdown_sanitization_strips_dangerous_html() -> None:

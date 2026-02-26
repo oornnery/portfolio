@@ -1,0 +1,33 @@
+{#import "@ui/tag.jinja" as Tag #}
+{#def project #}
+
+<a
+    href="/projects/{{ project.slug }}"
+    class="block group rounded-lg transition-all duration-200 bg-gray-900/50 border border-gray-800 hover:border-gray-700 hover:bg-gray-800/50 p-4 sm:p-6"
+>
+    <article>
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">{{ project.date.year if project.date else '' }}</span>
+            {% if project.featured %}
+            <span class="text-xs text-green-500">&#9733; Featured</span>
+            {% endif %}
+        </div>
+
+        <h2 class="text-lg font-medium text-white mb-2 group-hover:text-gray-300 transition-colors">
+            {{ project.title }}
+        </h2>
+
+        {% if project.description %}
+        <p class="text-gray-400 text-sm line-clamp-2 mb-3">{{ project.description }}</p>
+        {% endif %}
+
+        {% set chips = project.tech_stack if project.tech_stack else project.tags %}
+        {% if chips %}
+        <div class="flex flex-wrap gap-2">
+            {% for tech in chips[:4] %}
+            <Tag text={{ tech }} variant="accent" />
+            {% endfor %}
+        </div>
+        {% endif %}
+    </article>
+</a>

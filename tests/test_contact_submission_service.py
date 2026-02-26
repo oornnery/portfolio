@@ -1,4 +1,4 @@
-from app.services.use_cases import ContactSubmissionService
+from app.application.use_cases import ContactSubmissionService
 
 
 def test_contact_submission_success_normalizes_fields() -> None:
