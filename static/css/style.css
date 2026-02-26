@@ -389,9 +389,9 @@ input:disabled, textarea:disabled, select:disabled {
     scroll-snap-stop: always;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    padding: calc(var(--header-height) + 7rem) 1.5rem 2.5rem;
+    padding: 2.5rem 1.5rem;
     position: relative;
 }
 
@@ -400,18 +400,6 @@ input:disabled, textarea:disabled, select:disabled {
     max-width: var(--container-width);
     padding: 0 1rem;
 }
-
-.home-footer-section {
-    min-height: auto;
-    scroll-snap-align: end;
-    padding-top: 1.5rem;
-    padding-bottom: 2rem;
-}
-
-.home-footer-section .footer {
-    margin-top: 0;
-}
-
 
 /* Scroll indicator */
 .scroll-indicator {
@@ -452,7 +440,7 @@ input:disabled, textarea:disabled, select:disabled {
 @media (max-width: 768px) {
     .snap-section {
         scroll-snap-stop: always;
-        padding: calc(var(--header-height) + 5rem) 1rem 2rem;
+        padding: 2rem 1rem;
     }
 
     .scroll-indicator {
