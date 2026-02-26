@@ -10,6 +10,7 @@ from app.dependencies import (
     get_contact_submission_service,
     limiter,
 )
+from app.log_events import LogEvent
 from app.metrics import get_app_metrics
 from app.render import render_page
 from app.schemas import AnalyticsEventName, AnalyticsTrackEvent
@@ -18,6 +19,7 @@ from app.services.contact import (
     ContactNotificationService,
 )
 from app.services.analytics import AnalyticsService
+from app.logger import event_message
 from app.security import is_allowed_form_content_type
 from app.services.use_cases import ContactPageService, ContactSubmissionService
 
@@ -31,7 +33,12 @@ async def contact_get(
     request: Request,
     page_service: ContactPageService = Depends(get_contact_page_service),
 ) -> HTMLResponse:
-    logger.info("Contact page rendered.")
+    logger.info(
+        event_message(
+            LogEvent.CONTACT_PAGE_RENDERED,
+            path=request.url.path,
+        )
+    )
     user_agent = request.headers.get("user-agent", "")
     page = page_service.build_page(user_agent=user_agent)
     return render_page(page)
@@ -59,7 +66,12 @@ async def contact_post(
     user_agent = request.headers.get("user-agent", "")
     request_id = getattr(request.state, "request_id", "unknown")
     content_type = request.headers.get("content-type", "")
-    logger.info("Contact form submission received.")
+    logger.info(
+        event_message(
+            LogEvent.CONTACT_SUBMISSION_RECEIVED,
+            path=request.url.path,
+        )
+    )
     analytics_service.ingest_events(
         [
             AnalyticsTrackEvent(
@@ -76,7 +88,12 @@ async def contact_post(
     if not is_allowed_form_content_type(content_type):
         app_metrics.record_contact_submission(outcome="unsupported_content_type")
         logger.warning(
-            f"Invalid content-type for contact submission: {content_type} request_id={request_id}."
+            event_message(
+                LogEvent.CONTACT_SUBMISSION_REJECTED,
+                reason="unsupported_content_type",
+                content_type=content_type,
+                request_id=request_id,
+            )
         )
         page = page_service.build_page(
             user_agent=user_agent,
@@ -114,6 +131,13 @@ async def contact_post(
     if not submission.is_valid:
         failure_reason = "csrf" if "csrf" in submission.errors else "validation_error"
         app_metrics.record_contact_submission(outcome=failure_reason)
+        logger.info(
+            event_message(
+                LogEvent.CONTACT_SUBMISSION_REJECTED,
+                reason=failure_reason,
+                request_id=request_id,
+            )
+        )
         page = page_service.build_page(
             user_agent=user_agent,
             errors=submission.errors,
@@ -134,6 +158,13 @@ async def contact_post(
         return render_page(page, status_code=submission.status_code)
     if submission.contact is None:
         app_metrics.record_contact_submission(outcome="unexpected_submission_state")
+        logger.error(
+            event_message(
+                LogEvent.CONTACT_SUBMISSION_REJECTED,
+                reason="unexpected_submission_state",
+                request_id=request_id,
+            )
+        )
         page = page_service.build_page(
             user_agent=user_agent,
             errors={"form": "Unexpected contact submission state."},
@@ -164,7 +195,11 @@ async def contact_post(
     if dispatch_result.has_channels and dispatch_result.all_failed and not dispatch_result.all_skipped:
         app_metrics.record_contact_submission(outcome="notification_failed")
         logger.error(
-            f"All contact notification channels failed for request_id={request_id}."
+            event_message(
+                LogEvent.CONTACT_SUBMISSION_REJECTED,
+                reason="notification_all_failed",
+                request_id=request_id,
+            )
         )
         page = page_service.build_page(
             user_agent=user_agent,
@@ -199,7 +234,13 @@ async def contact_post(
     else:
         app_metrics.record_contact_submission(outcome="success")
 
-    logger.info(f"Contact form submitted successfully by {client_ip}.")
+    logger.info(
+        event_message(
+            LogEvent.CONTACT_SUBMISSION_SUCCEEDED,
+            request_id=request_id,
+            client_ip=client_ip,
+        )
+    )
     page = page_service.build_page(
         user_agent=user_agent,
         success="Message sent successfully. Thank you for reaching out.",

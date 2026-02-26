@@ -11,7 +11,8 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.responses import Response
 
 from app.config import settings
-from app.logger import bind_request_context, reset_request_context
+from app.log_events import LogEvent
+from app.logger import bind_request_context, event_message, reset_request_context
 from app.metrics import get_app_metrics
 
 logger = logging.getLogger(__name__)
@@ -120,7 +121,12 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
         started_at = time.perf_counter()
         route_path = request.url.path
         app_metrics.request_started(method=request.method, path=route_path)
-        logger.info("Request started.")
+        logger.info(
+            event_message(
+                LogEvent.REQUEST_STARTED,
+                route=route_path,
+            )
+        )
         status_code = 500
         exception_class = ""
         try:
@@ -128,7 +134,14 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
         except Exception as exc:
             exception_class = exc.__class__.__name__
             elapsed_ms = (time.perf_counter() - started_at) * 1000
-            logger.exception(f"Request failed after {elapsed_ms:.2f}ms.")
+            logger.exception(
+                event_message(
+                    LogEvent.REQUEST_FAILED,
+                    route=route_path,
+                    duration_ms=f"{elapsed_ms:.2f}",
+                    error=exception_class,
+                )
+            )
             raise
         else:
             elapsed_ms = (time.perf_counter() - started_at) * 1000
@@ -142,8 +155,12 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
             if span_context.is_valid:
                 response.headers["X-Trace-ID"] = f"{span_context.trace_id:032x}"
             logger.info(
-                f"Request completed with status_code={response.status_code} "
-                f"duration_ms={elapsed_ms:.2f}."
+                event_message(
+                    LogEvent.REQUEST_COMPLETED,
+                    route=route_path,
+                    status_code=response.status_code,
+                    duration_ms=f"{elapsed_ms:.2f}",
+                )
             )
             return response
         finally:

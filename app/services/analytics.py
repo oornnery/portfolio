@@ -6,6 +6,8 @@ import logging
 from typing import Any
 
 from app.config import settings
+from app.log_events import LogEvent
+from app.logger import event_message
 from app.schemas import AnalyticsTrackEvent
 from app.telemetry import get_meter, get_tracer
 
@@ -118,9 +120,13 @@ class AnalyticsService:
 
                     if settings.analytics_log_events:
                         logger.info(
-                            f"Analytics event accepted event_name={event.event_name} "
-                            f"page_path={event.page_path} request_id={request_id} "
-                            f"metadata={self._redact_metadata(event.metadata)}"
+                            event_message(
+                                LogEvent.ANALYTICS_EVENT_ACCEPTED,
+                                event_name=event.event_name,
+                                page_path=event.page_path,
+                                request_id=request_id,
+                                metadata=self._redact_metadata(event.metadata),
+                            )
                         )
                 except Exception as exc:  # pragma: no cover
                     rejected += 1
@@ -132,7 +138,14 @@ class AnalyticsService:
                         f"{exc.__class__.__name__}"
                     )
                     errors.append(error)
-                    logger.exception(f"{error} request_id={request_id}")
+                    logger.exception(
+                        event_message(
+                            LogEvent.ANALYTICS_EVENT_REJECTED,
+                            event_name=event.event_name,
+                            request_id=request_id,
+                            reason=exc.__class__.__name__,
+                        )
+                    )
 
             span.set_attribute("analytics.accepted", accepted)
             span.set_attribute("analytics.rejected", rejected)

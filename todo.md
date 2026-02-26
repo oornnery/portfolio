@@ -57,7 +57,7 @@ This document is a full refactor backlog for future iterations.
   - Markdown from `content/` is trusted today, but safety should be explicit.
   - Add sanitization policy (allowlist) before using `|safe` output.
 
-- [ ] Define a logging contract and map all critical events.
+- [x] Define a logging contract and map all critical events.
   - Standardize event names, severity, and mandatory attributes.
   - Cover request lifecycle, form pipeline, rendering, and external I/O.
 

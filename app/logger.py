@@ -104,3 +104,10 @@ def reset_request_context(
 
 def get_request_id() -> str:
     return _request_id_ctx.get()
+
+
+def event_message(event: str, **fields: object) -> str:
+    parts = [f"event={event}"]
+    for key, value in fields.items():
+        parts.append(f"{key}={value}")
+    return " ".join(parts)
