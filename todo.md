@@ -186,7 +186,7 @@ This document is a full refactor backlog for future iterations.
 
 - [x] Add CI pipeline for `ruff`, `ty`, tests, and markdown lint.
 
-- [ ] Add architecture decision records (ADR-lite).
+- [x] Add architecture decision records (ADR-lite).
   - Document why chosen for CSP policy, analytics policy, content schema, and
     component boundaries.
 
@@ -300,6 +300,8 @@ components/
   sections.
 - [x] Decompose about page into `features/resume/*` reusable section
   components.
+- [x] Add ADR-lite records in `docs/adr` for CSP/assets, analytics privacy,
+  and typed page context contracts.
 
 ## Definition of Done for Refactor
 
