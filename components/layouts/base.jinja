@@ -15,9 +15,7 @@
         keywords={{ seo.keywords }}
     />
     <meta name="analytics-enabled" content="{{ 'true' if analytics_enabled else 'false' }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/static/js/tailwind.config.js"></script>
-
+    <link rel="stylesheet" href="/static/css/tailwind.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
     {{ assets.render_css() }}

@@ -162,13 +162,14 @@ content/
 
 static/
   css/
+    tailwind.css
+    tailwind.input.css
     motion.css
     style.css
     tokens.css
   js/
     analytics.js
     main.js
-    tailwind.config.js
   images/
     og-default.png
     projects/*.svg
@@ -200,6 +201,7 @@ static/
   - `components/footer/` as `@footer/...`
   - `components/cards/` as `@cards/...`
   - `components/contact/` as `@contact/...`
+  - `components/features/` as `@features/...`
   - `components/markdown/` as `@markdown/...`
   - `components/tags/` as `@tags/...`
   - `components/pages/` as `@pages/...`
@@ -213,6 +215,7 @@ catalog.add_folder("components/nav", prefix="nav")
 catalog.add_folder("components/footer", prefix="footer")
 catalog.add_folder("components/cards", prefix="cards")
 catalog.add_folder("components/contact", prefix="contact")
+catalog.add_folder("components/features", prefix="features")
 catalog.add_folder("components/markdown", prefix="markdown")
 catalog.add_folder("components/tags", prefix="tags")
 catalog.add_folder("components/pages", prefix="pages")
@@ -406,6 +409,8 @@ uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```bash
 uv run ruff check app
 uv run ty check app
+uv run pytest -q
+DEBUG=true PYTHONPATH=. uv run jx check app/jx_catalog.py:catalog
 uv run rumdl check .
 ```
 
@@ -415,8 +420,17 @@ uv run rumdl check .
 uv run rumdl fmt README.md
 ```
 
+### Optional rebuild of Tailwind CSS
+
+```bash
+npx tailwindcss@3.4.17 -c tailwind.config.cjs \
+  -i static/css/tailwind.input.css \
+  -o static/css/tailwind.css --minify
+```
+
 ## Notes
 
 - This project intentionally uses SSR with Jx and does not depend on a SPA framework.
 - Profile identity and social links are content-driven from `content/about.md`.
-- The `portfolio-bak/` directory is a reference source and not part of runtime architecture.
+- Tailwind classes are served from local compiled `static/css/tailwind.css`
+  (no CDN runtime dependency).

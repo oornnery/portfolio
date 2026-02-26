@@ -131,7 +131,7 @@ This document is a full refactor backlog for future iterations.
     `global.css` exists but is unused.
   - Choose one canonical style entry point and remove dead styles.
 
-- [ ] Remove Tailwind CDN runtime dependency in production.
+- [x] Remove Tailwind CDN runtime dependency in production.
   - Prefer build-time CSS (compiled Tailwind or pure CSS tokens/utilities).
   - Improves performance, security, and CSP strictness.
 
@@ -302,6 +302,8 @@ components/
   components.
 - [x] Add ADR-lite records in `docs/adr` for CSP/assets, analytics privacy,
   and typed page context contracts.
+- [x] Replace Tailwind CDN runtime scripts with local compiled
+  `static/css/tailwind.css`.
 
 ## Definition of Done for Refactor
 

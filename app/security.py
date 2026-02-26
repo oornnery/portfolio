@@ -200,7 +200,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response.headers["Content-Security-Policy"] = (
                 "default-src 'self'; "
                 "style-src 'self'; "
-                "script-src 'self' https://cdn.tailwindcss.com; "
+                "script-src 'self'; "
                 "img-src 'self' data: https:; "
                 "font-src 'self' data:; "
                 "connect-src 'self'; "
