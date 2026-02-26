@@ -1,4 +1,6 @@
-from datetime import datetime, timezone
+from __future__ import annotations
+
+from datetime import date, datetime, timezone
 from enum import StrEnum
 from typing import Any
 
@@ -73,6 +75,21 @@ class AboutContent(BaseModel):
     frontmatter: AboutFrontmatter
     body_markdown: str
     body_html: str
+
+
+class ProjectFrontmatter(BaseModel):
+    title: str = ""
+    slug: str = ""
+    description: str = ""
+    thumbnail: str = ""
+    tags: list[str] = Field(default_factory=list)
+    tech_stack: list[str] = Field(default_factory=list)
+    github_url: str = ""
+    live_url: str = ""
+    published_date: date | None = Field(default=None, alias="date")
+    featured: bool = False
+
+    model_config = ConfigDict(extra="ignore", populate_by_name=True)
 
 
 class AnalyticsEventName(StrEnum):

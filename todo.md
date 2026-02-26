@@ -298,7 +298,7 @@ components/
 
 - [x] No dead runtime assets.
 - [x] No broad fallback masking template failures in debug.
-- [ ] Content parsing is typed and validated.
+- [x] Content parsing is typed and validated.
 - [ ] Page templates are composed from smaller feature components.
 - [ ] Contact flow has explicit delivery policy and tests.
 - [x] CSP is strict and compatible with actual assets.

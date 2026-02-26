@@ -1,4 +1,3 @@
-from datetime import date
 from functools import lru_cache
 import logging
 from pathlib import Path
@@ -6,10 +5,11 @@ from typing import Any
 
 import bleach
 import markdown
+from pydantic import ValidationError
 import yaml
 
 from app.models import Project
-from app.schemas import AboutContent, AboutFrontmatter
+from app.schemas import AboutContent, AboutFrontmatter, ProjectFrontmatter
 
 CONTENT_DIR = Path("content")
 PROJECTS_DIR = CONTENT_DIR / "projects"
@@ -106,27 +106,6 @@ def _sanitize_html(html: str) -> str:
     return bleach.linkify(cleaned, skip_tags={"pre", "code"})
 
 
-def _parse_date(raw: Any) -> date | None:
-    if isinstance(raw, date):
-        return raw
-    if isinstance(raw, str):
-        try:
-            return date.fromisoformat(raw)
-        except ValueError:
-            return None
-    return None
-
-
-def _as_str_list(raw: Any) -> list[str]:
-    if raw is None:
-        return []
-    if isinstance(raw, (list, tuple, set)):
-        return [str(item) for item in raw if str(item).strip()]
-    if isinstance(raw, str):
-        return [raw] if raw.strip() else []
-    return []
-
-
 @lru_cache(maxsize=1)
 def load_about() -> AboutContent:
     about_path = CONTENT_DIR / "about.md"
@@ -156,22 +135,27 @@ def load_all_projects() -> tuple[Project, ...]:
     projects: list[Project] = []
     for md_file in sorted(PROJECTS_DIR.glob("*.md"), reverse=True):
         meta, body = _parse_frontmatter(md_file)
-        title = meta.get("title", md_file.stem.replace("-", " ").title())
+        try:
+            frontmatter = ProjectFrontmatter.model_validate(meta)
+        except ValidationError:
+            logger.exception(f"Invalid project frontmatter in file: {md_file}")
+            continue
+
+        resolved_title = frontmatter.title or md_file.stem.replace("-", " ").title()
+        resolved_slug = frontmatter.slug or md_file.stem
         projects.append(
             Project(
-                slug=str(meta.get("slug", md_file.stem)),
-                title=str(title),
-                description=str(meta.get("description", "")),
+                slug=resolved_slug,
+                title=resolved_title,
+                description=frontmatter.description,
                 content_html=_sanitize_html(_render_md(body)),
-                thumbnail=str(meta.get("thumbnail", "")),
-                tags=_as_str_list(meta.get("tags")),
-                tech_stack=_as_str_list(meta.get("tech_stack")),
-                github_url=str(meta.get("github_url"))
-                if meta.get("github_url")
-                else None,
-                live_url=str(meta.get("live_url")) if meta.get("live_url") else None,
-                date=_parse_date(meta.get("date")),
-                featured=bool(meta.get("featured", False)),
+                thumbnail=frontmatter.thumbnail,
+                tags=frontmatter.tags,
+                tech_stack=frontmatter.tech_stack,
+                github_url=frontmatter.github_url or None,
+                live_url=frontmatter.live_url or None,
+                date=frontmatter.published_date,
+                featured=frontmatter.featured,
             )
         )
     logger.info(f"Loaded {len(projects)} project(s) from {PROJECTS_DIR}.")
