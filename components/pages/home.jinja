@@ -9,7 +9,7 @@
 {#import "@footer/footer.jinja" as Footer #}
 
 <HomeLayout seo={{ seo }} current_path={{ current_path }}>
-    <section class="snap-section home-hero-section">
+    <section class="snap-section home-hero-section" data-analytics-section="home-hero">
         <div class="snap-section-content home-hero-content">
             <header class="flex flex-col lg:flex-row lg:items-start items-center gap-5 lg:gap-8">
                 <span class="relative flex shrink-0 overflow-hidden rounded-full size-24 sm:size-28" aria-hidden="true">
@@ -58,10 +58,17 @@
         </div>
     </section>
 
-    <section class="snap-section">
+    <section class="snap-section" data-analytics-section="home-projects">
         <div class="snap-section-content">
             <section class="flex flex-col min-h-0">
-                <a href="/projects" class="group block mb-3">
+                <a
+                    href="/projects"
+                    class="group block mb-3"
+                    data-analytics-event="click"
+                    data-analytics-id="home-projects-heading"
+                    data-analytics-label="projects"
+                    data-analytics-target="/projects"
+                >
                     <h2 class="text-lg font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
                         Projects
                     </h2>
@@ -101,7 +108,7 @@
         </div>
     </section>
 
-    <section class="snap-section home-contact-section">
+    <section class="snap-section home-contact-section" data-analytics-section="home-contact">
         <div class="snap-section-content home-contact-content">
             <h2 class="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">Contact</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">

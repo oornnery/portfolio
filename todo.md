@@ -120,7 +120,7 @@ This document is a full refactor backlog for future iterations.
   - Create event schemas for page views, clicks, outbound links, and form usage.
   - Validate events server-side before exporting to telemetry backend.
 
-- [ ] Replace ad-hoc frontend tracking with explicit event API.
+- [x] Replace ad-hoc frontend tracking with explicit event API.
   - Keep client script minimal and declarative (`data-analytics-*`).
   - Emit only events backed by implemented backend endpoints.
 

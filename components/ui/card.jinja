@@ -25,6 +25,9 @@
 <a
     href="{{ href }}"
     class="block group {{ base_classes }} {{ variant_classes[variant] }} {{ padding_classes[padding] }} {{ hover_classes }} {{ clickable_classes }}"
+    data-analytics-event="click"
+    data-analytics-id="card-link"
+    data-analytics-target="{{ href }}"
     {{ attrs.render() }}
 >
     {{ content }}

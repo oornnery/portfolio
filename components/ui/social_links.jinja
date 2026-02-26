@@ -34,6 +34,10 @@
         rel="noopener noreferrer"
         class="{{ final_link_class }}"
         aria-label="{{ label | title }}"
+        data-analytics-event="outbound_click"
+        data-analytics-id="social-{{ normalized }}"
+        data-analytics-label="{{ label | title }}"
+        data-analytics-target="{{ url }}"
     >
         <Icon name={{ icon_name }} size={{ icon_size }} />
         {% if final_show_labels %}

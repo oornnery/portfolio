@@ -73,31 +73,36 @@
 
     function trackClicks() {
         document.addEventListener("click", (event) => {
-            const clickable = event.target.closest("a,button,[data-analytics-event]");
-            if (!clickable) {
+            const trackedElement = event.target.closest("[data-analytics-event]");
+            if (!trackedElement) {
                 return;
             }
 
-            const customEventName = clickable.dataset.analyticsEvent || "click";
-            const href = clickable.getAttribute("href") || "";
-            const isOutbound = href.startsWith("http") && !href.startsWith(window.location.origin);
-            const eventName = isOutbound ? "outbound_click" : customEventName;
+            const eventName = trackedElement.dataset.analyticsEvent || "click";
+            const href = trackedElement.getAttribute("href") || "";
+            const targetUrl = trackedElement.dataset.analyticsTarget || href;
+            const elementText =
+                trackedElement.dataset.analyticsLabel ||
+                (trackedElement.textContent || "").trim();
+            const elementId =
+                trackedElement.dataset.analyticsId || trackedElement.id || "";
+            const pagePath =
+                trackedElement.dataset.analyticsPath || window.location.pathname;
 
             enqueue(eventName, {
-                pagePath: window.location.pathname,
-                elementId: clickable.id || "",
-                elementText: (clickable.textContent || "").trim(),
-                targetUrl: href,
-                metadata: {
-                    tag: clickable.tagName.toLowerCase(),
-                    class_name: clickable.className || "",
-                },
+                pagePath: pagePath,
+                elementId: elementId,
+                elementText: elementText,
+                targetUrl: targetUrl,
+                metadata: {},
             });
         });
     }
 
     function trackSectionScroll() {
-        const trackedSections = Array.from(document.querySelectorAll(".snap-section"));
+        const trackedSections = Array.from(
+            document.querySelectorAll("[data-analytics-section]")
+        );
         if (trackedSections.length === 0) {
             return;
         }
@@ -109,7 +114,10 @@
                         return;
                     }
 
-                    const sectionId = entry.target.id || "snap-section";
+                    const sectionId =
+                        entry.target.dataset.analyticsSection ||
+                        entry.target.id ||
+                        "section";
                     enqueue("section_scroll", {
                         pagePath: window.location.pathname,
                         elementId: sectionId,
