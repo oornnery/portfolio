@@ -1,16 +1,16 @@
 {#import "@layouts/public.jinja" as PublicLayout #}
 {#import "@ui/social_links.jinja" as SocialLinks #}
 {#import "@ui/breadcrumb.jinja" as Breadcrumb #}
-{#def seo, meta={}, content_html="", current_path="/about" #}
+{#def seo, meta, content_html="", current_path="/about" #}
 
 <PublicLayout seo={{ seo }} current_path={{ current_path }}>
-    {% set profile_display_name = meta.get("name", profile_name or site_name) %}
-    {% set role = meta.get("role", "Backend Engineer") %}
-    {% set location = meta.get("location", "Sao Paulo, Brazil") %}
-    {% set work_experience = meta.get("work_experience", []) %}
-    {% set education = meta.get("education", []) %}
-    {% set certificates = meta.get("certificates", []) %}
-    {% set skills = meta.get("skills", []) %}
+    {% set profile_display_name = meta.name or profile_name or site_name %}
+    {% set role = meta.role or "Backend Engineer" %}
+    {% set location = meta.location or "Sao Paulo, Brazil" %}
+    {% set work_experience = meta.work_experience %}
+    {% set education = meta.education %}
+    {% set certificates = meta.certificates %}
+    {% set skills = meta.skills %}
     {% set breadcrumb_items = (
         {"label": "Home", "href": "/"},
         {"label": "About", "current": true},
@@ -72,23 +72,23 @@
                 <article class="font-mono flex flex-col justify-start items-start gap-1 sm:gap-2">
                     <div class="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start self-stretch gap-1 sm:gap-2">
                         <div class="flex flex-wrap justify-start items-center gap-2">
-                            <h3 class="text-sm sm:text-base font-semibold text-white">{{ item.get("title", "") }}</h3>
-                            {% if item.get("location") %}
+                            <h3 class="text-sm sm:text-base font-semibold text-white">{{ item.title }}</h3>
+                            {% if item.location %}
                             <span class="inline-flex items-center rounded-md bg-gray-800 text-gray-300 px-2 py-0.5 text-[10px] sm:text-xs font-semibold">
-                                {{ item.get("location") }}
+                                {{ item.location }}
                             </span>
                             {% endif %}
                         </div>
                         <p class="text-xs sm:text-sm text-gray-500 shrink-0">
-                            {{ item.get("start_date", "") }} - {{ item.get("end_date", "") }}
+                            {{ item.start_date }} - {{ item.end_date }}
                         </p>
                     </div>
                     <div class="flex flex-col justify-start items-start gap-1 sm:gap-1.5">
-                        {% if item.get("company") %}
-                        <p class="text-xs sm:text-sm font-medium text-gray-400">{{ item.get("company") }}</p>
+                        {% if item.company %}
+                        <p class="text-xs sm:text-sm font-medium text-gray-400">{{ item.company }}</p>
                         {% endif %}
-                        {% if item.get("description") %}
-                        <p class="text-xs sm:text-sm font-medium text-gray-400 leading-relaxed">{{ item.get("description") }}</p>
+                        {% if item.description %}
+                        <p class="text-xs sm:text-sm font-medium text-gray-400 leading-relaxed">{{ item.description }}</p>
                         {% endif %}
                     </div>
                 </article>
@@ -105,12 +105,12 @@
                 <article>
                     <div class="flex flex-col space-y-1">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
-                            <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.get("school", "") }}</h3>
+                            <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.school }}</h3>
                             <p class="text-xs sm:text-sm text-gray-500 shrink-0">
-                                {{ item.get("start_date", "") }} - {{ item.get("end_date", "") }}
+                                {{ item.start_date }} - {{ item.end_date }}
                             </p>
                         </div>
-                        <p class="font-mono text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400">{{ item.get("degree", "") }}</p>
+                        <p class="font-mono text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400">{{ item.degree }}</p>
                     </div>
                 </article>
                 {% endfor %}
@@ -126,13 +126,13 @@
                 <article>
                     <div class="flex flex-col space-y-1">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
-                            <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.get("name", "") }}</h3>
-                            <p class="text-xs sm:text-sm text-gray-500 shrink-0">{{ item.get("date", "") }}</p>
+                            <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.name }}</h3>
+                            <p class="text-xs sm:text-sm text-gray-500 shrink-0">{{ item.date }}</p>
                         </div>
                         <p class="font-mono text-xs sm:text-sm text-gray-400">
-                            {{ item.get("issuer", "") }}
-                            {% if item.get("credential_id") %}
-                            <span class="text-gray-500"> • ID: {{ item.get("credential_id") }}</span>
+                            {{ item.issuer }}
+                            {% if item.credential_id %}
+                            <span class="text-gray-500"> • ID: {{ item.credential_id }}</span>
                             {% endif %}
                         </p>
                     </div>

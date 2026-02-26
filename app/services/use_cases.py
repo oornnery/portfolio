@@ -80,7 +80,7 @@ class AboutPageService:
             template="pages/about.jinja",
             context={
                 "seo": seo,
-                "meta": frontmatter.model_dump(mode="json"),
+                "meta": frontmatter,
                 "content_html": about_content.body_html,
                 "current_path": "/about",
             },
