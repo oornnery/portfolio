@@ -126,7 +126,7 @@ This document is a full refactor backlog for future iterations.
 
 ## P2 (Frontend Stack Simplification)
 
-- [ ] Consolidate CSS strategy.
+- [x] Consolidate CSS strategy.
   - Current runtime includes `tokens.css`, `motion.css`, `style.css`;
     `global.css` exists but is unused.
   - Choose one canonical style entry point and remove dead styles.
