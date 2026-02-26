@@ -401,6 +401,10 @@ input:disabled, textarea:disabled, select:disabled {
     padding: 0 1rem;
 }
 
+.home-hero-section .home-hero-content {
+    padding-top: 4rem;
+}
+
 /* Scroll indicator */
 .scroll-indicator {
     position: absolute;
@@ -445,6 +449,10 @@ input:disabled, textarea:disabled, select:disabled {
 
     .scroll-indicator {
         bottom: 1.25rem;
+    }
+
+    .home-hero-section .home-hero-content {
+        padding-top: 2rem;
     }
 }
 
