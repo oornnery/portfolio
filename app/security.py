@@ -12,8 +12,10 @@ from starlette.responses import Response
 
 from app.config import settings
 from app.logger import bind_request_context, reset_request_context
+from app.metrics import get_app_metrics
 
 logger = logging.getLogger(__name__)
+app_metrics = get_app_metrics()
 
 
 def _csrf_user_agent_hash(user_agent: str) -> str:
@@ -103,15 +105,25 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
         request.state.request_id = request_id
 
         started_at = time.perf_counter()
+        route_path = request.url.path
+        app_metrics.request_started(method=request.method, path=route_path)
         logger.info("Request started.")
+        status_code = 500
+        exception_class = ""
         try:
             response = await call_next(request)
-        except Exception:
+        except Exception as exc:
+            exception_class = exc.__class__.__name__
             elapsed_ms = (time.perf_counter() - started_at) * 1000
             logger.exception(f"Request failed after {elapsed_ms:.2f}ms.")
             raise
         else:
             elapsed_ms = (time.perf_counter() - started_at) * 1000
+            status_code = response.status_code
+            route = request.scope.get("route")
+            route_path = (
+                getattr(route, "path", request.url.path) if route is not None else request.url.path
+            )
             response.headers[settings.request_id_header] = request_id
             span_context = get_current_span().get_span_context()
             if span_context.is_valid:
@@ -122,6 +134,14 @@ class RequestTracingMiddleware(BaseHTTPMiddleware):
             )
             return response
         finally:
+            elapsed_ms = (time.perf_counter() - started_at) * 1000
+            app_metrics.request_finished(
+                method=request.method,
+                path=route_path,
+                status_code=status_code,
+                duration_ms=elapsed_ms,
+                exception_class=exception_class,
+            )
             reset_request_context(tokens)
 
 

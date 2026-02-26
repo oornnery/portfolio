@@ -3,10 +3,12 @@ from dataclasses import dataclass
 import logging
 import smtplib
 from email.message import EmailMessage
+import time
 from typing import Protocol, Sequence
 
 import httpx
 
+from app.metrics import AppMetrics, get_app_metrics
 from app.schemas import ContactForm
 
 logger = logging.getLogger(__name__)
@@ -242,8 +244,47 @@ class EmailNotificationChannel:
 
 
 class ContactNotificationService:
-    def __init__(self, channels: Sequence[ContactNotificationChannel]) -> None:
+    def __init__(
+        self,
+        channels: Sequence[ContactNotificationChannel],
+        metrics: AppMetrics | None = None,
+    ) -> None:
         self._channels = tuple(channels)
+        self._metrics = metrics or get_app_metrics()
+
+    async def _send_channel_with_metrics(
+        self,
+        *,
+        channel: ContactNotificationChannel,
+        contact: ContactForm,
+        context: ContactNotificationContext,
+    ) -> NotificationChannelResult:
+        started_at = time.perf_counter()
+        fallback_channel_name = channel.__class__.__name__.lower()
+        try:
+            result = await channel.send(contact=contact, context=context)
+        except BaseException:
+            duration_ms = (time.perf_counter() - started_at) * 1000
+            self._metrics.record_notification(
+                channel=fallback_channel_name,
+                outcome="exception",
+                duration_ms=duration_ms,
+            )
+            raise
+
+        duration_ms = (time.perf_counter() - started_at) * 1000
+        if result.success:
+            outcome = "success"
+        elif "not configured" in result.error.lower():
+            outcome = "skipped"
+        else:
+            outcome = "failed"
+        self._metrics.record_notification(
+            channel=result.channel or fallback_channel_name,
+            outcome=outcome,
+            duration_ms=duration_ms,
+        )
+        return result
 
     async def notify_submission(
         self,
@@ -259,7 +300,11 @@ class ContactNotificationService:
         )
         channel_results = await asyncio.gather(
             *(
-                channel.send(contact=contact, context=context)
+                self._send_channel_with_metrics(
+                    channel=channel,
+                    contact=contact,
+                    context=context,
+                )
                 for channel in self._channels
             ),
             return_exceptions=True,

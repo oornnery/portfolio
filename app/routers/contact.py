@@ -10,6 +10,7 @@ from app.dependencies import (
     get_contact_submission_service,
     limiter,
 )
+from app.metrics import get_app_metrics
 from app.render import render_page
 from app.schemas import AnalyticsEventName, AnalyticsTrackEvent
 from app.services.contact import (
@@ -22,6 +23,7 @@ from app.services.use_cases import ContactPageService, ContactSubmissionService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+app_metrics = get_app_metrics()
 
 
 @router.get("/contact", response_class=HTMLResponse)
@@ -72,6 +74,7 @@ async def contact_post(
     )
 
     if not is_allowed_form_content_type(content_type):
+        app_metrics.record_contact_submission(outcome="unsupported_content_type")
         logger.warning(
             f"Invalid content-type for contact submission: {content_type} request_id={request_id}."
         )
@@ -110,6 +113,7 @@ async def contact_post(
     )
     if not submission.is_valid:
         failure_reason = "csrf" if "csrf" in submission.errors else "validation_error"
+        app_metrics.record_contact_submission(outcome=failure_reason)
         page = page_service.build_page(
             user_agent=user_agent,
             errors=submission.errors,
@@ -129,6 +133,7 @@ async def contact_post(
         )
         return render_page(page, status_code=submission.status_code)
     if submission.contact is None:
+        app_metrics.record_contact_submission(outcome="unexpected_submission_state")
         page = page_service.build_page(
             user_agent=user_agent,
             errors={"form": "Unexpected contact submission state."},
@@ -157,6 +162,7 @@ async def contact_post(
         context=notification_context,
     )
     if dispatch_result.has_channels and dispatch_result.all_failed and not dispatch_result.all_skipped:
+        app_metrics.record_contact_submission(outcome="notification_failed")
         logger.error(
             f"All contact notification channels failed for request_id={request_id}."
         )
@@ -183,6 +189,15 @@ async def contact_post(
             user_agent=user_agent,
         )
         return render_page(page, status_code=503)
+
+    if not dispatch_result.has_channels or dispatch_result.all_skipped:
+        app_metrics.record_contact_submission(outcome="accepted_no_channel")
+    elif dispatch_result.any_success and any(
+        not result.success for result in dispatch_result.results
+    ):
+        app_metrics.record_contact_submission(outcome="success_partial")
+    else:
+        app_metrics.record_contact_submission(outcome="success")
 
     logger.info(f"Contact form submitted successfully by {client_ip}.")
     page = page_service.build_page(

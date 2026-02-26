@@ -154,7 +154,7 @@ This document is a full refactor backlog for future iterations.
   - Server spans: route, status code, latency, exception class.
   - Client spans for webhook/email provider calls.
 
-- [ ] Add application metrics for portfolio behavior.
+- [x] Add application metrics for portfolio behavior.
   - Counters: page views by route, contact submissions, submission failures.
   - Histograms: request latency, render latency, notification latency.
   - Gauges/up-down counters: in-flight requests and active limiter hits.
