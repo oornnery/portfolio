@@ -73,6 +73,6 @@ sum by (event_name) (rate(portfolio_analytics_events_total[5m]))
 - Keep tracing enabled:
   - `TELEMETRY_ENABLED=true`
 - Run app:
-  - `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
+  - `uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000`
 
 This gives quick local visibility for spans and metric emissions.

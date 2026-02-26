@@ -32,12 +32,12 @@ This document is a full refactor backlog for future iterations.
   - Target: fallback only for explicit catastrophic failure paths, and raise in
     debug.
 
-- [x] Remove or gate `static/js/analytics.js` until backend analytics
+- [x] Remove or gate `app/static/js/analytics.js` until backend analytics
   endpoints exist.
   - Script sends requests to `/api/v1/analytics/*`, but those routes are not implemented.
   - It also performs invasive fingerprint collection by default.
 
-- [x] Harden CSP strategy in `app/core/security.py` + `components/layouts/base.jinja`.
+- [x] Harden CSP strategy in `app/core/security.py` + `app/components/layouts/base.jinja`.
   - Current policy depends on CDN scripts and allows inline styles.
   - Inline JSON-LD script should be nonce/hash-safe or rendered in a
     CSP-compatible way.
@@ -92,7 +92,7 @@ This document is a full refactor backlog for future iterations.
     - `application/use_cases/contact.py`
     - `application/use_cases/types.py`
 
-- [x] Refactor oversized `components/ui/icon.jinja`.
+- [x] Refactor oversized `app/components/ui/icon.jinja`.
   - Current file mixes icon glyph rendering and social-links composition with
     many branches.
   - Keep one source of truth for SVGs, but separate concerns:
@@ -137,13 +137,13 @@ This document is a full refactor backlog for future iterations.
   - Improves performance, security, and CSP strictness.
 
 - [x] Remove dead JS code paths.
-  - `static/js/main.js` still includes share/copy helper flows no longer used
+  - `app/static/js/main.js` still includes share/copy helper flows no longer used
     by current templates.
   - Keep only behavior that has active DOM hooks.
 
 - [x] Remove unused artifacts and keep runtime minimal.
-  - Review `static/js/htmx.js` vs `htmx.min.js`.
-  - Review unused components like `components/hero/hero.jinja`.
+  - Review `app/static/js/htmx.js` vs `htmx.min.js`.
+  - Review unused components like `app/components/hero/hero.jinja`.
 
 ## Observability and Analytics Roadmap (OTel)
 
@@ -231,36 +231,39 @@ app/
       contact.py
       analytics.py
     render.py
-  main.py
-
-components/
-  layouts/
-    base.jinja
-    home.jinja
-    public.jinja
-  pages/
-    home.jinja
-    about.jinja
-    projects.jinja
-    project_detail.jinja
-    contact.jinja
-    not_found.jinja
-    maintenance.jinja
-  ui/
-    button.jinja
-    input.jinja
-    alert.jinja
-    breadcrumb.jinja
-    card.jinja
-    tag.jinja
-    icon.jinja
-    social_links.jinja
-    section_link.jinja
-  features/
-    home/
-    resume/
-    projects/
-    contact/
+  app.py
+  components/
+    layouts/
+      base.jinja
+      home.jinja
+      public.jinja
+    pages/
+      home.jinja
+      about.jinja
+      projects.jinja
+      project_detail.jinja
+      contact.jinja
+      not_found.jinja
+      maintenance.jinja
+    ui/
+      button.jinja
+      input.jinja
+      alert.jinja
+      breadcrumb.jinja
+      card.jinja
+      tag.jinja
+      icon.jinja
+      social_links.jinja
+      section_link.jinja
+    features/
+      home/
+      resume/
+      projects/
+      contact/
+  static/
+    css/
+    js/
+    images/
 ```
 
 ## Execution Plan (Suggested)
@@ -277,7 +280,7 @@ components/
 ## Quick Wins (Can Start Immediately)
 
 - [x] Remove unused `global.css` from repository or wire it intentionally.
-- [x] Remove dead functions in `static/js/main.js` not used by templates.
+- [x] Remove dead functions in `app/static/js/main.js` not used by templates.
 - [x] Add `debug` behavior to `render_template` to re-raise template errors.
 - [x] Add typed `About` schema and remove ad-hoc `meta.get(...)` chains.
 - [x] Create `ui/social_links.jinja` and simplify `ui/icon.jinja`.
@@ -311,7 +314,7 @@ components/
 - [x] Add ADR-lite records in `docs/adr` for CSP/assets, analytics privacy,
   and typed page context contracts.
 - [x] Replace Tailwind CDN runtime scripts with local compiled
-  `static/css/tailwind.css`.
+  `app/static/css/tailwind.css`.
 - [x] Add observability runbook with dashboard and alert artifacts in
   `observability/` + `docs/observability.md`.
 

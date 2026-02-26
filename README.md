@@ -90,7 +90,7 @@ flowchart TD
 ```text
 app/
   __init__.py
-  main.py
+  app.py
   core/
     __init__.py
     config.py
@@ -137,51 +137,63 @@ app/
       contact.py
       home.py
       projects.py
-
-components/
-  layouts/
-    base.jinja
-    home.jinja
-    public.jinja
-  pages/
-    about.jinja
-    contact.jinja
-    home.jinja
-    maintenance.jinja
-    not_found.jinja
-    project_detail.jinja
-    projects.jinja
-  ui/
-    alert.jinja
-    breadcrumb.jinja
-    button.jinja
-    card.jinja
-    footer.jinja
-    header.jinja
-    icon.jinja
-    input.jinja
-    navbar.jinja
-    prose.jinja
-    section_link.jinja
-    seo_head.jinja
-    social_links.jinja
-    tag.jinja
-  features/
-    contact/
-      contact_form.jinja
-    home/
-      contact_preview.jinja
-      profile_summary.jinja
-      projects_preview.jinja
-    projects/
-      project_card.jinja
-    resume/
-      about_section.jinja
-      certificates_section.jinja
-      education_section.jinja
-      experience_section.jinja
-      profile_header.jinja
-      skills_section.jinja
+  components/
+    layouts/
+      base.jinja
+      home.jinja
+      public.jinja
+    pages/
+      about.jinja
+      contact.jinja
+      home.jinja
+      maintenance.jinja
+      not_found.jinja
+      project_detail.jinja
+      projects.jinja
+    ui/
+      alert.jinja
+      breadcrumb.jinja
+      button.jinja
+      card.jinja
+      footer.jinja
+      header.jinja
+      icon.jinja
+      input.jinja
+      navbar.jinja
+      prose.jinja
+      section_link.jinja
+      seo_head.jinja
+      social_links.jinja
+      tag.jinja
+    features/
+      contact/
+        contact_form.jinja
+      home/
+        contact_preview.jinja
+        profile_summary.jinja
+        projects_preview.jinja
+      projects/
+        project_card.jinja
+      resume/
+        about_section.jinja
+        certificates_section.jinja
+        education_section.jinja
+        experience_section.jinja
+        profile_header.jinja
+        skills_section.jinja
+  static/
+    css/
+      tailwind.css
+      tailwind.input.css
+      motion.css
+      style.css
+      tokens.css
+    js/
+      analytics.js
+      main.js
+    images/
+      og-default.png
+      projects/*.svg
 
 content/
   about.md
@@ -190,25 +202,11 @@ content/
     distributed-task-orchestrator.md
     markdown-knowledge-base.md
     secure-contact-pipeline.md
-
-static/
-  css/
-    tailwind.css
-    tailwind.input.css
-    motion.css
-    style.css
-    tokens.css
-  js/
-    analytics.js
-    main.js
-  images/
-    og-default.png
-    projects/*.svg
 ```
 
 ## Backend Design
 
-### App lifecycle (`app/main.py`)
+### App lifecycle (`app/app.py`)
 
 - Configures structured logging.
 - Creates FastAPI instance with docs enabled only in debug mode.
@@ -225,17 +223,17 @@ static/
 
 - `get_catalog()` builds a singleton Jx catalog.
 - Catalog folders are namespaced with prefixes:
-  - `components/ui/` as `@ui/...`
-  - `components/layouts/` as `@layouts/...`
-  - `components/features/` as `@features/...`
-  - `components/pages/` as `@pages/...`
+  - `app/components/ui/` as `@ui/...`
+  - `app/components/layouts/` as `@layouts/...`
+  - `app/components/features/` as `@features/...`
+  - `app/components/pages/` as `@pages/...`
 - Prefix setup pattern:
 
 ```python
-catalog.add_folder("components/ui", prefix="ui")
-catalog.add_folder("components/layouts", prefix="layouts")
-catalog.add_folder("components/features", prefix="features")
-catalog.add_folder("components/pages", prefix="pages")
+catalog.add_folder("app/components/ui", prefix="ui")
+catalog.add_folder("app/components/layouts", prefix="layouts")
+catalog.add_folder("app/components/features", prefix="features")
+catalog.add_folder("app/components/pages", prefix="pages")
 ```
 
 - Prefixed import pattern:
@@ -419,7 +417,7 @@ uv sync
 ### Run app
 
 ```bash
-uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Quality checks
@@ -442,15 +440,15 @@ uv run rumdl fmt README.md
 
 ```bash
 npx tailwindcss@3.4.17 -c tailwind.config.cjs \
-  -i static/css/tailwind.input.css \
-  -o static/css/tailwind.css --minify
+  -i app/static/css/tailwind.input.css \
+  -o app/static/css/tailwind.css --minify
 ```
 
 ## Notes
 
 - This project intentionally uses SSR with Jx and does not depend on a SPA framework.
 - Profile identity and social links are content-driven from `content/about.md`.
-- Tailwind classes are served from local compiled `static/css/tailwind.css`
+- Tailwind classes are served from local compiled `app/static/css/tailwind.css`
   (no CDN runtime dependency).
 - Observability starter assets live in `observability/` and
   `docs/observability.md`.
