@@ -1,0 +1,56 @@
+groups:
+  - name: portfolio-backend-slo
+    interval: 30s
+    rules:
+      - alert: PortfolioHigh5xxErrorRate
+        expr: |
+          sum(rate(portfolio_http_requests_total{status_code=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(portfolio_http_requests_total[5m])), 1)
+          > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          service: portfolio-backend
+        annotations:
+          summary: "5xx ratio above 5% for portfolio backend"
+          description: "Error ratio exceeded SLO threshold for 5 minutes."
+
+      - alert: PortfolioHighP95Latency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(portfolio_http_request_duration_ms_bucket[5m]))
+          ) > 800
+        for: 10m
+        labels:
+          severity: warning
+          service: portfolio-backend
+        annotations:
+          summary: "p95 latency above 800ms"
+          description: "Request latency degradation detected."
+
+      - alert: PortfolioContactDeliveryDegraded
+        expr: |
+          sum(rate(portfolio_contact_submissions_total{outcome=~"notification_failed|success_partial"}[10m]))
+          /
+          clamp_min(sum(rate(portfolio_contact_submissions_total[10m])), 1)
+          > 0.2
+        for: 10m
+        labels:
+          severity: warning
+          service: portfolio-backend
+        annotations:
+          summary: "Contact delivery degradation detected"
+          description: "Notification channel quality is below expected levels."
+
+      - alert: PortfolioAnalyticsRejectedSpike
+        expr: |
+          sum(rate(portfolio_analytics_events_rejected_total[10m])) > 1
+        for: 10m
+        labels:
+          severity: warning
+          service: portfolio-backend
+        annotations:
+          summary: "Analytics rejected events spike"
+          description: "Analytics pipeline is rejecting events above baseline."

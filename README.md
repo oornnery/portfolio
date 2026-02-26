@@ -434,3 +434,5 @@ npx tailwindcss@3.4.17 -c tailwind.config.cjs \
 - Profile identity and social links are content-driven from `content/about.md`.
 - Tailwind classes are served from local compiled `static/css/tailwind.css`
   (no CDN runtime dependency).
+- Observability starter assets live in `observability/` and
+  `docs/observability.md`.

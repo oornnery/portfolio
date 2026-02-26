@@ -163,7 +163,7 @@ This document is a full refactor backlog for future iterations.
   - Track page_view, click, outbound_click, section_scroll, and contact_attempt.
   - Avoid fingerprinting by default; keep opt-in and configurable.
 
-- [ ] Add dashboards and alerts (SLO-oriented).
+- [x] Add dashboards and alerts (SLO-oriented).
   - Error rate, p95 latency, contact success ratio, webhook/email failure rate.
   - Alert on abnormal spike of 4xx/5xx or notification channel degradation.
   - This should be configured and exported through OpenTelemetry and consumed
@@ -304,6 +304,8 @@ components/
   and typed page context contracts.
 - [x] Replace Tailwind CDN runtime scripts with local compiled
   `static/css/tailwind.css`.
+- [x] Add observability runbook with dashboard and alert artifacts in
+  `observability/` + `docs/observability.md`.
 
 ## Definition of Done for Refactor
 
@@ -314,5 +316,5 @@ components/
 - [x] Contact flow has explicit delivery policy and tests.
 - [x] CSP is strict and compatible with actual assets.
 - [x] CI checks lint + types + tests on every change.
-- [ ] OTel traces, metrics, and logs are correlated and queryable.
-- [ ] Analytics events are typed, privacy-safe, and backed by dashboards.
+- [x] OTel traces, metrics, and logs are correlated and queryable.
+- [x] Analytics events are typed, privacy-safe, and backed by dashboards.

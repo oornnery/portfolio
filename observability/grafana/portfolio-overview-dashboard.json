@@ -1,0 +1,137 @@
+{
+  "title": "Portfolio Backend Overview",
+  "tags": [
+    "portfolio",
+    "backend",
+    "otel"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "HTTP Request Rate (rps)",
+      "targets": [
+        {
+          "expr": "sum(rate(portfolio_http_requests_total[5m]))",
+          "legendFormat": "all routes"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "HTTP p95 Latency (ms)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(portfolio_http_request_duration_ms_bucket[5m])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "HTTP 5xx Error Rate",
+      "targets": [
+        {
+          "expr": "sum(rate(portfolio_http_requests_total{status_code=~\"5..\"}[5m])) / clamp_min(sum(rate(portfolio_http_requests_total[5m])), 1)",
+          "legendFormat": "5xx ratio"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Contact Submission Outcomes",
+      "targets": [
+        {
+          "expr": "sum by (outcome) (rate(portfolio_contact_submissions_total[5m]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Notification Outcomes by Channel",
+      "targets": [
+        {
+          "expr": "sum by (channel, outcome) (rate(portfolio_contact_notification_total[5m]))",
+          "legendFormat": "{{channel}} / {{outcome}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Analytics Events (Accepted vs Rejected)",
+      "targets": [
+        {
+          "expr": "sum(rate(portfolio_analytics_events_total[5m]))",
+          "legendFormat": "accepted"
+        },
+        {
+          "expr": "sum(rate(portfolio_analytics_events_rejected_total[5m]))",
+          "legendFormat": "rejected"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Analytics Accepted by Event Name",
+      "targets": [
+        {
+          "expr": "sum by (event_name) (rate(portfolio_analytics_events_total[5m]))",
+          "legendFormat": "{{event_name}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      }
+    }
+  ]
+}
