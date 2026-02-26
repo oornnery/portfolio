@@ -401,6 +401,22 @@ input:disabled, textarea:disabled, select:disabled {
     padding: 0 1rem;
 }
 
+.home-contact-section {
+    justify-content: flex-start;
+    padding-top: calc(var(--header-height) + 2rem);
+    padding-bottom: 0.75rem;
+}
+
+.home-contact-content {
+    min-height: calc(100dvh - var(--header-height) - 2rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.home-contact-footer {
+    margin-top: auto;
+}
+
 /* Scroll indicator */
 .scroll-indicator {
     position: absolute;
@@ -441,6 +457,15 @@ input:disabled, textarea:disabled, select:disabled {
     .snap-section {
         scroll-snap-stop: always;
         padding: 2rem 1rem;
+    }
+
+    .home-contact-section {
+        padding-top: calc(var(--header-height) + 1.25rem);
+        padding-bottom: 0.5rem;
+    }
+
+    .home-contact-content {
+        min-height: calc(100dvh - var(--header-height) - 1.25rem);
     }
 
     .scroll-indicator {
