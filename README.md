@@ -10,7 +10,8 @@ and a service-driven backend architecture.
 - Content-driven profile and pages from markdown + YAML frontmatter.
 - Contact flow with CSRF protection, strict validation, rate limiting,
   and decoupled notifications.
-- Structured request tracing logs with request ID propagation.
+- Structured request tracing logs with request and trace correlation.
+- OpenTelemetry instrumentation (FastAPI + HTTPX) with analytics ingestion API.
 - Reusable UI component layer (buttons, icons, breadcrumb, cards, tags,
   inputs, alerts).
 
@@ -29,6 +30,8 @@ and a service-driven backend architecture.
 | smtplib + email.message | SMTP notifications                          |
 | markdown + pygments     | Markdown rendering + syntax highlight       |
 | PyYAML                  | YAML frontmatter parsing                    |
+| bleach                  | HTML sanitization for markdown output       |
+| OpenTelemetry           | Tracing, metrics, log correlation           |
 
 ### Frontend / Rendering
 
@@ -94,13 +97,16 @@ app/
   models.py
   schemas.py
   security.py
+  telemetry.py
   routers/
     __init__.py
+    analytics.py
     about.py
     contact.py
     home.py
     projects.py
   services/
+    analytics.py
     __init__.py
     contact.py
     markdown.py
@@ -128,6 +134,7 @@ components/
     header.jinja
     icon.jinja
     input.jinja
+    social_links.jinja
     section_link.jinja
     tag.jinja
   seo/
@@ -140,8 +147,6 @@ components/
     project_card.jinja
   contact/
     contact_form.jinja
-  hero/
-    hero.jinja
   markdown/
     prose.jinja
   tags/
@@ -157,14 +162,11 @@ content/
 
 static/
   css/
-    global.css
     motion.css
     style.css
     tokens.css
   js/
     analytics.js
-    htmx.js
-    htmx.min.js
     main.js
     tailwind.config.js
   images/
@@ -182,13 +184,48 @@ static/
 - Registers middleware:
   - `RequestTracingMiddleware`
   - `SecurityHeadersMiddleware`
+- Configures OpenTelemetry instrumentation.
 - Wires SlowAPI rate limit exception handler.
-- Registers routers (`home`, `about`, `projects`, `contact`).
+- Registers routers (`home`, `about`, `projects`, `contact`, `analytics`).
 - Handles 404 with rendered `pages/not_found.jinja`.
 
 ### Dependency graph (`app/dependencies.py`)
 
 - `get_catalog()` builds a singleton Jx catalog.
+- Catalog folders are namespaced with prefixes:
+  - `components/ui/` as `@ui/...`
+  - `components/layouts/` as `@layouts/...`
+  - `components/seo/` as `@seo/...`
+  - `components/nav/` as `@nav/...`
+  - `components/footer/` as `@footer/...`
+  - `components/cards/` as `@cards/...`
+  - `components/contact/` as `@contact/...`
+  - `components/markdown/` as `@markdown/...`
+  - `components/tags/` as `@tags/...`
+  - `components/pages/` as `@pages/...`
+- Prefix setup pattern:
+
+```python
+catalog.add_folder("components/ui", prefix="ui")
+catalog.add_folder("components/layouts", prefix="layouts")
+catalog.add_folder("components/seo", prefix="seo")
+catalog.add_folder("components/nav", prefix="nav")
+catalog.add_folder("components/footer", prefix="footer")
+catalog.add_folder("components/cards", prefix="cards")
+catalog.add_folder("components/contact", prefix="contact")
+catalog.add_folder("components/markdown", prefix="markdown")
+catalog.add_folder("components/tags", prefix="tags")
+catalog.add_folder("components/pages", prefix="pages")
+```
+
+- Prefixed import pattern:
+
+```jinja
+{#import "@layouts/public.jinja" as PublicLayout #}
+{#import "@ui/button.jinja" as Button #}
+{#import "@cards/project_card.jinja" as ProjectCard #}
+```
+
 - Profile globals are loaded from `content/about.md` and injected globally:
   - `site_name`
   - `profile_name`
@@ -196,12 +233,12 @@ static/
   - `profile_location`
   - `profile_summary` (from `description`)
   - `social_links`
-- `render_template()` wraps `catalog.render(...)` and falls back to
-  `pages/maintenance.jinja` if render fails.
+- `render_template()` is strict and does not silently fall back.
 - Services are provided as singleton dependencies:
   - page use-cases
   - contact submission service
   - notification service with channels
+  - analytics service
 
 ### Use-cases (`app/services/use_cases.py`)
 
@@ -213,15 +250,16 @@ static/
 
 ## Routing Matrix
 
-| Method | Path               | Router            | Template                     | Notes                                       |
-| ------ | ------------------ | ----------------- | ---------------------------- | ------------------------------------------- |
-| GET    | `/`                | `home.py`         | `pages/home.jinja`           | Featured projects + profile hero            |
-| GET    | `/about`           | `about.py`        | `pages/about.jinja`          | Resume-style sections from frontmatter      |
-| GET    | `/projects`        | `projects.py`     | `pages/projects.jinja`       | Project cards list                          |
-| GET    | `/projects/{slug}` | `projects.py`     | `pages/project_detail.jinja` | Detail page + action buttons                |
-| GET    | `/contact`         | `contact.py`      | `pages/contact.jinja`        | Contact form + CSRF                         |
-| POST   | `/contact`         | `contact.py`      | `pages/contact.jinja`        | CSRF, validation, notifications, rate limit |
-| GET    | `*`                | exception handler | `pages/not_found.jinja`      | Rendered 404 page                           |
+| Method | Path                      | Router            | Template                     | Notes                                       |
+| ------ | ------------------------- | ----------------- | ---------------------------- | ------------------------------------------- |
+| GET    | `/`                       | `home.py`         | `pages/home.jinja`           | Featured projects + profile hero            |
+| GET    | `/about`                  | `about.py`        | `pages/about.jinja`          | Resume-style sections from frontmatter      |
+| GET    | `/projects`               | `projects.py`     | `pages/projects.jinja`       | Project cards list                          |
+| GET    | `/projects/{slug}`        | `projects.py`     | `pages/project_detail.jinja` | Detail page + action buttons                |
+| GET    | `/contact`                | `contact.py`      | `pages/contact.jinja`        | Contact form + CSRF                         |
+| POST   | `/contact`                | `contact.py`      | `pages/contact.jinja`        | CSRF, validation, notifications, rate limit |
+| POST   | `/api/v1/analytics/track` | `analytics.py`    | JSON                         | Client telemetry ingestion                  |
+| GET    | `*`                       | exception handler | `pages/not_found.jinja`      | Rendered 404 page                           |
 
 ## Frontend / Jx Layer
 
@@ -235,9 +273,14 @@ static/
 
 - `ui/breadcrumb.jinja`: reusable breadcrumb with dynamic items.
 - `ui/button.jinja`: variants/sizes for links and buttons.
-- `ui/icon.jinja`: single icon system (glyph + social links variants).
+- `ui/icon.jinja`: glyph-only icon component.
+- `ui/social_links.jinja`: social links layout variants.
 - `ui/card.jinja`, `ui/tag.jinja`, `ui/input.jinja`, `ui/alert.jinja`,
   `ui/section_link.jinja`, `ui/header.jinja`.
+- Prefixed first-party components are used across the app, example:
+  - `{#import "@layouts/public.jinja" as PublicLayout #}`
+  - `{#import "@ui/social_links.jinja" as SocialLinks #}`
+  - `{#import "@cards/project_card.jinja" as ProjectCard #}`
 
 ### Page composition
 
@@ -277,8 +320,11 @@ Supported fields:
 ## Security and Reliability
 
 - CSRF token generation + validation with HMAC-SHA256 + expiry.
+- CSRF token bound to user-agent hash.
 - Strict Pydantic form validation (`extra="forbid"`).
+- Strict form content-type validation on submission.
 - IP-based rate limit on contact submissions.
+- Sanitized markdown HTML rendering.
 - Security headers middleware:
   - `X-Content-Type-Options`
   - `X-Frame-Options`
@@ -286,7 +332,7 @@ Supported fields:
   - `Permissions-Policy`
   - `HSTS` + `CSP` in non-debug mode
 - Request tracing middleware with request ID header propagation.
-- Render fallback to maintenance page if template rendering fails.
+- OpenTelemetry traces and metrics for HTTP and analytics events.
 
 ## Logging and Tracing
 
@@ -296,6 +342,8 @@ Supported fields:
 - `method`
 - `path`
 - `ip`
+- `trace_id`
+- `span_id`
 
 Example format:
 
