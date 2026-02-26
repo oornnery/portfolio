@@ -26,8 +26,17 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-groups
 
-      - name: Ruff
-        run: uv run ruff check app tests app/static/js
+      - name: Ruff format
+        run: uv run ruff format .
+
+      - name: Rumdl format
+        run: uv run rumdl fmt .
+
+      - name: Verify formatting
+        run: git diff --exit-code
+
+      - name: Ruff check
+        run: uv run ruff check app tests static/js
 
       - name: Ty
         run: uv run ty check app
@@ -35,8 +44,8 @@ jobs:
       - name: Pytest
         run: uv run pytest -q
 
-      - name: Rumdl
+      - name: Rumdl check
         run: uv run rumdl check .
 
       - name: Jx component check
-        run: DEBUG=true PYTHONPATH=. uv run jx check app/presentation/jx_catalog.py:catalog
+        run: DEBUG=true PYTHONPATH=. uv run jx check app/rendering/catalog.py:catalog
