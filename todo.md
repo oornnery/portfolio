@@ -75,11 +75,11 @@ This document is a full refactor backlog for future iterations.
   - Add `AboutProfile`, `WorkItem`, `EducationItem`, `CertificateItem` schemas.
   - Parse/validate once in `services/markdown.py` and pass typed objects to templates.
 
-- [ ] Move profile-global extraction out of `app/dependencies.py`.
+- [x] Move profile-global extraction out of `app/dependencies.py`.
   - `dependencies.py` currently reads content and applies profile fallback logic.
   - Create `ProfileService` (application layer) and keep dependencies as pure providers.
 
-- [ ] Collapse repeated router render boilerplate.
+- [x] Collapse repeated router render boilerplate.
   - Add helper `render_page(page: PageRenderData) -> HTMLResponse`.
   - Keep routers thin and consistent.
 
@@ -274,7 +274,7 @@ components/
 - [x] Remove unused `global.css` from repository or wire it intentionally.
 - [x] Remove dead functions in `static/js/main.js` not used by templates.
 - [x] Add `debug` behavior to `render_template` to re-raise template errors.
-- [ ] Add typed `About` schema and remove ad-hoc `meta.get(...)` chains.
+- [x] Add typed `About` schema and remove ad-hoc `meta.get(...)` chains.
 - [x] Create `ui/social_links.jinja` and simplify `ui/icon.jinja`.
 - [ ] Add first test module for contact submission flow.
 - [x] Add trace/log correlation (`trace_id`, `span_id`, `request_id`) in log output.
