@@ -1,4 +1,4 @@
-{#import "../seo/head.jinja" as SeoHead #}
+{#import "@seo/head.jinja" as SeoHead #}
 {#def seo #}
 
 <!DOCTYPE html>
@@ -14,11 +14,7 @@
         og_type={{ seo.og_type }}
         keywords={{ seo.keywords }}
     />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <meta name="analytics-enabled" content="{{ 'true' if analytics_enabled else 'false' }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/static/js/tailwind.config.js"></script>
 
@@ -26,15 +22,15 @@
     <link rel="stylesheet" href="/static/css/motion.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
-    <script src="/static/js/htmx.min.js"></script>
-
     {{ assets.render_css() }}
 </head>
-<body class="bg-background text-foreground font-sans antialiased selection:bg-accent/20 selection:text-accent min-h-screen" hx-boost="false">
+<body class="bg-background text-foreground font-sans antialiased selection:bg-accent/20 selection:text-accent min-h-screen">
     {{ content }}
 
     <script src="/static/js/main.js"></script>
+    {% if analytics_enabled %}
     <script src="/static/js/analytics.js" defer></script>
+    {% endif %}
     {{ assets.render_js() }}
 </body>
 </html>

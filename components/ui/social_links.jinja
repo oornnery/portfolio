@@ -1,0 +1,45 @@
+{#import "@ui/icon.jinja" as Icon #}
+{#def links={}, variant="list", container_class="", link_class="", icon_size="sm", show_labels=None #}
+
+{% set presets = {
+    "list": {
+        "container_class": "flex flex-col gap-4",
+        "link_class": "text-gray-400 hover:text-white transition-colors inline-flex items-center gap-2",
+        "show_labels": True
+    },
+    "icons_inline": {
+        "container_class": "flex flex-wrap items-center gap-2",
+        "link_class": "text-gray-400 hover:text-white transition-colors inline-flex items-center justify-center",
+        "show_labels": False
+    },
+    "labels_inline": {
+        "container_class": "flex flex-wrap items-center gap-4",
+        "link_class": "text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1.5",
+        "show_labels": True
+    }
+} %}
+{% set preset = presets.get(variant, presets.list) %}
+{% set final_container_class = container_class or preset.container_class %}
+{% set final_link_class = link_class or preset.link_class %}
+{% set final_show_labels = preset.show_labels if show_labels is none else show_labels %}
+
+{% if links %}
+<nav class="{{ final_container_class }}" aria-label="Social links">
+    {% for label, url in links.items() %}
+    {% set normalized = label | lower %}
+    {% set icon_name = "x" if normalized in ("x", "twitter") else normalized %}
+    <a
+        href="{{ url }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="{{ final_link_class }}"
+        aria-label="{{ label | title }}"
+    >
+        <Icon name={{ icon_name }} size={{ icon_size }} />
+        {% if final_show_labels %}
+        <span>{{ label | title }}</span>
+        {% endif %}
+    </a>
+    {% endfor %}
+</nav>
+{% endif %}

@@ -1,11 +1,11 @@
 {#def seo, featured=(), csrf_token="", current_path="/" #}
-{#import "../layouts/home.jinja" as HomeLayout #}
-{#import "../ui/card.jinja" as Card #}
-{#import "../ui/tag.jinja" as Tag #}
-{#import "../ui/input.jinja" as Input #}
-{#import "../ui/button.jinja" as Button #}
-{#import "../ui/icon.jinja" as Icon #}
-{#import "../ui/section_link.jinja" as SectionLink #}
+{#import "@layouts/home.jinja" as HomeLayout #}
+{#import "@ui/card.jinja" as Card #}
+{#import "@ui/tag.jinja" as Tag #}
+{#import "@ui/input.jinja" as Input #}
+{#import "@ui/button.jinja" as Button #}
+{#import "@ui/social_links.jinja" as SocialLinks #}
+{#import "@ui/section_link.jinja" as SectionLink #}
 
 <HomeLayout seo={{ seo }} current_path={{ current_path }}>
     <section class="snap-section home-hero-section">
@@ -38,10 +38,9 @@
                         {{ profile_summary }}
                     </p>
 
-                    <Icon
-                        variant="links"
+                    <SocialLinks
                         links={{ social_links }}
-                        links_variant="icons_inline"
+                        variant="icons_inline"
                         container_class="flex flex-wrap justify-center lg:justify-start gap-2 mb-3"
                     />
 
@@ -69,7 +68,7 @@
 
                 <div class="space-y-3 flex-1 overflow-hidden">
                     {% for project in featured %}
-                    <Card href={{ project.live_url or project.github_url or ('/projects/' ~ project.slug) }} padding="sm">
+                    <Card href={{ '/projects/' ~ project.slug }} padding="sm">
                         <div class="flex flex-col gap-1">
                             <h3 class="text-sm text-white font-medium group-hover:text-blue-400 transition-colors line-clamp-1">
                                 {{ project.title }}
@@ -107,7 +106,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
                 <div>
                     <h3 class="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">Connect</h3>
-                    <Icon variant="links" links={{ social_links }} />
+                    <SocialLinks links={{ social_links }} />
                 </div>
 
                 <div>

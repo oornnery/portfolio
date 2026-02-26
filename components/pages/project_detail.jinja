@@ -1,8 +1,8 @@
-{#import "../layouts/public.jinja" as PublicLayout #}
-{#import "../markdown/prose.jinja" as Prose #}
-{#import "../ui/tag.jinja" as Tag #}
-{#import "../ui/button.jinja" as Button #}
-{#import "../ui/breadcrumb.jinja" as Breadcrumb #}
+{#import "@layouts/public.jinja" as PublicLayout #}
+{#import "@markdown/prose.jinja" as Prose #}
+{#import "@ui/tag.jinja" as Tag #}
+{#import "@ui/button.jinja" as Button #}
+{#import "@ui/breadcrumb.jinja" as Breadcrumb #}
 {#def seo, project, current_path="/projects" #}
 
 <PublicLayout seo={{ seo }} current_path={{ current_path }}>
@@ -42,7 +42,7 @@
             {% endif %}
 
             <div class="flex flex-wrap gap-4 mt-6">
-                {% if project.live_url %}
+                {% if project.live_url and ('example.' not in project.live_url) %}
                 <Button href={{ project.live_url }} variant="primary" size="default" target="_blank" rel="noopener noreferrer" class="min-w-[146px]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
                     <span>Live Demo</span>

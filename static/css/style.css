@@ -345,20 +345,6 @@ input:disabled, textarea:disabled, select:disabled {
 }
 
 /* ==========================================
-   HTMX Indicators
-   ========================================== */
-
-.htmx-indicator {
-    opacity: 0;
-    transition: opacity 200ms ease;
-}
-
-.htmx-request .htmx-indicator,
-.htmx-request.htmx-indicator {
-    opacity: 1;
-}
-
-/* ==========================================
    Animations
    ========================================== */
 
@@ -403,9 +389,9 @@ input:disabled, textarea:disabled, select:disabled {
     scroll-snap-stop: always;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: calc(var(--header-height) + 1.5rem) 1.5rem 2.5rem;
+    padding: calc(var(--header-height) + 7rem) 1.5rem 2.5rem;
     position: relative;
 }
 
@@ -413,15 +399,6 @@ input:disabled, textarea:disabled, select:disabled {
     width: 100%;
     max-width: var(--container-width);
     padding: 0 1rem;
-}
-
-.home-hero-section {
-    justify-content: flex-start !important;
-    padding-top: calc(var(--header-height) + 1.5rem) !important;
-}
-
-.home-hero-content {
-    margin-top: 0;
 }
 
 /* Scroll indicator */
@@ -463,15 +440,7 @@ input:disabled, textarea:disabled, select:disabled {
 @media (max-width: 768px) {
     .snap-section {
         scroll-snap-stop: always;
-        padding: calc(var(--header-height) + 1rem) 1rem 2rem;
-    }
-
-    .home-hero-section {
-        padding-top: calc(var(--header-height) + 1.5rem) !important;
-    }
-
-    .home-hero-content {
-        margin-top: 0;
+        padding: calc(var(--header-height) + 5rem) 1rem 2rem;
     }
 
     .scroll-indicator {

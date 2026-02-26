@@ -1,6 +1,6 @@
-{#import "../layouts/public.jinja" as PublicLayout #}
-{#import "../ui/icon.jinja" as Icon #}
-{#import "../ui/breadcrumb.jinja" as Breadcrumb #}
+{#import "@layouts/public.jinja" as PublicLayout #}
+{#import "@ui/social_links.jinja" as SocialLinks #}
+{#import "@ui/breadcrumb.jinja" as Breadcrumb #}
 {#def seo, meta={}, content_html="", current_path="/about" #}
 
 <PublicLayout seo={{ seo }} current_path={{ current_path }}>
@@ -49,10 +49,9 @@
                     </p>
                 </div>
 
-                <Icon
-                    variant="links"
+                <SocialLinks
                     links={{ social_links }}
-                    links_variant="icons_inline"
+                    variant="icons_inline"
                     container_class="flex flex-wrap gap-2 mt-3"
                 />
             </div>

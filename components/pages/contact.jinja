@@ -1,8 +1,8 @@
-{#import "../layouts/public.jinja" as PublicLayout #}
-{#import "../contact/contact_form.jinja" as ContactForm #}
-{#import "../ui/icon.jinja" as Icon #}
-{#import "../ui/header.jinja" as Header #}
-{#import "../ui/breadcrumb.jinja" as Breadcrumb #}
+{#import "@layouts/public.jinja" as PublicLayout #}
+{#import "@contact/contact_form.jinja" as ContactForm #}
+{#import "@ui/social_links.jinja" as SocialLinks #}
+{#import "@ui/header.jinja" as Header #}
+{#import "@ui/breadcrumb.jinja" as Breadcrumb #}
 {#def seo, csrf_token, success="", errors={}, form_data={}, current_path="/contact" #}
 
 <PublicLayout seo={{ seo }} current_path={{ current_path }}>
@@ -22,7 +22,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
             <section>
                 <h2 class="text-lg font-medium text-white mb-4">Connect</h2>
-                <Icon variant="links" links={{ social_links }} />
+                <SocialLinks links={{ social_links }} />
             </section>
 
             <section>
