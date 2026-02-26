@@ -166,6 +166,7 @@ This document is a full refactor backlog for future iterations.
 - [ ] Add dashboards and alerts (SLO-oriented).
   - Error rate, p95 latency, contact success ratio, webhook/email failure rate.
   - Alert on abnormal spike of 4xx/5xx or notification channel degradation.
+  - isso deve ser configurado e enviado para opentelemetry e usado em ferramentas de observabilidade como Grafana, Datadog, etc.
 
 ## P3 (Quality / Testability / DX)
 
@@ -276,7 +277,7 @@ components/
 - [x] Add `debug` behavior to `render_template` to re-raise template errors.
 - [x] Add typed `About` schema and remove ad-hoc `meta.get(...)` chains.
 - [x] Create `ui/social_links.jinja` and simplify `ui/icon.jinja`.
-- [ ] Add first test module for contact submission flow.
+- [x] Add first test module for contact submission flow.
 - [x] Add trace/log correlation (`trace_id`, `span_id`, `request_id`) in log output.
 - [x] Create initial analytics event schema and instrument `page_view` + `click`.
 

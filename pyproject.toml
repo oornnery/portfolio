@@ -37,3 +37,7 @@ dev = [
     "taskipy>=1.14.1",
     "ty>=0.0.18",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
