@@ -291,6 +291,8 @@ components/
 - [x] Reduce footer visual height to match the about page density and spacing.
 - [x] Fine-tune home contact vertical offset (moved slightly lower for better
   balance with navbar and footer).
+- [x] Add unit tests for CSRF token validation and SEO metadata composition.
+- [x] Add a shared test bootstrap (`tests/conftest.py`) for stable test env.
 
 ## Definition of Done for Refactor
 
