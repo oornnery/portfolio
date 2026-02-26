@@ -171,7 +171,7 @@ This document is a full refactor backlog for future iterations.
 
 ## P3 (Quality / Testability / DX)
 
-- [ ] Add baseline tests (missing today).
+- [x] Add baseline tests (missing today).
   - Unit tests for:
     - `validate_csrf_token`
     - frontmatter parsing and typed validation
@@ -181,7 +181,7 @@ This document is a full refactor backlog for future iterations.
     - `GET /`, `/about`, `/projects`, `/projects/{slug}`, `/contact`
     - `POST /contact` success/failure paths
 
-- [ ] Add snapshot-like rendering tests for critical pages.
+- [x] Add snapshot-like rendering tests for critical pages.
   - Validate key sections exist and avoid accidental UI regressions.
 
 - [x] Add CI pipeline for `ruff`, `ty`, tests, and markdown lint.
@@ -295,14 +295,19 @@ components/
 - [x] Add a shared test bootstrap (`tests/conftest.py`) for stable test env.
 - [x] Start feature-level template decomposition in home page:
   `features/home/profile_summary`, `projects_preview`, and `contact_preview`.
+- [x] Add HTTP integration tests for public routes and contact submission flows.
+- [x] Add snapshot-like page assertions for home, about, and contact critical
+  sections.
+- [x] Decompose about page into `features/resume/*` reusable section
+  components.
 
 ## Definition of Done for Refactor
 
 - [x] No dead runtime assets.
 - [x] No broad fallback masking template failures in debug.
 - [x] Content parsing is typed and validated.
-- [ ] Page templates are composed from smaller feature components.
-- [ ] Contact flow has explicit delivery policy and tests.
+- [x] Page templates are composed from smaller feature components.
+- [x] Contact flow has explicit delivery policy and tests.
 - [x] CSP is strict and compatible with actual assets.
 - [x] CI checks lint + types + tests on every change.
 - [ ] OTel traces, metrics, and logs are correlated and queryable.
