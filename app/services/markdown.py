@@ -51,6 +51,11 @@ def _render_md(content: str) -> str:
 _BLEACH_ALLOWED_TAGS = sorted(
     {
         *bleach.sanitizer.ALLOWED_TAGS,
+        "br",
+        "div",
+        "em",
+        "li",
+        "ol",
         "p",
         "pre",
         "code",
@@ -63,15 +68,29 @@ _BLEACH_ALLOWED_TAGS = sorted(
         "blockquote",
         "hr",
         "span",
+        "strong",
+        "table",
+        "tbody",
+        "td",
+        "tfoot",
+        "th",
+        "thead",
+        "tr",
+        "ul",
         "img",
     }
 )
 _BLEACH_ALLOWED_ATTRS = {
     **bleach.sanitizer.ALLOWED_ATTRIBUTES,
     "a": ["href", "title", "target", "rel"],
+    "div": ["class"],
     "img": ["src", "alt", "title", "width", "height", "loading"],
+    "ol": ["start"],
     "span": ["class"],
+    "table": ["class"],
     "code": ["class"],
+    "td": ["colspan", "rowspan", "align"],
+    "th": ["colspan", "rowspan", "align", "scope"],
 }
 _BLEACH_ALLOWED_PROTOCOLS = ["http", "https", "mailto"]
 
@@ -143,7 +162,7 @@ def load_all_projects() -> tuple[Project, ...]:
                 slug=str(meta.get("slug", md_file.stem)),
                 title=str(title),
                 description=str(meta.get("description", "")),
-                content_html=_render_md(body),
+                content_html=_sanitize_html(_render_md(body)),
                 thumbnail=str(meta.get("thumbnail", "")),
                 tags=_as_str_list(meta.get("tags")),
                 tech_stack=_as_str_list(meta.get("tech_stack")),

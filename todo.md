@@ -53,7 +53,7 @@ This document is a full refactor backlog for future iterations.
   - Add optional token binding (client fingerprint/session secret) and strict
     content-type checks.
 
-- [ ] Sanitize markdown HTML before rendering.
+- [x] Sanitize markdown HTML before rendering.
   - Markdown from `content/` is trusted today, but safety should be explicit.
   - Add sanitization policy (allowlist) before using `|safe` output.
 
