@@ -90,28 +90,53 @@ flowchart TD
 ```text
 app/
   __init__.py
-  config.py
-  dependencies.py
-  logger.py
   main.py
-  models.py
-  schemas.py
-  security.py
-  telemetry.py
-  routers/
+  core/
     __init__.py
-    analytics.py
-    about.py
-    contact.py
-    home.py
-    projects.py
-  services/
-    analytics.py
+    config.py
+    logger.py
+    security.py
+  domain/
     __init__.py
-    contact.py
+    models.py
+    schemas.py
+  application/
+    __init__.py
+    services/
+      __init__.py
+      profile.py
+      seo.py
+    use_cases/
+      __init__.py
+      about.py
+      contact.py
+      home.py
+      projects.py
+      types.py
+  infrastructure/
+    __init__.py
     markdown.py
-    seo.py
-    use_cases.py
+    notifications/
+      __init__.py
+      contact.py
+  observability/
+    __init__.py
+    analytics.py
+    events.py
+    metrics.py
+    telemetry.py
+  presentation/
+    __init__.py
+    dependencies.py
+    jx_catalog.py
+    render.py
+    routers/
+      __init__.py
+      analytics.py
+      about.py
+      contact.py
+      home.py
+      projects.py
 
 components/
   layouts/
@@ -131,26 +156,32 @@ components/
     breadcrumb.jinja
     button.jinja
     card.jinja
+    footer.jinja
     header.jinja
     icon.jinja
     input.jinja
-    social_links.jinja
-    section_link.jinja
-    tag.jinja
-  seo/
-    head.jinja
-  nav/
     navbar.jinja
-  footer/
-    footer.jinja
-  cards/
-    project_card.jinja
-  contact/
-    contact_form.jinja
-  markdown/
     prose.jinja
-  tags/
-    tag_badge.jinja
+    section_link.jinja
+    seo_head.jinja
+    social_links.jinja
+    tag.jinja
+  features/
+    contact/
+      contact_form.jinja
+    home/
+      contact_preview.jinja
+      profile_summary.jinja
+      projects_preview.jinja
+    projects/
+      project_card.jinja
+    resume/
+      about_section.jinja
+      certificates_section.jinja
+      education_section.jinja
+      experience_section.jinja
+      profile_header.jinja
+      skills_section.jinja
 
 content/
   about.md
@@ -190,34 +221,20 @@ static/
 - Registers routers (`home`, `about`, `projects`, `contact`, `analytics`).
 - Handles 404 with rendered `pages/not_found.jinja`.
 
-### Dependency graph (`app/dependencies.py`)
+### Dependency graph (`app/presentation/dependencies.py`)
 
 - `get_catalog()` builds a singleton Jx catalog.
 - Catalog folders are namespaced with prefixes:
   - `components/ui/` as `@ui/...`
   - `components/layouts/` as `@layouts/...`
-  - `components/seo/` as `@seo/...`
-  - `components/nav/` as `@nav/...`
-  - `components/footer/` as `@footer/...`
-  - `components/cards/` as `@cards/...`
-  - `components/contact/` as `@contact/...`
   - `components/features/` as `@features/...`
-  - `components/markdown/` as `@markdown/...`
-  - `components/tags/` as `@tags/...`
   - `components/pages/` as `@pages/...`
 - Prefix setup pattern:
 
 ```python
 catalog.add_folder("components/ui", prefix="ui")
 catalog.add_folder("components/layouts", prefix="layouts")
-catalog.add_folder("components/seo", prefix="seo")
-catalog.add_folder("components/nav", prefix="nav")
-catalog.add_folder("components/footer", prefix="footer")
-catalog.add_folder("components/cards", prefix="cards")
-catalog.add_folder("components/contact", prefix="contact")
 catalog.add_folder("components/features", prefix="features")
-catalog.add_folder("components/markdown", prefix="markdown")
-catalog.add_folder("components/tags", prefix="tags")
 catalog.add_folder("components/pages", prefix="pages")
 ```
 
@@ -226,7 +243,7 @@ catalog.add_folder("components/pages", prefix="pages")
 ```jinja
 {#import "@layouts/public.jinja" as PublicLayout #}
 {#import "@ui/button.jinja" as Button #}
-{#import "@cards/project_card.jinja" as ProjectCard #}
+{#import "@features/projects/project_card.jinja" as ProjectCard #}
 ```
 
 - Profile globals are loaded from `content/about.md` and injected globally:
@@ -243,7 +260,7 @@ catalog.add_folder("components/pages", prefix="pages")
   - notification service with channels
   - analytics service
 
-### Use-cases (`app/services/use_cases.py`)
+### Use-cases (`app/application/use_cases/`)
 
 - `HomePageService`: builds featured project context and CSRF token.
 - `AboutPageService`: loads markdown profile content and metadata.
@@ -279,11 +296,12 @@ catalog.add_folder("components/pages", prefix="pages")
 - `ui/icon.jinja`: glyph-only icon component.
 - `ui/social_links.jinja`: social links layout variants.
 - `ui/card.jinja`, `ui/tag.jinja`, `ui/input.jinja`, `ui/alert.jinja`,
-  `ui/section_link.jinja`, `ui/header.jinja`.
+  `ui/section_link.jinja`, `ui/header.jinja`, `ui/navbar.jinja`,
+  `ui/footer.jinja`, `ui/seo_head.jinja`, `ui/prose.jinja`.
 - Prefixed first-party components are used across the app, example:
   - `{#import "@layouts/public.jinja" as PublicLayout #}`
   - `{#import "@ui/social_links.jinja" as SocialLinks #}`
-  - `{#import "@cards/project_card.jinja" as ProjectCard #}`
+  - `{#import "@features/projects/project_card.jinja" as ProjectCard #}`
 
 ### Page composition
 
@@ -339,7 +357,7 @@ Supported fields:
 
 ## Logging and Tracing
 
-`app/logger.py` configures structured logs with request context fields:
+`app/core/logger.py` configures structured logs with request context fields:
 
 - `req_id`
 - `method`
@@ -351,13 +369,13 @@ Supported fields:
 Example format:
 
 ```text
-2026-02-26 01:00:00 | INFO | app.routers.home |
+2026-02-26 01:00:00 | INFO | app.presentation.routers.home |
 req_id=... method=GET path=/ ip=... | Home page rendered.
 ```
 
 ## Configuration
 
-Settings are defined in `app/config.py` and loaded from `.env`.
+Settings are defined in `app/core/config.py` and loaded from `.env`.
 
 ### Required
 
@@ -410,7 +428,7 @@ uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 uv run ruff check app
 uv run ty check app
 uv run pytest -q
-DEBUG=true PYTHONPATH=. uv run jx check app/jx_catalog.py:catalog
+DEBUG=true PYTHONPATH=. uv run jx check app/presentation/jx_catalog.py:catalog
 uv run rumdl check .
 ```
 

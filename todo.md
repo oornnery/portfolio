@@ -27,7 +27,7 @@ This document is a full refactor backlog for future iterations.
 
 ## P0 (High Impact / Reliability / Security)
 
-- [x] Stop silent template fallback for all errors in `app/dependencies.py`.
+- [x] Stop silent template fallback for all errors in `app/presentation/dependencies.py`.
   - Current behavior can hide real production bugs and make issues harder to diagnose.
   - Target: fallback only for explicit catastrophic failure paths, and raise in
     debug.
@@ -37,7 +37,7 @@ This document is a full refactor backlog for future iterations.
   - Script sends requests to `/api/v1/analytics/*`, but those routes are not implemented.
   - It also performs invasive fingerprint collection by default.
 
-- [x] Harden CSP strategy in `app/security.py` + `components/layouts/base.jinja`.
+- [x] Harden CSP strategy in `app/core/security.py` + `components/layouts/base.jinja`.
   - Current policy depends on CDN scripts and allows inline styles.
   - Inline JSON-LD script should be nonce/hash-safe or rendered in a
     CSP-compatible way.
@@ -75,7 +75,7 @@ This document is a full refactor backlog for future iterations.
   - Add `AboutProfile`, `WorkItem`, `EducationItem`, `CertificateItem` schemas.
   - Parse/validate once in `services/markdown.py` and pass typed objects to templates.
 
-- [x] Move profile-global extraction out of `app/dependencies.py`.
+- [x] Move profile-global extraction out of `app/presentation/dependencies.py`.
   - `dependencies.py` currently reads content and applies profile fallback logic.
   - Create `ProfileService` (application layer) and keep dependencies as pure providers.
 
@@ -86,11 +86,11 @@ This document is a full refactor backlog for future iterations.
 - [x] Split `use_cases.py` into dedicated files.
   - Current file centralizes multiple use-cases and DTOs.
   - Suggested split:
-    - `services/use_cases/home.py`
-    - `services/use_cases/about.py`
-    - `services/use_cases/projects.py`
-    - `services/use_cases/contact.py`
-    - `services/use_cases/types.py`
+    - `application/use_cases/home.py`
+    - `application/use_cases/about.py`
+    - `application/use_cases/projects.py`
+    - `application/use_cases/contact.py`
+    - `application/use_cases/types.py`
 
 - [x] Refactor oversized `components/ui/icon.jinja`.
   - Current file mixes icon glyph rendering and social-links composition with
@@ -101,7 +101,8 @@ This document is a full refactor backlog for future iterations.
 
 - [x] Add Jx Catalog namespaces and prefixed imports.
   - Register optional folders with `catalog.add_folder(..., prefix=...)`.
-  - Use prefixed imports like `@ui/...`, `@layouts/...`, and `@cards/...` in components.
+  - Use prefixed imports like `@ui/...`, `@layouts/...`,
+    and `@features/...` in components.
 
 - [x] Decompose large page templates into feature blocks.
   - `pages/home.jinja` and `pages/about.jinja` are doing too much.
@@ -146,7 +147,7 @@ This document is a full refactor backlog for future iterations.
 
 ## Observability and Analytics Roadmap (OTel)
 
-- [x] Create telemetry bootstrap module (`app/telemetry.py`).
+- [x] Create telemetry bootstrap module (`app/observability/telemetry.py`).
   - Initialize OTel `TracerProvider`, `MeterProvider`, and log correlation.
   - Configure exporters (OTLP by default; console in local debug).
 
@@ -213,7 +214,7 @@ app/
       seo.py
   observability/
     telemetry.py
-    logging.py
+    metrics.py
     analytics.py
     events.py
   infrastructure/
@@ -222,11 +223,13 @@ app/
       contact.py
   presentation/
     dependencies.py
+    jx_catalog.py
     routers/
       home.py
       about.py
       projects.py
       contact.py
+      analytics.py
     render.py
   main.py
 
@@ -284,6 +287,11 @@ components/
 
 ## Recent Progress (2026-02-26)
 
+- [x] Restructure backend into layered packages:
+  `core`, `domain`, `application`, `infrastructure`, `observability`,
+  `presentation`.
+- [x] Normalize Jx component folders into `layouts`, `pages`, `ui`, `features`
+  and remove legacy top-level component directories.
 - [x] Standardize home section start alignment so home/projects/contact start
   on the same visual line.
 - [x] Anchor home contact footer inside the contact section and remove
