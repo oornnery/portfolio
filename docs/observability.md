@@ -76,3 +76,34 @@ sum by (event_name) (rate(portfolio_analytics_events_total[5m]))
   - `uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000`
 
 This gives quick local visibility for spans and metric emissions.
+
+## SigNoz setup (logs + metrics + traces)
+
+This project exports telemetry to SigNoz through OTLP gRPC. Configure these
+variables in `.env`:
+
+```env
+TELEMETRY_ENABLED=true
+TELEMETRY_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+TELEMETRY_EXPORTER_OTLP_INSECURE=true
+TELEMETRY_LOGS_ENABLED=true
+# Optional (SigNoz Cloud or custom gateway auth header):
+# TELEMETRY_EXPORTER_OTLP_HEADERS=signoz-ingestion-key=<your-key>
+```
+
+### What is exported
+
+- Traces: OpenTelemetry spans from FastAPI and HTTPX.
+- Metrics: application metrics registered in `app/observability/metrics.py`.
+- Logs: Python logs routed through OpenTelemetry `LoggingHandler`.
+
+### Validation checklist
+
+- Start the app:
+  - `uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000`
+- Hit the app routes (`/`, `/about`, `/projects`, `/contact`).
+- In SigNoz UI, validate:
+  - service appears as `portfolio-backend`
+  - traces are visible for incoming HTTP requests
+  - metrics are populated (request counters/histograms)
+  - logs are visible and correlate by trace ID

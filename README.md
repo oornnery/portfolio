@@ -394,6 +394,11 @@ Settings are defined in `app/core/config.py` and loaded from `.env`.
 | `CONTACT_WEBHOOK_URL` | Webhook endpoint for contact notifications |
 | `CONTACT_EMAIL_TO`    | Target email for SMTP notifications        |
 | `SMTP_*`              | SMTP transport settings                    |
+| `TELEMETRY_ENABLED`   | Enables OpenTelemetry pipeline             |
+| `TELEMETRY_EXPORTER_OTLP_ENDPOINT` | OTLP gRPC endpoint (SigNoz default: `http://localhost:4317`) |
+| `TELEMETRY_EXPORTER_OTLP_INSECURE` | Uses insecure OTLP transport for local setups |
+| `TELEMETRY_LOGS_ENABLED` | Enables OpenTelemetry log export        |
+| `TELEMETRY_EXPORTER_OTLP_HEADERS` | Optional OTLP headers (`key=value`) for SigNoz Cloud |
 
 ### Example `.env`
 
@@ -404,7 +409,22 @@ SITE_NAME=Fabio Souza
 BASE_URL=http://localhost:8000
 CONTACT_WEBHOOK_URL=
 CONTACT_EMAIL_TO=
+TELEMETRY_ENABLED=true
+TELEMETRY_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+TELEMETRY_EXPORTER_OTLP_INSECURE=true
+TELEMETRY_LOGS_ENABLED=true
+# TELEMETRY_EXPORTER_OTLP_HEADERS=signoz-ingestion-key=<your-key>
 ```
+
+## SigNoz integration
+
+With the telemetry settings above, the backend exports traces, metrics, and logs
+to SigNoz over OTLP. The emitted service identity is:
+
+- `service.name=portfolio-backend`
+- `service.namespace=portfolio`
+
+Detailed runbook and validation checklist: `docs/observability.md`.
 
 ## Development
 

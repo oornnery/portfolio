@@ -317,6 +317,8 @@ app/
   `app/static/css/tailwind.css`.
 - [x] Add observability runbook with dashboard and alert artifacts in
   `observability/` + `docs/observability.md`.
+- [x] Add SigNoz-ready OTLP setup for traces, metrics, and logs with
+  configurable endpoint/headers and log export enable flag.
 
 ## Definition of Done for Refactor
 
