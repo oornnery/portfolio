@@ -1,0 +1,58 @@
+{#def variant="default", size="default", href="", type="button", disabled=False, loading=False, full_width=False #}
+
+{% set base_classes = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50" %}
+
+{% set variant_classes = {
+    "default": "border border-gray-700 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white hover:border-gray-600",
+    "primary": "bg-white text-gray-950 hover:bg-gray-200 shadow-sm",
+    "secondary": "bg-gray-800 text-gray-200 border border-gray-700 hover:bg-gray-700 hover:text-white",
+    "ghost": "text-gray-400 hover:bg-gray-800/50 hover:text-white",
+    "link": "text-gray-400 hover:text-accent underline-offset-4 hover:underline p-0 h-auto",
+    "accent": "bg-accent text-gray-950 hover:bg-accent/90 shadow-sm shadow-accent/20",
+    "danger": "bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30",
+    "outline": "border border-accent/50 text-accent hover:bg-accent/10 hover:border-accent"
+} %}
+
+{% set size_classes = {
+    "xs": "h-7 px-2 text-xs rounded",
+    "sm": "h-8 px-3 text-xs",
+    "default": "h-9 px-4 py-2 text-sm",
+    "lg": "h-11 px-6 text-base",
+    "icon": "h-9 w-9 p-0"
+} %}
+
+{% set width_class = "w-full" if full_width else "" %}
+{% set loading_class = "cursor-wait" if loading else "" %}
+
+{% if href and not disabled %}
+<a
+    href="{{ href }}"
+    class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ width_class }} {{ loading_class }}"
+    {% if loading %}aria-busy="true"{% endif %}
+    {{ attrs.render() }}
+>
+    {% if loading %}
+    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+    </svg>
+    {% endif %}
+    {{ content }}
+</a>
+{% else %}
+<button
+    type="{{ type }}"
+    {% if disabled or loading %}disabled{% endif %}
+    class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ width_class }} {{ loading_class }}"
+    {% if loading %}aria-busy="true"{% endif %}
+    {{ attrs.render() }}
+>
+    {% if loading %}
+    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+    </svg>
+    {% endif %}
+    {{ content }}
+</button>
+{% endif %}

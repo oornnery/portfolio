@@ -1,0 +1,11 @@
+{#import "./base.jinja" as Base #}
+{#import "../nav/navbar.jinja" as Navbar #}
+{#def seo, current_path="/" #}
+
+<Base seo={{ seo }}>
+    <Navbar current_path={{ current_path }} />
+
+    <main class="scroll-snap-container">
+        {{ content }}
+    </main>
+</Base>

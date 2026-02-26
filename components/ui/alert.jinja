@@ -1,0 +1,17 @@
+{#def message="", tone="info", role="" #}
+
+{% if message %}
+{% set tone_classes = {
+    "info": "rounded-md border border-blue-500/30 bg-blue-500/10 text-blue-300 px-3 py-2 text-sm",
+    "success": "rounded-md border border-green-500/30 bg-green-500/10 text-green-300 px-3 py-2 text-sm",
+    "danger": "rounded-md border border-red-500/30 bg-red-500/10 text-red-300 px-3 py-2 text-sm",
+    "warning": "rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-300 px-3 py-2 text-sm"
+} %}
+{% set default_role = "alert" if tone in ("danger", "warning") else "status" %}
+<div
+    role="{{ role or default_role }}"
+    {{ attrs.render(class=tone_classes.get(tone, tone_classes.info)) }}
+>
+    {{ message }}
+</div>
+{% endif %}

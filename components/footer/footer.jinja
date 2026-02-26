@@ -1,16 +1,15 @@
-<footer class="footer">
-    <div class="footer__inner">
-        <p class="footer__copy">&copy; {{ site_name }}</p>
-        {% if social_links %}
-        <ul class="footer__social">
-            {% for label, url in social_links.items() %}
-            <li>
-                <a href="{{ url }}" target="_blank" rel="noopener noreferrer">
-                    {{ label | title }}
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
+{#import "../ui/icon.jinja" as Icon #}
+
+<footer class="py-5 sm:py-6 text-sm text-gray-500 flex justify-between items-center border-t border-gray-900 mt-10 sm:mt-12">
+    <p>&copy; <span data-current-year>2026</span> {{ site_name }}</p>
+    {% if social_links %}
+    <Icon
+        variant="links"
+        links={{ social_links }}
+        links_variant="list"
+        container_class="flex flex-wrap items-center gap-4"
+        link_class="text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1.5"
+        icon_size="sm"
+    />
+    {% endif %}
 </footer>

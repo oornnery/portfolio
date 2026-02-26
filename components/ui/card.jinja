@@ -1,0 +1,39 @@
+{#def href="", variant="default", padding="default", hoverable=True, clickable=False #}
+
+{% set base_classes = "rounded-lg transition-all duration-200" %}
+
+{% set variant_classes = {
+    "default": "bg-gray-900/50 border border-gray-800",
+    "elevated": "bg-gray-900 shadow-lg shadow-black/20",
+    "outlined": "bg-transparent border-2 border-gray-700",
+    "ghost": "bg-gray-800/30",
+    "glass": "bg-gray-900/30 backdrop-blur-md border border-gray-700/50",
+    "gradient": "bg-gray-900/50 border border-gray-800 relative before:absolute before:inset-0 before:rounded-lg before:p-[1px] before:bg-gradient-to-r before:from-accent/20 before:to-accent-secondary/20 before:-z-10"
+} %}
+
+{% set padding_classes = {
+    "none": "",
+    "sm": "p-3 sm:p-4",
+    "default": "p-4 sm:p-6",
+    "lg": "p-5 sm:p-6 md:p-8"
+} %}
+
+{% set hover_classes = "hover:border-gray-700 hover:bg-gray-800/50" if hoverable else "" %}
+{% set clickable_classes = "cursor-pointer active:scale-[0.99]" if clickable or href else "" %}
+
+{% if href %}
+<a
+    href="{{ href }}"
+    class="block group {{ base_classes }} {{ variant_classes[variant] }} {{ padding_classes[padding] }} {{ hover_classes }} {{ clickable_classes }}"
+    {{ attrs.render() }}
+>
+    {{ content }}
+</a>
+{% else %}
+<div
+    class="{{ base_classes }} {{ variant_classes[variant] }} {{ padding_classes[padding] }} {{ hover_classes }} {{ clickable_classes }}"
+    {{ attrs.render() }}
+>
+    {{ content }}
+</div>
+{% endif %}

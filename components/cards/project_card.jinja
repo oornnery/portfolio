@@ -1,32 +1,33 @@
 {#import "../tags/tag_badge.jinja" as TagBadge #}
 {#def project #}
 
-<article {{ attrs.render(class="project-card") }}>
-    {% if project.thumbnail %}
-    <a href="/projects/{{ project.slug }}" class="project-card__media">
-        <img
-            src="{{ project.thumbnail }}"
-            alt="{{ project.title }}"
-            class="project-card__image"
-            loading="lazy"
-        >
-    </a>
-    {% endif %}
+<a
+    href="/projects/{{ project.slug }}"
+    class="block group rounded-lg transition-all duration-200 bg-gray-900/50 border border-gray-800 hover:border-gray-700 hover:bg-gray-800/50 p-4 sm:p-6"
+>
+    <article>
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">{{ project.date.year if project.date else '' }}</span>
+            {% if project.featured %}
+            <span class="text-xs text-green-500">&#9733; Featured</span>
+            {% endif %}
+        </div>
 
-    <div class="project-card__body">
-        <h3 class="project-card__title">
-            <a href="/projects/{{ project.slug }}">{{ project.title }}</a>
-        </h3>
+        <h2 class="text-lg font-medium text-white mb-2 group-hover:text-gray-300 transition-colors">
+            {{ project.title }}
+        </h2>
+
         {% if project.description %}
-        <p class="project-card__description">{{ project.description }}</p>
+        <p class="text-gray-400 text-sm line-clamp-2 mb-3">{{ project.description }}</p>
         {% endif %}
 
-        {% if project.tags %}
-        <div class="project-card__tags">
-            {% for tag in project.tags %}
-            <TagBadge label={{ tag }} />
+        {% set chips = project.tech_stack if project.tech_stack else project.tags %}
+        {% if chips %}
+        <div class="flex flex-wrap gap-2">
+            {% for tech in chips[:4] %}
+            <TagBadge label={{ tech }} />
             {% endfor %}
         </div>
         {% endif %}
-    </div>
-</article>
+    </article>
+</a>

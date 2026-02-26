@@ -1,0 +1,15 @@
+{#import "./base.jinja" as Base #}
+{#import "../nav/navbar.jinja" as Navbar #}
+{#import "../footer/footer.jinja" as Footer #}
+{#def seo, current_path="" #}
+
+<Base seo={{ seo }}>
+    <Navbar current_path={{ current_path }} />
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col min-h-screen pt-16 sm:pt-20">
+        <main class="flex-grow fade-in py-6 sm:py-8">
+            {{ content }}
+        </main>
+        <Footer />
+    </div>
+</Base>

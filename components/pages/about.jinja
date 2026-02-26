@@ -1,12 +1,161 @@
-{#import "../layouts/base.jinja" as Base #}
-{#import "../markdown/prose.jinja" as Prose #}
-{#def seo, content_html, current_path="/about" #}
+{#import "../layouts/public.jinja" as PublicLayout #}
+{#import "../ui/icon.jinja" as Icon #}
+{#import "../ui/breadcrumb.jinja" as Breadcrumb #}
+{#def seo, meta={}, content_html="", current_path="/about" #}
 
-<Base seo={{ seo }} current_path={{ current_path }}>
-    <section class="section">
-        <header class="section__header">
-            <h1>About</h1>
+<PublicLayout seo={{ seo }} current_path={{ current_path }}>
+    {% set profile_display_name = meta.get("name", profile_name or site_name) %}
+    {% set role = meta.get("role", "Backend Engineer") %}
+    {% set location = meta.get("location", "Sao Paulo, Brazil") %}
+    {% set work_experience = meta.get("work_experience", []) %}
+    {% set education = meta.get("education", []) %}
+    {% set certificates = meta.get("certificates", []) %}
+    {% set skills = meta.get("skills", []) %}
+    {% set breadcrumb_items = (
+        {"label": "Home", "href": "/"},
+        {"label": "About", "current": true},
+    ) %}
+
+    <Breadcrumb
+        items={{ breadcrumb_items }}
+        class_name="text-sm text-gray-500 -mt-2 sm:-mt-3 mb-4 sm:mb-5 fade-in flex items-center"
+    />
+
+    <div class="space-y-6" aria-label="Resume Content" id="resume-content">
+        <header class="flex items-start gap-4">
+            <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20" aria-hidden="true">
+                <img
+                    class="aspect-square h-full w-full"
+                    alt="{{ profile_display_name }} profile picture"
+                    src="https://ui-avatars.com/api/?name={{ profile_display_name | urlencode }}&background=1a1a1a&color=fff&size=128"
+                >
+            </span>
+
+            <div class="flex-1 min-w-0">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white" id="resume-name">{{ profile_display_name }}</h1>
+                    <p class="font-mono text-xs sm:text-sm text-gray-400" aria-labelledby="resume-name">
+                        {{ role }}
+                    </p>
+                    <p class="font-mono text-xs text-gray-500">
+                        <a
+                            class="hover:underline"
+                            href="https://www.google.com/maps/search/{{ location | urlencode }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {{ location }}
+                        </a>
+                    </p>
+                </div>
+
+                <Icon
+                    variant="links"
+                    links={{ social_links }}
+                    links_variant="icons_inline"
+                    container_class="flex flex-wrap gap-2 mt-3"
+                />
+            </div>
         </header>
-        <Prose html_content={{ content_html }} />
-    </section>
-</Base>
+
+        <section class="flex min-h-0 flex-col gap-y-3">
+            <h2 class="text-lg sm:text-xl font-bold text-white">About</h2>
+            <div class="text-sm sm:text-base text-gray-400 leading-relaxed space-y-2">
+                {{ content_html | safe }}
+            </div>
+        </section>
+
+        {% if work_experience %}
+        <section class="flex min-h-0 flex-col gap-y-3">
+            <h2 class="text-lg sm:text-xl font-bold text-white">Work Experience</h2>
+            <div class="flex flex-col gap-4 sm:gap-6">
+                {% for item in work_experience %}
+                <article class="font-mono flex flex-col justify-start items-start gap-1 sm:gap-2">
+                    <div class="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start self-stretch gap-1 sm:gap-2">
+                        <div class="flex flex-wrap justify-start items-center gap-2">
+                            <h3 class="text-sm sm:text-base font-semibold text-white">{{ item.get("title", "") }}</h3>
+                            {% if item.get("location") %}
+                            <span class="inline-flex items-center rounded-md bg-gray-800 text-gray-300 px-2 py-0.5 text-[10px] sm:text-xs font-semibold">
+                                {{ item.get("location") }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-500 shrink-0">
+                            {{ item.get("start_date", "") }} - {{ item.get("end_date", "") }}
+                        </p>
+                    </div>
+                    <div class="flex flex-col justify-start items-start gap-1 sm:gap-1.5">
+                        {% if item.get("company") %}
+                        <p class="text-xs sm:text-sm font-medium text-gray-400">{{ item.get("company") }}</p>
+                        {% endif %}
+                        {% if item.get("description") %}
+                        <p class="text-xs sm:text-sm font-medium text-gray-400 leading-relaxed">{{ item.get("description") }}</p>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if education %}
+        <section class="flex min-h-0 flex-col gap-y-3">
+            <h2 class="text-lg sm:text-xl font-bold text-white">Education</h2>
+            <div class="space-y-3 sm:space-y-4">
+                {% for item in education %}
+                <article>
+                    <div class="flex flex-col space-y-1">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                            <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.get("school", "") }}</h3>
+                            <p class="text-xs sm:text-sm text-gray-500 shrink-0">
+                                {{ item.get("start_date", "") }} - {{ item.get("end_date", "") }}
+                            </p>
+                        </div>
+                        <p class="font-mono text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400">{{ item.get("degree", "") }}</p>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if certificates %}
+        <section class="flex min-h-0 flex-col gap-y-3">
+            <h2 class="text-lg sm:text-xl font-bold text-white">Certificates</h2>
+            <div class="space-y-3 sm:space-y-4">
+                {% for item in certificates %}
+                <article>
+                    <div class="flex flex-col space-y-1">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                            <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.get("name", "") }}</h3>
+                            <p class="text-xs sm:text-sm text-gray-500 shrink-0">{{ item.get("date", "") }}</p>
+                        </div>
+                        <p class="font-mono text-xs sm:text-sm text-gray-400">
+                            {{ item.get("issuer", "") }}
+                            {% if item.get("credential_id") %}
+                            <span class="text-gray-500"> • ID: {{ item.get("credential_id") }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if skills %}
+        <section class="flex min-h-0 flex-col gap-y-3">
+            <h2 class="text-lg sm:text-xl font-bold text-white">Skills</h2>
+            <ul class="flex list-none flex-wrap gap-1.5 sm:gap-2 p-0" aria-label="Skills list">
+                {% for skill in skills %}
+                <li>
+                    <span class="inline-flex items-center rounded-md border px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold font-mono border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700">
+                        {{ skill }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+    </div>
+</PublicLayout>

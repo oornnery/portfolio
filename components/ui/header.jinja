@@ -1,0 +1,8 @@
+{#def title, description="", title_class="text-2xl sm:text-3xl font-bold text-white mb-2", description_class="text-sm sm:text-base text-gray-400" #}
+
+<header {{ attrs.render() }}>
+    <h1 class="{{ title_class }}">{{ title }}</h1>
+    {% if description %}
+    <p class="{{ description_class }}">{{ description }}</p>
+    {% endif %}
+</header>

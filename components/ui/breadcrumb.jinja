@@ -1,0 +1,28 @@
+{#def items=(), class_name="text-sm text-gray-500 mb-6 fade-in flex items-center", current_class="text-gray-300", link_class="hover:text-white transition-colors", separator_class="fill-current w-3 h-3 mx-3 text-gray-600" #}
+
+{% if items %}
+<nav class="{{ class_name }}" aria-label="Breadcrumb">
+    <ol class="list-none p-0 inline-flex flex-wrap items-center">
+        {% for item in items %}
+        {% if not loop.first %}
+        <li class="flex items-center" aria-hidden="true">
+            <svg class="{{ separator_class }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path d="M285.48 272.97 91.13 467.31c-9.37 9.38-24.57 9.38-33.94 0l-22.67-22.67c-9.36-9.36-9.38-24.52-.04-33.9L188.5 256 34.48 101.26c-9.34-9.38-9.32-24.55.04-33.9L57.19 44.69c9.37-9.38 24.57-9.38 33.94 0l194.35 194.34c9.37 9.37 9.37 24.57 0 33.94Z"></path>
+            </svg>
+        </li>
+        {% endif %}
+
+        <li class="flex items-center min-w-0">
+            {% set is_current = item.get("current", False) or loop.last %}
+            {% if item.get("href") and not is_current %}
+            <a href="{{ item.get('href') }}" class="{{ link_class }}">{{ item.get("label", "") }}</a>
+            {% else %}
+            <span class="{{ current_class }}{% if is_current %} truncate max-w-[240px] sm:max-w-[420px]{% endif %}">
+                {{ item.get("label", "") }}
+            </span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}

@@ -1,0 +1,5 @@
+{#def href, label, with_arrow=True, link_class="inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors" #}
+
+<a href="{{ href }}" {{ attrs.render(class=link_class) }}>
+    {{ label }}{% if with_arrow %} &rarr;{% endif %}
+</a>

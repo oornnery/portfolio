@@ -1,15 +1,13 @@
 {#def title, subtitle="" #}
 
-<section {{ attrs.render(class="hero") }}>
-    <div class="hero__inner">
-        <h1 class="hero__title">{{ title }}</h1>
-        {% if subtitle %}
-        <p class="hero__subtitle">{{ subtitle }}</p>
-        {% endif %}
-        {% if content %}
-        <div class="hero__actions">
-            {{ content }}
-        </div>
-        {% endif %}
+<section {{ attrs.render(class="space-y-3") }}>
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">{{ title }}</h1>
+    {% if subtitle %}
+    <p class="text-base sm:text-lg text-gray-400 max-w-2xl">{{ subtitle }}</p>
+    {% endif %}
+    {% if content %}
+    <div class="flex flex-wrap gap-2 sm:gap-3 pt-2">
+        {{ content }}
     </div>
+    {% endif %}
 </section>

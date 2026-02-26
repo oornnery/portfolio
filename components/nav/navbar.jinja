@@ -1,19 +1,51 @@
 {#def current_path="" #}
 
-<nav class="navbar">
-    <div class="navbar__inner">
-        <a href="/" class="navbar__brand">{{ site_name }}</a>
-        <ul class="navbar__links">
+<nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800/50 transition-all duration-300">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+        <a href="/" class="text-base sm:text-lg font-medium text-white tracking-tight hover:text-gray-300 transition-colors">
+            {{ site_name }}
+        </a>
+
+        <div class="hidden md:flex items-center gap-1 lg:gap-4 text-sm text-gray-400">
             {% for link in nav_links %}
-            <li class="navbar__item">
-                <a
-                    href="{{ link.href }}"
-                    class="navbar__link {% if current_path == link.href %}is-active{% endif %}"
-                >
-                    {{ link.label }}
-                </a>
-            </li>
+            <a
+                href="{{ link.href }}"
+                class="px-3 py-2 rounded-lg {{ 'text-white bg-gray-800/50' if current_path == link.href else 'hover:text-white hover:bg-gray-800/30' }} transition-all"
+            >
+                {{ link.label }}
+            </a>
             {% endfor %}
-        </ul>
+        </div>
+
+        <button
+            type="button"
+            data-menu-toggle
+            class="md:hidden p-2 -mr-2 text-gray-400 hover:text-white transition-colors"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon hidden">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <div data-mobile-menu class="hidden md:hidden border-t border-gray-800/50 bg-black/95 backdrop-blur-md">
+        <div class="px-4 py-4 space-y-1">
+            {% for link in nav_links %}
+            <a
+                href="{{ link.href }}"
+                class="block px-4 py-3 rounded-lg text-base {{ 'text-white bg-gray-800/50' if current_path == link.href else 'text-gray-400 hover:text-white hover:bg-gray-800/30' }} transition-all"
+            >
+                {{ link.label }}
+            </a>
+            {% endfor %}
+        </div>
     </div>
 </nav>

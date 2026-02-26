@@ -1,13 +1,11 @@
 {#import "../seo/head.jinja" as SeoHead #}
-{#import "../nav/navbar.jinja" as Navbar #}
-{#import "../footer/footer.jinja" as Footer #}
-{#def seo, current_path="" #}
+{#def seo #}
 
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="dark" data-theme="dark">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <SeoHead
         title={{ seo.title }}
         description={{ seo.description }}
@@ -16,15 +14,27 @@
         og_type={{ seo.og_type }}
         keywords={{ seo.keywords }}
     />
-    <link rel="stylesheet" href="/static/css/global.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/tailwind.config.js"></script>
+
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/motion.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <script src="/static/js/htmx.min.js"></script>
+
     {{ assets.render_css() }}
 </head>
-<body>
-    <Navbar current_path={{ current_path }} />
-    <main class="site-main">
-        {{ content }}
-    </main>
-    <Footer />
+<body class="bg-background text-foreground font-sans antialiased selection:bg-accent/20 selection:text-accent min-h-screen" hx-boost="false">
+    {{ content }}
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/analytics.js" defer></script>
     {{ assets.render_js() }}
 </body>
 </html>

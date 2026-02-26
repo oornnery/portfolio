@@ -1,31 +1,127 @@
-{#import "../layouts/base.jinja" as Base #}
-{#import "../hero/hero.jinja" as Hero #}
-{#import "../cards/project_card.jinja" as ProjectCard #}
-{#def seo, featured=(), current_path="/" #}
+{#def seo, featured=(), csrf_token="", current_path="/" #}
+{#import "../layouts/home.jinja" as HomeLayout #}
+{#import "../ui/card.jinja" as Card #}
+{#import "../ui/tag.jinja" as Tag #}
+{#import "../ui/input.jinja" as Input #}
+{#import "../ui/button.jinja" as Button #}
+{#import "../ui/icon.jinja" as Icon #}
+{#import "../ui/section_link.jinja" as SectionLink #}
 
-<Base seo={{ seo }} current_path={{ current_path }}>
-    <Hero
-        title={{ site_name }}
-        subtitle="Python developer focused on practical backend systems."
-    >
-        <a href="/projects">View Projects</a>
-        <a href="/contact">Contact</a>
-    </Hero>
+<HomeLayout seo={{ seo }} current_path={{ current_path }}>
+    <section class="snap-section home-hero-section">
+        <div class="snap-section-content home-hero-content">
+            <header class="flex flex-col lg:flex-row lg:items-start items-center gap-5 lg:gap-8">
+                <span class="relative flex shrink-0 overflow-hidden rounded-full size-24 sm:size-28" aria-hidden="true">
+                    <img
+                        class="aspect-square h-full w-full"
+                        alt="{{ site_name }} profile picture"
+                        src="https://ui-avatars.com/api/?name={{ site_name | urlencode }}&background=1a1a1a&color=fff&size=128"
+                    >
+                </span>
 
-    <section class="section">
-        <header class="section__header">
-            <h2>Featured Projects</h2>
-            <a href="/projects">See all projects</a>
-        </header>
+                <div class="flex-1 text-center lg:text-left">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-white mb-0">{{ profile_name or site_name }}</h1>
+                    <p class="text-sm sm:text-base text-gray-400 font-mono mb-1">
+                        {{ profile_role }}
+                    </p>
+                    <p class="text-xs sm:text-sm text-gray-500 font-mono mb-1.5">
+                        <a
+                            class="hover:underline"
+                            href="https://www.google.com/maps/search/{{ profile_location | urlencode }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {{ profile_location }}
+                        </a>
+                    </p>
+                    <p class="text-xs sm:text-sm text-gray-500 mb-4 max-w-xl">
+                        {{ profile_summary }}
+                    </p>
 
-        {% if featured %}
-        <div class="projects-grid">
-            {% for project in featured %}
-            <ProjectCard project={{ project }} />
-            {% endfor %}
+                    <Icon
+                        variant="links"
+                        links={{ social_links }}
+                        links_variant="icons_inline"
+                        container_class="flex flex-wrap justify-center lg:justify-start gap-2 mb-3"
+                    />
+
+                    <SectionLink href="/about" label="View full resume" />
+                </div>
+            </header>
         </div>
-        {% else %}
-        <p>No featured projects available yet.</p>
-        {% endif %}
+
+        <div class="scroll-indicator">
+            <span class="text-xs uppercase tracking-wider">Scroll</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
     </section>
-</Base>
+
+    <section class="snap-section">
+        <div class="snap-section-content">
+            <section class="flex flex-col min-h-0">
+                <a href="/projects" class="group block mb-3">
+                    <h2 class="text-lg font-semibold text-white flex items-center gap-2 group-hover:text-blue-400 transition-colors">
+                        Projects
+                    </h2>
+                </a>
+
+                <div class="space-y-3 flex-1 overflow-hidden">
+                    {% for project in featured %}
+                    <Card href={{ project.live_url or project.github_url or ('/projects/' ~ project.slug) }} padding="sm">
+                        <div class="flex flex-col gap-1">
+                            <h3 class="text-sm text-white font-medium group-hover:text-blue-400 transition-colors line-clamp-1">
+                                {{ project.title }}
+                            </h3>
+                            <p class="text-xs text-gray-500 line-clamp-1">{{ project.description }}</p>
+                            <div class="flex flex-wrap gap-1.5 mt-1">
+                                {% for tech in (project.tech_stack if project.tech_stack else project.tags)[:3] %}
+                                <Tag text={{ tech }} />
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </Card>
+                    {% else %}
+                    <p class="text-sm text-gray-500">No projects yet.</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-3">
+                    <SectionLink href="/projects" label="View more projects" />
+                </div>
+            </section>
+        </div>
+
+        <div class="scroll-indicator">
+            <span class="text-xs uppercase tracking-wider">Scroll</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
+    </section>
+
+    <section class="snap-section">
+        <div class="snap-section-content">
+            <h2 class="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">Contact</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+                <div>
+                    <h3 class="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">Connect</h3>
+                    <Icon variant="links" links={{ social_links }} />
+                </div>
+
+                <div>
+                    <h3 class="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">Send a Message</h3>
+                    <form class="space-y-3 sm:space-y-4" method="POST" action="/contact">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="subject" value="Homepage message">
+                        <Input name="name" label="Name" placeholder="Your Name" required={{ true }} />
+                        <Input name="email" type="email" label="Email" placeholder="your@email.com" required={{ true }} />
+                        <Input name="message" type="textarea" label="Message" placeholder="Your message..." rows={{ 4 }} required={{ true }} />
+                        <Button type="submit" variant="primary">Send Message</Button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</HomeLayout>

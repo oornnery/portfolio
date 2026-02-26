@@ -1,0 +1,60 @@
+{#def name, label="", type="text", placeholder="", value="", required=False, disabled=False, readonly=False, rows=4, variant="default", size="default", error="", hint="" #}
+
+{% set base_classes = "w-full rounded-md transition-all duration-200 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50" %}
+
+{% set variant_classes = {
+    "default": "bg-gray-900 border border-gray-700 text-white focus:border-accent focus:ring-accent/30",
+    "filled": "bg-gray-800 border border-transparent text-white focus:border-accent focus:ring-accent/30",
+    "outline": "bg-transparent border-2 border-gray-600 text-white focus:border-accent focus:ring-accent/30",
+    "ghost": "bg-transparent border border-transparent text-white hover:border-gray-700 focus:border-accent focus:ring-accent/30"
+} %}
+
+{% set size_classes = {
+    "sm": "px-3 py-1.5 text-sm",
+    "default": "px-4 py-2.5 text-sm",
+    "lg": "px-4 py-3 text-base"
+} %}
+
+{% set error_classes = "border-red-500/50 focus:border-red-500 focus:ring-red-500/30" if error else "" %}
+
+<div class="space-y-1.5">
+    {% if label %}
+    <label for="{{ name }}" class="block text-sm font-medium text-gray-300">
+        {{ label }}
+        {% if required %}<span class="text-red-400 ml-0.5">*</span>{% endif %}
+    </label>
+    {% endif %}
+
+    {% if type == "textarea" %}
+    <textarea
+        id="{{ name }}"
+        name="{{ name }}"
+        rows="{{ rows }}"
+        placeholder="{{ placeholder }}"
+        {% if required %}required{% endif %}
+        {% if disabled %}disabled{% endif %}
+        {% if readonly %}readonly{% endif %}
+        class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ error_classes }} resize-y min-h-[100px]"
+        {{ attrs.render() }}
+    >{{ value }}</textarea>
+    {% else %}
+    <input
+        type="{{ type }}"
+        id="{{ name }}"
+        name="{{ name }}"
+        value="{{ value }}"
+        placeholder="{{ placeholder }}"
+        {% if required %}required{% endif %}
+        {% if disabled %}disabled{% endif %}
+        {% if readonly %}readonly{% endif %}
+        class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ error_classes }}"
+        {{ attrs.render() }}
+    >
+    {% endif %}
+
+    {% if error %}
+    <p class="text-sm text-red-400">{{ error }}</p>
+    {% elif hint %}
+    <p class="text-sm text-gray-500">{{ hint }}</p>
+    {% endif %}
+</div>
