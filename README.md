@@ -90,110 +90,50 @@ flowchart TD
 ```text
 app/
   __init__.py
-  app.py
+  main.py
+  api/
+    __init__.py
+    router.py
+    analytics.py
+    about.py
+    contact.py
+    home.py
+    projects.py
   core/
     __init__.py
     config.py
+    dependencies.py
     logger.py
     security.py
   domain/
     __init__.py
     models.py
     schemas.py
-  application/
+  services/
     __init__.py
-    services/
-      __init__.py
-      profile.py
-      seo.py
-    use_cases/
-      __init__.py
-      about.py
-      contact.py
-      home.py
-      projects.py
-      types.py
+    about.py
+    contact.py
+    home.py
+    profile.py
+    projects.py
+    seo.py
+    types.py
   infrastructure/
     __init__.py
     markdown.py
     notifications/
       __init__.py
-      contact.py
+      email.py
   observability/
     __init__.py
     analytics.py
     events.py
     metrics.py
     telemetry.py
-  presentation/
+  rendering/
     __init__.py
-    dependencies.py
-    jx_catalog.py
-    render.py
-    routers/
-      __init__.py
-      analytics.py
-      about.py
-      contact.py
-      home.py
-      projects.py
-  components/
-    layouts/
-      base.jinja
-      home.jinja
-      public.jinja
-    pages/
-      about.jinja
-      contact.jinja
-      home.jinja
-      maintenance.jinja
-      not_found.jinja
-      project_detail.jinja
-      projects.jinja
-    ui/
-      alert.jinja
-      breadcrumb.jinja
-      button.jinja
-      card.jinja
-      footer.jinja
-      header.jinja
-      icon.jinja
-      input.jinja
-      navbar.jinja
-      prose.jinja
-      section_link.jinja
-      seo_head.jinja
-      social_links.jinja
-      tag.jinja
-    features/
-      contact/
-        contact_form.jinja
-      home/
-        contact_preview.jinja
-        profile_summary.jinja
-        projects_preview.jinja
-      projects/
-        project_card.jinja
-      resume/
-        about_section.jinja
-        certificates_section.jinja
-        education_section.jinja
-        experience_section.jinja
-        profile_header.jinja
-        skills_section.jinja
-  static/
-    css/
-      tailwind.css
-      tailwind.input.css
-      motion.css
-      style.css
-      tokens.css
-    js/
-      analytics.js
-      main.js
-    images/
-      og-default.png
-      projects/*.svg
+    catalog.py
+    engine.py
 
 content/
   about.md
@@ -202,11 +142,76 @@ content/
     distributed-task-orchestrator.md
     markdown-knowledge-base.md
     secure-contact-pipeline.md
+
+components/
+  layouts/
+    base.jinja
+    home.jinja
+    public.jinja
+  pages/
+    about.jinja
+    contact.jinja
+    home.jinja
+    maintenance.jinja
+    not-found.jinja
+    project-detail.jinja
+    projects.jinja
+  ui/
+    alert.jinja
+    breadcrumb.jinja
+    button.jinja
+    card.jinja
+    footer.jinja
+    header.jinja
+    icon.jinja
+    input.jinja
+    navbar.jinja
+    prose.jinja
+    section-link.jinja
+    seo-head.jinja
+    social-links.jinja
+    tag.jinja
+  features/
+    contact/
+      contact-form.jinja
+    home/
+      contact-preview.jinja
+      profile-summary.jinja
+      projects-preview.jinja
+    projects/
+      project-card.jinja
+    resume/
+      about-section.jinja
+      certificates-section.jinja
+      education-section.jinja
+      experience-section.jinja
+      profile-header.jinja
+      skills-section.jinja
+
+static/
+  css/
+    tailwind.css
+    tailwind.input.css
+    motion.css
+    style.css
+    tokens.css
+  js/
+    analytics.js
+    main.js
+  images/
+    og-default.png
+    projects/*.svg
+
+infra/
+  alerts/
+    portfolio-alert-rules.yaml
+  grafana/
+    portfolio-overview-dashboard.json
 ```
 
 ## Backend Design
 
-### App lifecycle (`app/app.py`)
+### App lifecycle (`app/main.py`)
 
 - Configures structured logging.
 - Creates FastAPI instance with docs enabled only in debug mode.
@@ -217,23 +222,23 @@ content/
 - Configures OpenTelemetry instrumentation.
 - Wires SlowAPI rate limit exception handler.
 - Registers routers (`home`, `about`, `projects`, `contact`, `analytics`).
-- Handles 404 with rendered `pages/not_found.jinja`.
+- Handles 404 with rendered `pages/not-found.jinja`.
 
-### Dependency graph (`app/presentation/dependencies.py`)
+### Dependency graph (`app/core/dependencies.py`)
 
 - `get_catalog()` builds a singleton Jx catalog.
 - Catalog folders are namespaced with prefixes:
-  - `app/components/ui/` as `@ui/...`
-  - `app/components/layouts/` as `@layouts/...`
-  - `app/components/features/` as `@features/...`
-  - `app/components/pages/` as `@pages/...`
+  - `components/ui/` as `@ui/...`
+  - `components/layouts/` as `@layouts/...`
+  - `components/features/` as `@features/...`
+  - `components/pages/` as `@pages/...`
 - Prefix setup pattern:
 
 ```python
-catalog.add_folder("app/components/ui", prefix="ui")
-catalog.add_folder("app/components/layouts", prefix="layouts")
-catalog.add_folder("app/components/features", prefix="features")
-catalog.add_folder("app/components/pages", prefix="pages")
+catalog.add_folder("components/ui", prefix="ui")
+catalog.add_folder("components/layouts", prefix="layouts")
+catalog.add_folder("components/features", prefix="features")
+catalog.add_folder("components/pages", prefix="pages")
 ```
 
 - Prefixed import pattern:
@@ -241,7 +246,7 @@ catalog.add_folder("app/components/pages", prefix="pages")
 ```jinja
 {#import "@layouts/public.jinja" as PublicLayout #}
 {#import "@ui/button.jinja" as Button #}
-{#import "@features/projects/project_card.jinja" as ProjectCard #}
+{#import "@features/projects/project-card.jinja" as ProjectCard #}
 ```
 
 - Profile globals are loaded from `content/about.md` and injected globally:
@@ -258,7 +263,7 @@ catalog.add_folder("app/components/pages", prefix="pages")
   - notification service with channels
   - analytics service
 
-### Use-cases (`app/application/use_cases/`)
+### Use-cases (`app/services/`)
 
 - `HomePageService`: builds featured project context and CSRF token.
 - `AboutPageService`: loads markdown profile content and metadata.
@@ -273,11 +278,11 @@ catalog.add_folder("app/components/pages", prefix="pages")
 | GET    | `/`                       | `home.py`         | `pages/home.jinja`           | Featured projects + profile hero            |
 | GET    | `/about`                  | `about.py`        | `pages/about.jinja`          | Resume-style sections from frontmatter      |
 | GET    | `/projects`               | `projects.py`     | `pages/projects.jinja`       | Project cards list                          |
-| GET    | `/projects/{slug}`        | `projects.py`     | `pages/project_detail.jinja` | Detail page + action buttons                |
+| GET    | `/projects/{slug}`        | `projects.py`     | `pages/project-detail.jinja` | Detail page + action buttons                |
 | GET    | `/contact`                | `contact.py`      | `pages/contact.jinja`        | Contact form + CSRF                         |
 | POST   | `/contact`                | `contact.py`      | `pages/contact.jinja`        | CSRF, validation, notifications, rate limit |
 | POST   | `/api/v1/analytics/track` | `analytics.py`    | JSON                         | Client telemetry ingestion                  |
-| GET    | `*`                       | exception handler | `pages/not_found.jinja`      | Rendered 404 page                           |
+| GET    | `*`                       | exception handler | `pages/not-found.jinja`      | Rendered 404 page                           |
 
 ## Frontend / Jx Layer
 
@@ -292,14 +297,14 @@ catalog.add_folder("app/components/pages", prefix="pages")
 - `ui/breadcrumb.jinja`: reusable breadcrumb with dynamic items.
 - `ui/button.jinja`: variants/sizes for links and buttons.
 - `ui/icon.jinja`: glyph-only icon component.
-- `ui/social_links.jinja`: social links layout variants.
+- `ui/social-links.jinja`: social links layout variants.
 - `ui/card.jinja`, `ui/tag.jinja`, `ui/input.jinja`, `ui/alert.jinja`,
-  `ui/section_link.jinja`, `ui/header.jinja`, `ui/navbar.jinja`,
-  `ui/footer.jinja`, `ui/seo_head.jinja`, `ui/prose.jinja`.
+  `ui/section-link.jinja`, `ui/header.jinja`, `ui/navbar.jinja`,
+  `ui/footer.jinja`, `ui/seo-head.jinja`, `ui/prose.jinja`.
 - Prefixed first-party components are used across the app, example:
   - `{#import "@layouts/public.jinja" as PublicLayout #}`
-  - `{#import "@ui/social_links.jinja" as SocialLinks #}`
-  - `{#import "@features/projects/project_card.jinja" as ProjectCard #}`
+  - `{#import "@ui/social-links.jinja" as SocialLinks #}`
+  - `{#import "@features/projects/project-card.jinja" as ProjectCard #}`
 
 ### Page composition
 
@@ -367,7 +372,7 @@ Supported fields:
 Example format:
 
 ```text
-2026-02-26 01:00:00 | INFO | app.presentation.routers.home |
+2026-02-26 01:00:00 | INFO | app.api.home |
 req_id=... method=GET path=/ ip=... | Home page rendered.
 ```
 
@@ -383,22 +388,22 @@ Settings are defined in `app/core/config.py` and loaded from `.env`.
 
 ### Common optional
 
-| Variable              | Description                                |
-| --------------------- | ------------------------------------------ |
-| `DEBUG`               | Enables docs/openapi and dev behavior      |
-| `APP_NAME`            | FastAPI title                              |
-| `APP_DESCRIPTION`     | FastAPI description                        |
-| `SITE_NAME`           | Fallback site/profile name                 |
-| `BASE_URL`            | Canonical URL base                         |
-| `RATE_LIMIT`          | SlowAPI format (example `10/minute`)       |
-| `CONTACT_WEBHOOK_URL` | Webhook endpoint for contact notifications |
-| `CONTACT_EMAIL_TO`    | Target email for SMTP notifications        |
-| `SMTP_*`              | SMTP transport settings                    |
-| `TELEMETRY_ENABLED`   | Enables OpenTelemetry pipeline             |
+| Variable                           | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `DEBUG`                            | Enables docs/openapi and dev behavior                        |
+| `APP_NAME`                         | FastAPI title                                                |
+| `APP_DESCRIPTION`                  | FastAPI description                                          |
+| `SITE_NAME`                        | Fallback site/profile name                                   |
+| `BASE_URL`                         | Canonical URL base                                           |
+| `RATE_LIMIT`                       | SlowAPI format (example `10/minute`)                         |
+| `CONTACT_WEBHOOK_URL`              | Webhook endpoint for contact notifications                   |
+| `CONTACT_EMAIL_TO`                 | Target email for SMTP notifications                          |
+| `SMTP_*`                           | SMTP transport settings                                      |
+| `TELEMETRY_ENABLED`                | Enables OpenTelemetry pipeline                               |
 | `TELEMETRY_EXPORTER_OTLP_ENDPOINT` | OTLP gRPC endpoint (SigNoz default: `http://localhost:4317`) |
-| `TELEMETRY_EXPORTER_OTLP_INSECURE` | Uses insecure OTLP transport for local setups |
-| `TELEMETRY_LOGS_ENABLED` | Enables OpenTelemetry log export        |
-| `TELEMETRY_EXPORTER_OTLP_HEADERS` | Optional OTLP headers (`key=value`) for SigNoz Cloud |
+| `TELEMETRY_EXPORTER_OTLP_INSECURE` | Uses insecure OTLP transport for local setups                |
+| `TELEMETRY_LOGS_ENABLED`           | Enables OpenTelemetry log export                             |
+| `TELEMETRY_EXPORTER_OTLP_HEADERS`  | Optional OTLP headers (`key=value`) for SigNoz Cloud         |
 
 ### Example `.env`
 
@@ -437,7 +442,7 @@ uv sync
 ### Run app
 
 ```bash
-uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Quality checks
@@ -446,7 +451,7 @@ uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000
 uv run ruff check app
 uv run ty check app
 uv run pytest -q
-DEBUG=true PYTHONPATH=. uv run jx check app/presentation/jx_catalog.py:catalog
+DEBUG=true PYTHONPATH=. uv run jx check app/rendering/catalog.py:catalog
 uv run rumdl check .
 ```
 
@@ -456,19 +461,26 @@ uv run rumdl check .
 uv run rumdl fmt README.md
 ```
 
+### Optional pre-commit hooks
+
+```bash
+uvx pre-commit install
+uvx pre-commit run --all-files
+```
+
 ### Optional rebuild of Tailwind CSS
 
 ```bash
 npx tailwindcss@3.4.17 -c tailwind.config.cjs \
-  -i app/static/css/tailwind.input.css \
-  -o app/static/css/tailwind.css --minify
+  -i static/css/tailwind.input.css \
+  -o static/css/tailwind.css --minify
 ```
 
 ## Notes
 
 - This project intentionally uses SSR with Jx and does not depend on a SPA framework.
 - Profile identity and social links are content-driven from `content/about.md`.
-- Tailwind classes are served from local compiled `app/static/css/tailwind.css`
+- Tailwind classes are served from local compiled `static/css/tailwind.css`
   (no CDN runtime dependency).
-- Observability starter assets live in `observability/` and
+- Observability starter assets live in `infra/` and
   `docs/observability.md`.

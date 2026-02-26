@@ -6,9 +6,9 @@ artifacts for dashboards and alerts.
 ## Artifacts
 
 - Grafana dashboard:
-  - `observability/grafana/portfolio-overview-dashboard.json`
+  - `infra/grafana/portfolio-overview-dashboard.json`
 - Prometheus alert rules:
-  - `observability/alerts/portfolio-alert-rules.yaml`
+  - `infra/alerts/portfolio-alert-rules.yaml`
 
 ## Correlation fields
 
@@ -73,7 +73,7 @@ sum by (event_name) (rate(portfolio_analytics_events_total[5m]))
 - Keep tracing enabled:
   - `TELEMETRY_ENABLED=true`
 - Run app:
-  - `uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000`
+  - `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
 
 This gives quick local visibility for spans and metric emissions.
 
@@ -100,7 +100,7 @@ TELEMETRY_LOGS_ENABLED=true
 ### Validation checklist
 
 - Start the app:
-  - `uv run uvicorn app.app:app --reload --host 0.0.0.0 --port 8000`
+  - `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
 - Hit the app routes (`/`, `/about`, `/projects`, `/contact`).
 - In SigNoz UI, validate:
   - service appears as `portfolio-backend`
