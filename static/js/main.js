@@ -100,7 +100,4 @@
         init();
     }
 
-    window.App = {
-        init,
-    };
 })();

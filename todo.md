@@ -135,7 +135,7 @@ This document is a full refactor backlog for future iterations.
   - Prefer build-time CSS (compiled Tailwind or pure CSS tokens/utilities).
   - Improves performance, security, and CSP strictness.
 
-- [ ] Remove dead JS code paths.
+- [x] Remove dead JS code paths.
   - `static/js/main.js` still includes share/copy helper flows no longer used
     by current templates.
   - Keep only behavior that has active DOM hooks.
@@ -296,7 +296,7 @@ components/
 
 ## Definition of Done for Refactor
 
-- [ ] No dead runtime assets.
+- [x] No dead runtime assets.
 - [x] No broad fallback masking template failures in debug.
 - [ ] Content parsing is typed and validated.
 - [ ] Page templates are composed from smaller feature components.
