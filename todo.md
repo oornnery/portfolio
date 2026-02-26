@@ -83,7 +83,7 @@ This document is a full refactor backlog for future iterations.
   - Add helper `render_page(page: PageRenderData) -> HTMLResponse`.
   - Keep routers thin and consistent.
 
-- [ ] Split `use_cases.py` into dedicated files.
+- [x] Split `use_cases.py` into dedicated files.
   - Current file centralizes multiple use-cases and DTOs.
   - Suggested split:
     - `services/use_cases/home.py`
