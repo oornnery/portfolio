@@ -1,0 +1,25 @@
+{#def items #}
+
+{% if items %}
+<section class="flex min-h-0 flex-col gap-y-3">
+    <h2 class="text-lg sm:text-xl font-bold text-white">Certificates</h2>
+    <div class="space-y-3 sm:space-y-4">
+        {% for item in items %}
+        <article>
+            <div class="flex flex-col space-y-1">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                    <h3 class="text-sm sm:text-base font-semibold leading-none text-white">{{ item.name }}</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 shrink-0">{{ item.date }}</p>
+                </div>
+                <p class="font-mono text-xs sm:text-sm text-gray-400">
+                    {{ item.issuer }}
+                    {% if item.credential_id %}
+                    <span class="text-gray-500"> • ID: {{ item.credential_id }}</span>
+                    {% endif %}
+                </p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}

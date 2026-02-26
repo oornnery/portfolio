@@ -103,7 +103,7 @@ This document is a full refactor backlog for future iterations.
   - Register optional folders with `catalog.add_folder(..., prefix=...)`.
   - Use prefixed imports like `@ui/...`, `@layouts/...`, and `@cards/...` in components.
 
-- [ ] Decompose large page templates into feature blocks.
+- [x] Decompose large page templates into feature blocks.
   - `pages/home.jinja` and `pages/about.jinja` are doing too much.
   - Break into reusable sections, for example:
     - `features/home/profile_summary.jinja`

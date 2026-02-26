@@ -1,0 +1,41 @@
+{#import "@ui/social_links.jinja" as SocialLinks #}
+{#def meta, profile_name="", site_name="", social_links=() #}
+
+{% set profile_display_name = meta.name or profile_name or site_name %}
+{% set role = meta.role or "Backend Engineer" %}
+{% set location = meta.location or "Sao Paulo, Brazil" %}
+
+<header class="flex items-start gap-4">
+    <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20" aria-hidden="true">
+        <img
+            class="aspect-square h-full w-full"
+            alt="{{ profile_display_name }} profile picture"
+            src="https://ui-avatars.com/api/?name={{ profile_display_name | urlencode }}&background=1a1a1a&color=fff&size=128"
+        >
+    </span>
+
+    <div class="flex-1 min-w-0">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white" id="resume-name">{{ profile_display_name }}</h1>
+            <p class="font-mono text-xs sm:text-sm text-gray-400" aria-labelledby="resume-name">
+                {{ role }}
+            </p>
+            <p class="font-mono text-xs text-gray-500">
+                <a
+                    class="hover:underline"
+                    href="https://www.google.com/maps/search/{{ location | urlencode }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {{ location }}
+                </a>
+            </p>
+        </div>
+
+        <SocialLinks
+            links={{ social_links }}
+            variant="icons_inline"
+            container_class="flex flex-wrap gap-2 mt-3"
+        />
+    </div>
+</header>
