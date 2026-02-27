@@ -38,7 +38,7 @@ def create_app() -> FastAPI:
     )
     configure_telemetry(app)
 
-    static_dir = Path(__file__).resolve().parents[1] / "static"
+    static_dir = Path(__file__).resolve().parent / "static"
     if static_dir.exists():
         app.mount("/static", StaticFiles(directory=static_dir), name="static")
         logger.info("Mounted static files directory at /static.")

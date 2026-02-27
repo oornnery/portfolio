@@ -1,6 +1,6 @@
 module.exports = {
   content: [
-    './components/**/*.jinja',
+    './app/components/**/*.jinja',
     './app/**/*.py',
   ],
   darkMode: 'class',
