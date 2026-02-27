@@ -41,3 +41,22 @@ dev = [
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.taskipy.tasks]
+run = "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+run_prod = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+lint = "ruff check app tests app/static/js"
+format = "ruff format ."
+typecheck = "ty check app"
+test = "pytest -q"
+md_check = "rumdl check ."
+md_fmt = "rumdl fmt ."
+jx_check = "DEBUG=true PYTHONPATH=. jx check app/rendering/catalog.py:catalog"
+fmt = "task format && task md_fmt"
+check = "task lint && task typecheck && task test && task md_check && task jx_check"
+ci = "task fmt && task check"
+precommit = "pre-commit run --all-files"
+docker_dev_up = "docker compose --env-file .env -f docker/docker-compose.yml up --build -d"
+docker_dev_down = "docker compose --env-file .env -f docker/docker-compose.yml down"
+docker_prod_up = "docker compose --env-file .env -f docker/docker-compose.prod.yml up --build -d"
+docker_prod_down = "docker compose --env-file .env -f docker/docker-compose.prod.yml down"
