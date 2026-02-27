@@ -78,3 +78,12 @@ class ContactSubmissionResult:
     @property
     def is_valid(self) -> bool:
         return self.contact is not None and not self.errors
+
+
+@dataclass(frozen=True)
+class ContactFormResult:
+    """Result of the full contact form orchestration."""
+
+    page: PageRenderData
+    status_code: int
+    outcome: str

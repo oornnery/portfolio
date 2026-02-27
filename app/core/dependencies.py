@@ -5,9 +5,9 @@ from typing import Any
 
 from jx import Catalog
 from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 from app.core.config import settings
+from app.core.security import extract_source_ip
 from app.observability.analytics import AnalyticsService, build_analytics_service
 from app.infrastructure.notifications.email import (
     ContactNotificationService,
@@ -23,6 +23,7 @@ from app.services import (
     ProfileService,
     ProjectsPageService,
 )
+from app.services.contact import ContactOrchestrator
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +72,10 @@ def get_catalog() -> Catalog:
     return catalog
 
 
-limiter = Limiter(key_func=get_remote_address)
+limiter = Limiter(
+    key_func=extract_source_ip,
+    default_limits=[settings.default_rate_limit],
+)
 
 
 @lru_cache(maxsize=1)
@@ -128,6 +132,16 @@ def get_contact_submission_service() -> ContactSubmissionService:
 @lru_cache(maxsize=1)
 def get_analytics_service() -> AnalyticsService:
     return build_analytics_service()
+
+
+@lru_cache(maxsize=1)
+def get_contact_orchestrator() -> ContactOrchestrator:
+    return ContactOrchestrator(
+        page_service=get_contact_page_service(),
+        submission_service=get_contact_submission_service(),
+        notification_service=get_contact_notification_service(),
+        analytics_service=get_analytics_service(),
+    )
 
 
 def render_template(template: str, **context: Any) -> str:
