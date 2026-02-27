@@ -70,7 +70,8 @@ From `docker/docker-compose.prod.yml`:
 - `tmpfs: /tmp`
 - `security_opt: no-new-privileges:true`
 - Internal Docker network (`portfolio-edge`) with explicit subnet `172.28.0.0/16`
-- `--forwarded-allow-ips` restricted to the Docker subnet CIDR (prevents header spoofing)
+- `--forwarded-allow-ips` restricted to the Docker subnet CIDR
+  (prevents header spoofing)
 - App is private behind Traefik
 - Health check via `GET /health` endpoint
 
