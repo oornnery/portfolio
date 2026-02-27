@@ -19,3 +19,4 @@ README.md
 .env
 .env.example
 .pre-commit-config.yaml
+.claude

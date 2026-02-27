@@ -10,12 +10,19 @@ wheels/
 .venv
 .env
 
+# Cache and coverage
 .ruff_cache/
 .mypy_cache/
 .pytest_cache/
 .rumdl_cache/
 .coverage
 htmlcov/
+
+# Logs and databases
 *.log
 *.bd
 
+# IDE and editor configs
+.vscode/
+.idea/
+.claude/
