@@ -61,6 +61,17 @@ From the project root:
 docker compose --env-file .env -f docker/docker-compose.prod.yml up --build -d
 ```
 
+Recommended production values in `.env`:
+
+```bash
+PROD_BASE_URL=https://example.com
+PROD_TRUSTED_HOSTS=example.com,www.example.com
+PROD_CORS_ALLOW_ORIGINS=https://example.com
+PROD_ANALYTICS_ALLOWED_ORIGINS=https://example.com
+PROD_ANALYTICS_ALLOWED_SOURCES=0.0.0.0/0,::/0
+PROD_PUBLIC_HTTP_PORT=80
+```
+
 Stop and remove:
 
 ```bash
@@ -69,8 +80,8 @@ docker compose --env-file .env -f docker/docker-compose.prod.yml down
 
 ## Port and URL
 
-- Exposed port: `8000`
-- Local URL: `http://localhost:8000`
+- Exposed port: `${PROD_PUBLIC_HTTP_PORT:-80}` -> container `8000`
+- Local URL (with defaults): `http://localhost`
 - In production compose, Traefik is the public entrypoint and the app container
   is private to the internal Docker network.
 
@@ -86,6 +97,7 @@ Defined in compose files:
 ### Development (`docker-compose.yml`)
 
 - Uses `Dockerfile.dev`.
+- Builds tagged image `portfolio-app-dev:latest`.
 - Installs all dependency groups (`--all-groups`).
 - Enables auto-reload (`uvicorn --reload`) for code/template/content changes.
 - Mounts source folders as bind volumes:
@@ -95,16 +107,21 @@ Defined in compose files:
 ### Production (`docker-compose.prod.yml`)
 
 - Uses `Dockerfile.prod`.
+- Builds tagged image `portfolio-app:latest`.
 - Installs only runtime dependencies (`--no-dev`).
-- Runs behind Traefik (`traefik:v3`) as reverse proxy on port `8000`.
+- Runs behind Traefik (`traefik:v3`) as reverse proxy on
+  `${PROD_PUBLIC_HTTP_PORT:-80}`.
 - App container is not exposed directly; requests flow through Traefik.
 - Traefik static config is loaded from `docker/traefik/traefik.yml`.
 - Traefik dynamic config is loaded from `docker/traefik/dynamic/`.
 - Runs with multiple workers (`--workers 2`).
 - Enables proxy headers for reverse-proxy deployment.
 - Enables trusted forwarded headers in the app (`TRUST_FORWARDED_IP_HEADERS=true`).
-- Restricts only `POST /api/v1/analytics/track` at edge with Traefik
-  `ipAllowList` middleware.
+- Requires explicit production host/origin environment values
+  (`PROD_BASE_URL`, `PROD_TRUSTED_HOSTS`, `PROD_CORS_ALLOW_ORIGINS`,
+  `PROD_ANALYTICS_ALLOWED_ORIGINS`).
+- Applies edge `ipAllowList` on analytics endpoint, with default open ranges
+  (must be narrowed when using fixed collector/CDN IP ranges).
 - Applies container hardening:
   - read-only filesystem
   - `tmpfs` for `/tmp`
@@ -135,6 +152,9 @@ To customize host matching and analytics source allowlist, edit:
 
 - `docker/traefik/dynamic/routing.yml`
 
+For stricter host filtering at edge, add `Host(...)` matchers in each router
+rule in `routing.yml` and keep them aligned with `TRUSTED_HOSTS`.
+
 ## Traefik config files
 
 - Static config:
@@ -145,7 +165,7 @@ To customize host matching and analytics source allowlist, edit:
 ## Notes
 
 - The service runs `uvicorn app.main:app`.
-- The healthcheck calls `GET /` from inside the container.
+- The healthcheck calls `GET /health` from inside the container.
 - The build context is the project root (`..`), using
   `docker/Dockerfile.dev` or `docker/Dockerfile.prod`.
 

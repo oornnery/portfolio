@@ -100,7 +100,10 @@ Covered scenarios include:
 - Keep `TRUST_FORWARDED_IP_HEADERS=false` unless behind trusted proxy.
 - In production Docker, `--forwarded-allow-ips` is restricted to the internal
   Docker subnet (`172.28.0.0/16`) to prevent header spoofing.
-- Restrict `ANALYTICS_ALLOWED_SOURCES` to collector/edge IPs.
+- In production, set `PROD_TRUSTED_HOSTS`, `PROD_CORS_ALLOW_ORIGINS`, and
+  `PROD_ANALYTICS_ALLOWED_ORIGINS` to your public domain(s).
+- Restrict `ANALYTICS_ALLOWED_SOURCES` and Traefik analytics `ipAllowList`
+  to collector/CDN ranges when they are predictable.
 - Keep CSP strict in production (`DEBUG=false`).
 - Use `DEV_CSP_ENABLED=true` during development for hot reload compatibility.
 - Rotate `SECRET_KEY` and keep it out of VCS.

@@ -5,7 +5,7 @@ services:
     command:
       - "--configFile=/etc/traefik/traefik.yml"
     ports:
-      - "8000:8000"
+      - "${PROD_PUBLIC_HTTP_PORT:-80}:8000"
     volumes:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./traefik/dynamic:/etc/traefik/dynamic:ro
@@ -17,6 +17,7 @@ services:
 
   app:
     container_name: portfolio-app
+    image: portfolio-app:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.prod
@@ -28,6 +29,11 @@ services:
       TELEMETRY_ENABLED: "true"
       TELEMETRY_LOGS_ENABLED: "true"
       TRUST_FORWARDED_IP_HEADERS: "true"
+      BASE_URL: "${PROD_BASE_URL:-https://example.com}"
+      TRUSTED_HOSTS: "${PROD_TRUSTED_HOSTS:-example.com,www.example.com}"
+      CORS_ALLOW_ORIGINS: "${PROD_CORS_ALLOW_ORIGINS:-https://example.com}"
+      ANALYTICS_ALLOWED_ORIGINS: "${PROD_ANALYTICS_ALLOWED_ORIGINS:-https://example.com}"
+      ANALYTICS_ALLOWED_SOURCES: "${PROD_ANALYTICS_ALLOWED_SOURCES:-0.0.0.0/0,::/0}"
     command:
       [
         "uvicorn",

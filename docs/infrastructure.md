@@ -29,7 +29,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    I[Internet / Client] --> T[Traefik :8000]
+    I[Internet / Client] --> T[Traefik :${PROD_PUBLIC_HTTP_PORT:-80}]
     T --> A[portfolio-app :8000]
     A --> O[OTLP Endpoint]
     A --> W[Webhook]
@@ -60,6 +60,7 @@ Configured edge controls:
 - In-flight request cap
 - Body size limits per route profile
 - IP allowlist for analytics endpoint
+  (open by default in prod compose; narrow in production network policy)
 - Compression middleware
 
 ## Application Runtime Hardening (Prod)
@@ -73,6 +74,10 @@ From `docker/docker-compose.prod.yml`:
 - `--forwarded-allow-ips` restricted to the Docker subnet CIDR
   (prevents header spoofing)
 - App is private behind Traefik
+- Production compose maps `PROD_*` env vars to app-layer checks:
+  `PROD_TRUSTED_HOSTS` -> `TRUSTED_HOSTS`
+  `PROD_CORS_ALLOW_ORIGINS` -> `CORS_ALLOW_ORIGINS`
+  `PROD_ANALYTICS_ALLOWED_ORIGINS` -> `ANALYTICS_ALLOWED_ORIGINS`
 - Health check via `GET /health` endpoint
 
 ## Observability Assets

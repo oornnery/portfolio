@@ -1,6 +1,7 @@
 services:
   app:
     container_name: portfolio-app-dev
+    image: portfolio-app-dev:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.dev

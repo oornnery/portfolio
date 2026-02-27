@@ -3,7 +3,7 @@ http:
     portfolio-analytics:
       entryPoints:
         - web
-      rule: (Host(`localhost`) || Host(`127.0.0.1`)) && Path(`/api/v1/analytics/track`) && Method(`POST`)
+      rule: Path(`/api/v1/analytics/track`) && Method(`POST`)
       priority: 100
       service: portfolio-app
       middlewares:
@@ -17,7 +17,7 @@ http:
     portfolio-contact:
       entryPoints:
         - web
-      rule: (Host(`localhost`) || Host(`127.0.0.1`)) && Path(`/contact`) && Method(`POST`)
+      rule: Path(`/contact`) && Method(`POST`)
       priority: 90
       service: portfolio-app
       middlewares:
@@ -29,7 +29,7 @@ http:
     portfolio-web:
       entryPoints:
         - web
-      rule: (Host(`localhost`) || Host(`127.0.0.1`)) && PathPrefix(`/`)
+      rule: PathPrefix(`/`)
       priority: 1
       service: portfolio-app
       middlewares:
@@ -73,8 +73,8 @@ http:
     portfolio-analytics-allow:
       ipAllowList:
         sourceRange:
-          - 127.0.0.1/32
-          - ::1/128
+          - 0.0.0.0/0
+          - ::/0
 
   services:
     portfolio-app:
