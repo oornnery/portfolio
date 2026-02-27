@@ -1,0 +1,83 @@
+http:
+  routers:
+    portfolio-analytics:
+      entryPoints:
+        - web
+      rule: (Host(`localhost`) || Host(`127.0.0.1`)) && Path(`/api/v1/analytics/track`) && Method(`POST`)
+      priority: 100
+      service: portfolio-app
+      middlewares:
+        - portfolio-rate-limit-global
+        - portfolio-inflight-global
+        - portfolio-body-limit-analytics
+        - portfolio-analytics-rate-limit
+        - portfolio-compress
+        - portfolio-analytics-allow
+
+    portfolio-contact:
+      entryPoints:
+        - web
+      rule: (Host(`localhost`) || Host(`127.0.0.1`)) && Path(`/contact`) && Method(`POST`)
+      priority: 90
+      service: portfolio-app
+      middlewares:
+        - portfolio-rate-limit-global
+        - portfolio-inflight-global
+        - portfolio-body-limit-contact
+        - portfolio-compress
+
+    portfolio-web:
+      entryPoints:
+        - web
+      rule: (Host(`localhost`) || Host(`127.0.0.1`)) && PathPrefix(`/`)
+      priority: 1
+      service: portfolio-app
+      middlewares:
+        - portfolio-rate-limit-global
+        - portfolio-inflight-global
+        - portfolio-body-limit-web
+        - portfolio-compress
+
+  middlewares:
+    portfolio-compress:
+      compress: {}
+
+    portfolio-rate-limit-global:
+      rateLimit:
+        average: 60
+        burst: 120
+        period: 1m
+
+    portfolio-analytics-rate-limit:
+      rateLimit:
+        average: 30
+        burst: 30
+        period: 1m
+
+    portfolio-inflight-global:
+      inFlightReq:
+        amount: 200
+
+    portfolio-body-limit-web:
+      buffering:
+        maxRequestBodyBytes: 1048576
+
+    portfolio-body-limit-contact:
+      buffering:
+        maxRequestBodyBytes: 65536
+
+    portfolio-body-limit-analytics:
+      buffering:
+        maxRequestBodyBytes: 262144
+
+    portfolio-analytics-allow:
+      ipAllowList:
+        sourceRange:
+          - 127.0.0.1/32
+          - ::1/128
+
+  services:
+    portfolio-app:
+      loadBalancer:
+        servers:
+          - url: http://app:8000

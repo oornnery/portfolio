@@ -1,11 +1,25 @@
 services:
+  traefik:
+    container_name: portfolio-traefik
+    image: traefik:v3.3
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - edge
+
   app:
     container_name: portfolio-app
     build:
       context: ..
       dockerfile: docker/Dockerfile.prod
-    ports:
-      - "8000:8000"
     env_file:
       - ../.env
     environment:
@@ -13,6 +27,7 @@ services:
       LOG_LEVEL: "INFO"
       TELEMETRY_ENABLED: "true"
       TELEMETRY_LOGS_ENABLED: "true"
+      TRUST_FORWARDED_IP_HEADERS: "true"
     command:
       [
         "uvicorn",
@@ -24,7 +39,7 @@ services:
         "--workers",
         "2",
         "--proxy-headers",
-        "--forwarded-allow-ips=*",
+        "--forwarded-allow-ips=172.28.0.0/16",
       ]
     restart: unless-stopped
     read_only: true
@@ -38,9 +53,20 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=3)",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)",
         ]
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 20s
+    depends_on:
+      - traefik
+    networks:
+      - edge
+
+networks:
+  edge:
+    name: portfolio-edge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
