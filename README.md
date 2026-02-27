@@ -15,6 +15,20 @@ and a service-driven backend architecture.
 - Reusable UI component layer (buttons, icons, breadcrumb, cards, tags,
   inputs, alerts).
 
+## Architecture Decisions (ADR Summary)
+
+- CSP and assets policy:
+  enforce a strict CSP in non-debug environments, avoid inline script/style,
+  and serve runtime assets locally from `/static/*`.
+- Analytics privacy model:
+  accept only typed event schemas, avoid fingerprinting, and treat analytics as
+  best-effort telemetry rather than business-critical storage.
+- Rendering contracts:
+  keep typed page context models and route everything through `PageRenderData`
+  and `render_page` to avoid loose template contracts.
+  Notes were consolidated in this section while `docs/` is kept available for
+  future project documentation.
+
 ## Tech Stack
 
 ### Backend
@@ -143,7 +157,7 @@ content/
     markdown-knowledge-base.md
     secure-contact-pipeline.md
 
-components/
+app/components/
   layouts/
     base.jinja
     home.jinja
@@ -188,7 +202,7 @@ components/
       profile-header.jinja
       skills-section.jinja
 
-static/
+app/static/
   css/
     tailwind.css
     tailwind.input.css
@@ -228,17 +242,17 @@ infra/
 
 - `get_catalog()` builds a singleton Jx catalog.
 - Catalog folders are namespaced with prefixes:
-  - `components/ui/` as `@ui/...`
-  - `components/layouts/` as `@layouts/...`
-  - `components/features/` as `@features/...`
-  - `components/pages/` as `@pages/...`
+  - `app/components/ui/` as `@ui/...`
+  - `app/components/layouts/` as `@layouts/...`
+  - `app/components/features/` as `@features/...`
+  - `app/components/pages/` as `@pages/...`
 - Prefix setup pattern:
 
 ```python
-catalog.add_folder("components/ui", prefix="ui")
-catalog.add_folder("components/layouts", prefix="layouts")
-catalog.add_folder("components/features", prefix="features")
-catalog.add_folder("components/pages", prefix="pages")
+catalog.add_folder("app/components/ui", prefix="ui")
+catalog.add_folder("app/components/layouts", prefix="layouts")
+catalog.add_folder("app/components/features", prefix="features")
+catalog.add_folder("app/components/pages", prefix="pages")
 ```
 
 - Prefixed import pattern:
@@ -429,7 +443,8 @@ to SigNoz over OTLP. The emitted service identity is:
 - `service.name=portfolio-backend`
 - `service.namespace=portfolio`
 
-Detailed runbook and validation checklist: `docs/observability.md`.
+Detailed runbook and validation checklist are documented in
+`infra/README.md`.
 
 ## Development
 
@@ -472,15 +487,14 @@ uvx pre-commit run --all-files
 
 ```bash
 npx tailwindcss@3.4.17 -c tailwind.config.cjs \
-  -i static/css/tailwind.input.css \
-  -o static/css/tailwind.css --minify
+  -i app/static/css/tailwind.input.css \
+  -o app/static/css/tailwind.css --minify
 ```
 
 ## Notes
 
 - This project intentionally uses SSR with Jx and does not depend on a SPA framework.
 - Profile identity and social links are content-driven from `content/about.md`.
-- Tailwind classes are served from local compiled `static/css/tailwind.css`
+- Tailwind classes are served from local compiled `app/static/css/tailwind.css`
   (no CDN runtime dependency).
-- Observability starter assets live in `infra/` and
-  `docs/observability.md`.
+- Observability starter assets and setup instructions live in `infra/README.md`.
