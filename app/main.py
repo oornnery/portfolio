@@ -3,16 +3,25 @@ from pathlib import Path
 from typing import Any, cast
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.dependencies import limiter, render_template
 from app.core.logger import configure_logging
-from app.core.security import RequestTracingMiddleware, SecurityHeadersMiddleware
+from app.core.utils import split_csv
+from app.core.security import (
+    AnalyticsSourceGuardMiddleware,
+    RequestBodySizeLimitMiddleware,
+    RequestTracingMiddleware,
+    SecurityHeadersMiddleware,
+)
 from app.services.seo import seo_for_page
 from app.observability.telemetry import configure_telemetry
 
@@ -45,10 +54,23 @@ def create_app() -> FastAPI:
     else:
         logger.warning("Static directory not found; /static mount skipped.")
 
-    app.add_middleware(cast(Any, RequestTracingMiddleware))
-    app.add_middleware(cast(Any, SecurityHeadersMiddleware))
-
     app.state.limiter = limiter
+    app.add_middleware(cast(Any, RequestTracingMiddleware))
+    app.add_middleware(cast(Any, RequestBodySizeLimitMiddleware))
+    app.add_middleware(cast(Any, AnalyticsSourceGuardMiddleware))
+    app.add_middleware(cast(Any, SecurityHeadersMiddleware))
+    app.add_middleware(cast(Any, SlowAPIMiddleware))
+    app.add_middleware(
+        cast(Any, CORSMiddleware),
+        allow_origins=split_csv(settings.cors_allow_origins),
+        allow_methods=split_csv(settings.cors_allow_methods) or ["GET"],
+        allow_headers=split_csv(settings.cors_allow_headers),
+        allow_credentials=settings.cors_allow_credentials,
+    )
+    app.add_middleware(
+        cast(Any, TrustedHostMiddleware),
+        allowed_hosts=split_csv(settings.trusted_hosts) or ["localhost"],
+    )
     app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
     app.include_router(api_router)

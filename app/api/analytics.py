@@ -2,7 +2,8 @@ import logging
 
 from fastapi import APIRouter, Depends, Request
 
-from app.core.dependencies import get_analytics_service
+from app.core.dependencies import get_analytics_service, limiter
+from app.core.config import settings
 from app.domain.schemas import AnalyticsTrackRequest, AnalyticsTrackResponse
 from app.observability.analytics import AnalyticsService
 
@@ -11,13 +12,18 @@ logger = logging.getLogger(__name__)
 
 
 @router.post("/track", response_model=AnalyticsTrackResponse)
+@limiter.limit(settings.analytics_rate_limit)
 async def track_analytics(
     payload: AnalyticsTrackRequest,
     request: Request,
     analytics_service: AnalyticsService = Depends(get_analytics_service),
 ) -> AnalyticsTrackResponse:
     request_id = getattr(request.state, "request_id", "unknown")
-    client_ip = request.client.host if request.client else "unknown"
+    client_ip = getattr(
+        request.state,
+        "analytics_source_ip",
+        request.client.host if request.client else "unknown",
+    )
     user_agent = request.headers.get("user-agent", "")
 
     result = analytics_service.ingest_events(

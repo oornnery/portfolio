@@ -47,7 +47,24 @@ class Settings(BaseSettings):
     # Security
     secret_key: str = Field(min_length=16)
     csrf_token_expiry: int = 3600
+    default_rate_limit: str = "60/minute"
     rate_limit: str = "10/minute"
+    analytics_rate_limit: str = "30/minute"
+    analytics_allowed_sources: str = "127.0.0.1,::1"
+    analytics_allowed_origins: str = ""
+    trust_forwarded_ip_headers: bool = False
+    trusted_hosts: str = "localhost,127.0.0.1,testserver"
+    cors_allow_origins: str = ""
+    cors_allow_methods: str = "GET,POST,OPTIONS"
+    cors_allow_headers: str = "Content-Type,X-Request-ID"
+    cors_allow_credentials: bool = False
+    max_request_body_bytes: int = Field(default=1_048_576, ge=1024)
+    contact_max_body_bytes: int = Field(default=65_536, ge=1024)
+    analytics_max_body_bytes: int = Field(default=262_144, ge=1024)
+
+    # Content
+    markdown_cache_ttl: int = Field(default=300, ge=0)
+    dev_csp_enabled: bool = True
 
     # Contact
     contact_webhook_url: str = ""
