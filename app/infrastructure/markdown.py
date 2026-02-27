@@ -1,13 +1,16 @@
-from functools import lru_cache
 import logging
+import threading
 from pathlib import Path
 from typing import Any
 
-import bleach
 import markdown
+import nh3
+from cachetools import TTLCache, cached
+from cachetools.keys import hashkey
 from pydantic import ValidationError
 import yaml
 
+from app.core.config import settings
 from app.domain.models import Project
 from app.domain.schemas import AboutContent, AboutFrontmatter, ProjectFrontmatter
 
@@ -49,65 +52,79 @@ def _render_md(content: str) -> str:
     )
 
 
-_BLEACH_ALLOWED_TAGS = sorted(
-    {
-        *bleach.sanitizer.ALLOWED_TAGS,
-        "br",
-        "div",
-        "em",
-        "li",
-        "ol",
-        "p",
-        "pre",
-        "code",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "blockquote",
-        "hr",
-        "span",
-        "strong",
-        "table",
-        "tbody",
-        "td",
-        "tfoot",
-        "th",
-        "thead",
-        "tr",
-        "ul",
-        "img",
-    }
-)
-_BLEACH_ALLOWED_ATTRS = {
-    **bleach.sanitizer.ALLOWED_ATTRIBUTES,
-    "a": ["href", "title", "target", "rel"],
-    "div": ["class"],
-    "img": ["src", "alt", "title", "width", "height", "loading"],
-    "ol": ["start"],
-    "span": ["class"],
-    "table": ["class"],
-    "code": ["class"],
-    "td": ["colspan", "rowspan", "align"],
-    "th": ["colspan", "rowspan", "align", "scope"],
+_NH3_ALLOWED_TAGS = {
+    "a",
+    "abbr",
+    "acronym",
+    "b",
+    "blockquote",
+    "br",
+    "code",
+    "div",
+    "em",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "hr",
+    "i",
+    "img",
+    "li",
+    "ol",
+    "p",
+    "pre",
+    "span",
+    "strong",
+    "table",
+    "tbody",
+    "td",
+    "tfoot",
+    "th",
+    "thead",
+    "tr",
+    "ul",
 }
-_BLEACH_ALLOWED_PROTOCOLS = ["http", "https", "mailto"]
+
+_NH3_ALLOWED_ATTRS: dict[str, set[str]] = {
+    "a": {"href", "title", "target"},
+    "div": {"class"},
+    "img": {"src", "alt", "title", "width", "height", "loading"},
+    "ol": {"start"},
+    "span": {"class"},
+    "table": {"class"},
+    "code": {"class"},
+    "td": {"colspan", "rowspan", "align"},
+    "th": {"colspan", "rowspan", "align", "scope"},
+}
+
+_NH3_URL_SCHEMES = {"http", "https", "mailto"}
 
 
 def _sanitize_html(html: str) -> str:
-    cleaned = bleach.clean(
+    return nh3.clean(
         html,
-        tags=_BLEACH_ALLOWED_TAGS,
-        attributes=_BLEACH_ALLOWED_ATTRS,
-        protocols=_BLEACH_ALLOWED_PROTOCOLS,
-        strip=True,
+        tags=_NH3_ALLOWED_TAGS,
+        attributes=_NH3_ALLOWED_ATTRS,
+        url_schemes=_NH3_URL_SCHEMES,
+        link_rel="noopener noreferrer",
+        strip_comments=True,
     )
-    return bleach.linkify(cleaned, skip_tags={"pre", "code"})
 
 
-@lru_cache(maxsize=1)
+def _build_content_cache() -> TTLCache:
+    ttl = settings.markdown_cache_ttl
+    if ttl <= 0:
+        ttl = 60 * 60 * 24 * 365
+    return TTLCache(maxsize=16, ttl=ttl)
+
+
+_content_cache: TTLCache = _build_content_cache()
+_cache_lock = threading.Lock()
+
+
+@cached(cache=_content_cache, key=lambda: hashkey("about"), lock=_cache_lock)
 def load_about() -> AboutContent:
     about_path = CONTENT_DIR / "about.md"
     meta, body = _parse_frontmatter(about_path)
@@ -125,7 +142,7 @@ def load_about() -> AboutContent:
     )
 
 
-@lru_cache(maxsize=1)
+@cached(cache=_content_cache, key=lambda: hashkey("all_projects"), lock=_cache_lock)
 def load_all_projects() -> tuple[Project, ...]:
     if not PROJECTS_DIR.exists():
         logger.info(

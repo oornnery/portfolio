@@ -5,12 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "bleach>=6.3.0",
+    "cachetools>=5.5.0",
     "fastapi>=0.132.0",
     "httpx>=0.28.1",
     "jinja2>=3.1.6",
     "jx>=0.8.0",
     "markdown>=3.9",
+    "nh3>=0.2.14",
     "opentelemetry-api>=1.38.0",
     "opentelemetry-exporter-otlp>=1.38.0",
     "opentelemetry-instrumentation-fastapi>=0.59b0",
@@ -49,6 +50,8 @@ lint = "ruff check app tests app/static/js"
 format = "ruff format ."
 typecheck = "ty check app"
 test = "pytest -q"
+test_routes = "pytest --cov=app/api --cov-report=term-missing --cov-fail-under=100 -q"
+test_security = "pytest tests/test_security_csrf.py tests/test_markdown_sanitization.py tests/test_security_owasp.py -q"
 md_check = "rumdl check ."
 md_fmt = "rumdl fmt ."
 jx_check = "DEBUG=true PYTHONPATH=. jx check app/rendering/catalog.py:catalog"
