@@ -44,6 +44,9 @@ jobs:
       - name: Pytest
         run: uv run pytest -q
 
+      - name: API routes coverage (100%)
+        run: uv run pytest --cov=app/api --cov-report=term-missing --cov-fail-under=100 -q
+
       - name: Rumdl check
         run: uv run rumdl check .
 
