@@ -2,6 +2,7 @@ module.exports = {
   content: [
     './app/components/**/*.jinja',
     './app/**/*.py',
+    './node_modules/flowbite/**/*.js',
   ],
   darkMode: 'class',
   theme: {
