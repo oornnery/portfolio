@@ -36,7 +36,7 @@ def _build_rich_handler(level: str) -> RichHandler:
         import click
 
         traceback_suppress.append(click)
-    except Exception:
+    except ImportError:
         traceback_suppress = []
 
     handler = RichHandler(

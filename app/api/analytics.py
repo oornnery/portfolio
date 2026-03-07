@@ -1,14 +1,17 @@
 import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 
-from app.core.dependencies import get_analytics_service, limiter
 from app.core.config import settings
+from app.core.dependencies import get_analytics_service, limiter
 from app.domain.schemas import AnalyticsTrackRequest, AnalyticsTrackResponse
 from app.observability.analytics import AnalyticsService
 
 router = APIRouter(prefix="/api/v1/analytics", tags=["analytics"])
 logger = logging.getLogger(__name__)
+
+AnalyticsServiceDep = Annotated[AnalyticsService, Depends(get_analytics_service)]
 
 
 @router.post("/track", response_model=AnalyticsTrackResponse)
@@ -16,7 +19,7 @@ logger = logging.getLogger(__name__)
 async def track_analytics(
     payload: AnalyticsTrackRequest,
     request: Request,
-    analytics_service: AnalyticsService = Depends(get_analytics_service),
+    analytics_service: AnalyticsServiceDep,
 ) -> AnalyticsTrackResponse:
     request_id = getattr(request.state, "request_id", "unknown")
     client_ip = getattr(

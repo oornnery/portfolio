@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse
@@ -16,14 +17,19 @@ from app.rendering.engine import render_page
 from app.services import ContactPageService
 from app.services.contact import ContactOrchestrator
 
-router = APIRouter()
+router = APIRouter(tags=["contact"])
 logger = logging.getLogger(__name__)
+
+ContactPageServiceDep = Annotated[ContactPageService, Depends(get_contact_page_service)]
+ContactOrchestratorDep = Annotated[
+    ContactOrchestrator, Depends(get_contact_orchestrator)
+]
 
 
 @router.get("/contact", response_class=HTMLResponse)
 async def contact_get(
     request: Request,
-    page_service: ContactPageService = Depends(get_contact_page_service),
+    page_service: ContactPageServiceDep,
 ) -> HTMLResponse:
     logger.info(
         event_message(
@@ -40,12 +46,12 @@ async def contact_get(
 @limiter.limit(settings.rate_limit)
 async def contact_post(
     request: Request,
-    name: str = Form(...),
-    email: str = Form(...),
-    subject: str = Form(...),
-    message: str = Form(...),
-    csrf_token: str = Form(...),
-    orchestrator: ContactOrchestrator = Depends(get_contact_orchestrator),
+    name: Annotated[str, Form()],
+    email: Annotated[str, Form()],
+    subject: Annotated[str, Form()],
+    message: Annotated[str, Form()],
+    csrf_token: Annotated[str, Form()],
+    orchestrator: ContactOrchestratorDep,
 ) -> HTMLResponse:
     raw_ip = request.client.host if request.client else "unknown"
     client_ip = _anonymize_identifier(raw_ip, namespace="ip")

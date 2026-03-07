@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.core.dependencies import limiter
 
-router = APIRouter()
+router = APIRouter(tags=["health"])
 
 
 @router.get("/health", response_class=JSONResponse, include_in_schema=False)

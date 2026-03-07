@@ -38,7 +38,7 @@ try:
 
     otlp_metric_exporter_factory = OTLPMetricExporter
     otlp_span_exporter_factory = OTLPSpanExporter
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     otlp_metric_exporter_factory = None
     otlp_span_exporter_factory = None
 
@@ -57,7 +57,7 @@ try:
     otel_logger_provider_factory = LoggerProvider
     otel_logging_handler_factory = LoggingHandler
     otel_set_logger_provider = otel_logs.set_logger_provider
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     otlp_log_exporter_factory = None
     otel_batch_log_record_processor_factory = None
     otel_console_log_exporter_factory = None
@@ -223,9 +223,9 @@ def configure_telemetry(app: FastAPI) -> None:
     logger.info("OpenTelemetry configured successfully.")
 
 
-def get_tracer(name: str):
+def get_tracer(name: str) -> trace.Tracer:
     return trace.get_tracer(name)
 
 
-def get_meter(name: str):
+def get_meter(name: str) -> metrics.Meter:
     return metrics.get_meter(name)

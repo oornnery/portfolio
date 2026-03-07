@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from functools import lru_cache
-import hashlib
-import hmac
 import logging
 from typing import Any
 
 from app.core.config import settings
+from app.core.security import _anonymize_identifier
 from app.observability.events import LogEvent
 from app.core.logger import event_message
 from app.domain.schemas import AnalyticsTrackEvent
@@ -66,18 +65,6 @@ class AnalyticsService:
             redacted[normalized_key] = str(value)[:256]
         return redacted
 
-    @staticmethod
-    def _hash_identifier(value: str, *, namespace: str) -> str:
-        normalized = value.strip().lower()
-        if not normalized:
-            return "unknown"
-        digest = hmac.new(
-            settings.secret_key.encode(),
-            f"{namespace}:{normalized}".encode(),
-            hashlib.sha256,
-        ).hexdigest()
-        return digest[:16]
-
     def ingest_events(
         self,
         events: list[AnalyticsTrackEvent],
@@ -102,11 +89,11 @@ class AnalyticsService:
             span.set_attribute("http.request_id", request_id)
             span.set_attribute(
                 "client.ip_hash",
-                self._hash_identifier(client_ip, namespace="client_ip"),
+                _anonymize_identifier(client_ip, namespace="client_ip"),
             )
             span.set_attribute(
                 "client.user_agent_hash",
-                self._hash_identifier(user_agent, namespace="user_agent"),
+                _anonymize_identifier(user_agent, namespace="user_agent"),
             )
 
             for event in events:
