@@ -24,6 +24,11 @@ class AboutPageService:
             context=AboutPageContext(
                 seo=seo,
                 meta=frontmatter,
-                content_html=about_content.body_html,
+                hero_html=about_content.hero_html,
+                about_html=about_content.about_html,
+                work_experience=tuple(about_content.work_experience),
+                education=tuple(about_content.education),
+                certificates=tuple(about_content.certificates),
+                skill_groups=tuple(about_content.skill_groups),
             ),
         )

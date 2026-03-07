@@ -4,7 +4,7 @@ from datetime import date, datetime, timezone
 from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, computed_field
 
 
 class SEOMeta(BaseModel):
@@ -32,6 +32,12 @@ class ContactResponse(BaseModel):
     errors: dict[str, str] = Field(default_factory=dict)
 
 
+def _format_period(start: str, end: str) -> str:
+    if start and end:
+        return f"{start} - {end}"
+    return start or end
+
+
 class WorkExperienceItem(BaseModel):
     title: str = ""
     company: str = ""
@@ -39,6 +45,13 @@ class WorkExperienceItem(BaseModel):
     start_date: str = ""
     end_date: str = ""
     description: str = ""
+    highlights: list[str] = Field(default_factory=list)
+    content_html: str = ""
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def period(self) -> str:
+        return _format_period(self.start_date, self.end_date)
 
 
 class EducationItem(BaseModel):
@@ -46,6 +59,12 @@ class EducationItem(BaseModel):
     degree: str = ""
     start_date: str = ""
     end_date: str = ""
+    details_html: str = ""
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def period(self) -> str:
+        return _format_period(self.start_date, self.end_date)
 
 
 class CertificateItem(BaseModel):
@@ -53,20 +72,21 @@ class CertificateItem(BaseModel):
     issuer: str = ""
     date: str = ""
     credential_id: str = ""
+    details_html: str = ""
+
+
+class SkillGroupItem(BaseModel):
+    title: str = ""
+    skills: list[str] = Field(default_factory=list)
 
 
 class AboutFrontmatter(BaseModel):
-    title: str = "About"
     description: str = ""
     name: str = ""
     role: str = ""
     location: str = ""
-    full_description: str = ""
+    avatar_url: str = ""
     social_links: dict[str, HttpUrl] = Field(default_factory=dict)
-    work_experience: list[WorkExperienceItem] = Field(default_factory=list)
-    education: list[EducationItem] = Field(default_factory=list)
-    certificates: list[CertificateItem] = Field(default_factory=list)
-    skills: list[str] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="ignore")
 
@@ -75,6 +95,14 @@ class AboutContent(BaseModel):
     frontmatter: AboutFrontmatter
     body_markdown: str
     body_html: str
+    hero_markdown: str = ""
+    hero_html: str = ""
+    about_markdown: str = ""
+    about_html: str = ""
+    work_experience: list[WorkExperienceItem] = Field(default_factory=list)
+    education: list[EducationItem] = Field(default_factory=list)
+    certificates: list[CertificateItem] = Field(default_factory=list)
+    skill_groups: list[SkillGroupItem] = Field(default_factory=list)
 
 
 class ProjectFrontmatter(BaseModel):
@@ -88,6 +116,22 @@ class ProjectFrontmatter(BaseModel):
     live_url: str = ""
     published_date: date | None = Field(default=None, alias="date")
     featured: bool = False
+
+    model_config = ConfigDict(extra="ignore", populate_by_name=True)
+
+
+class BlogPostFrontmatter(BaseModel):
+    title: str = ""
+    slug: str = ""
+    description: str = ""
+    author: str = ""
+    tags: list[str] = Field(default_factory=list)
+    discussion_url: str = ""
+    gist_url: str = ""
+    gist_file: str = ""
+    published_date: date | None = Field(default=None, alias="date")
+    featured: bool = False
+    draft: bool = False
 
     model_config = ConfigDict(extra="ignore", populate_by_name=True)
 

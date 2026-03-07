@@ -65,6 +65,9 @@ class Settings(BaseSettings):
     # Content
     markdown_cache_ttl: int = Field(default=300, ge=0)
     dev_csp_enabled: bool = True
+    github_token: str = ""
+    github_api_timeout_seconds: int = Field(default=8, ge=1, le=60)
+    github_gist_comments_limit: int = Field(default=20, ge=1, le=100)
 
     # Contact
     contact_webhook_url: str = ""

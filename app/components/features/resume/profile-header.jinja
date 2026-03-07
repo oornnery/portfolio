@@ -1,41 +1,76 @@
 {#import "@ui/social-links.jinja" as SocialLinks #}
-{#def meta, profile_name="", site_name="", social_links=() #}
+{#import "@ui/avatar.jinja" as Avatar #}
+{#import "@ui/button.jinja" as Button #}
+{#import "@ui/row.jinja" as Row #}
+{#import "@ui/icon.jinja" as Icon #}
+{#def meta, hero_html="", profile_name="", site_name="", social_links=() #}
 
 {% set profile_display_name = meta.name or profile_name or site_name %}
-{% set role = meta.role or "Backend Engineer" %}
-{% set location = meta.location or "Sao Paulo, Brazil" %}
+{% set role = meta.role or "" %}
+{% set location = meta.location or "" %}
+{% set links = meta.social_links or social_links %}
 
-<header class="flex items-start gap-4">
-    <span class="relative flex shrink-0 overflow-hidden rounded-full size-16 sm:size-20" aria-hidden="true">
-        <img
-            class="aspect-square h-full w-full"
-            alt="{{ profile_display_name }} profile picture"
-            src="https://ui-avatars.com/api/?name={{ profile_display_name | urlencode }}&background=1a1a1a&color=fff&size=128"
-        >
-    </span>
+<header class="resume-hero" style="position: relative;">
+    <div style="position: absolute; top: 0; right: 0;">
+        <Button href="/static/files/fabio-souza-resume.txt" variant="ghost" size="sm" download="fabio-souza-resume.txt">
+            <Icon name="download" size="sm" />
+            <span class="hidden sm:inline">Resume</span>
+        </Button>
+    </div>
+    <div class="resume-hero__inner">
+        <div class="resume-hero__identity">
+            <Avatar name={{ profile_display_name }} size="sm" src={{ meta.avatar_url }} />
 
-    <div class="flex-1 min-w-0">
-        <div>
-            <h1 class="text-xl sm:text-2xl font-bold text-white" id="resume-name">{{ profile_display_name }}</h1>
-            <p class="font-mono text-xs sm:text-sm text-gray-400" aria-labelledby="resume-name">
-                {{ role }}
-            </p>
-            <p class="font-mono text-xs text-gray-500">
-                <a
-                    class="hover:underline hover:text-blue-400 transition-colors"
-                    href="https://www.google.com/maps/search/{{ location | urlencode }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    {{ location }}
-                </a>
-            </p>
+            <div class="resume-hero__identity-copy">
+                <div class="space-y-1.5">
+                    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white" id="resume-name">{{ profile_display_name }}</h1>
+                    {% if role %}
+                    <p class="text-sm sm:text-base text-gray-300" aria-labelledby="resume-name">
+                        {{ role }}
+                    </p>
+                    {% endif %}
+                    {% if location %}
+                    <p class="font-mono text-xs sm:text-sm text-gray-300">
+                        <a
+                            class="hover:underline hover:text-blue-400 transition-colors"
+                            href="https://www.google.com/maps/search/{{ location | urlencode }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {{ location }}
+                        </a>
+                    </p>
+                    {% endif %}
+                </div>
+
+                <SocialLinks
+                    links={{ links }}
+                    variant="icons_inline"
+                    container_class="resume-hero__social"
+                    link_class="text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center justify-center"
+                />
+            </div>
         </div>
 
-        <SocialLinks
-            links={{ social_links }}
-            variant="icons_inline"
-            container_class="flex flex-wrap gap-2 mt-3"
-        />
+        <div class="min-w-0 flex-1 space-y-4">
+            {% if hero_html %}
+            <div class="resume-hero__summary resume-richtext">
+                {{ hero_html | safe }}
+            </div>
+            {% endif %}
+
+            <div class="resume-hero__actions-wrap">
+                <Row wrap={{ true }} gap="3" class_name="resume-hero__actions">
+                    <Button href="/contact" variant="primary" size="default">
+                        <Icon name="email" size="sm" />
+                        <span>Contact</span>
+                    </Button>
+                    <Button href="/projects" variant="ghost" size="default">
+                        <Icon name="folder" size="sm" />
+                        <span>View Projects</span>
+                    </Button>
+                </Row>
+            </div>
+        </div>
     </div>
 </header>

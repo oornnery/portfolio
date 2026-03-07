@@ -1,8 +1,6 @@
 {#def text="", variant="default", size="default", removable=False, href="" #}
 
-{% set base_classes = "inline-flex items-center gap-1 font-medium rounded-full transition-all duration-200" %}
-
-{% set variant_classes = {
+{% set variants = {
     "default": "bg-gray-800 text-gray-300 border border-gray-700",
     "primary": "bg-gray-200 text-gray-900",
     "accent": "bg-accent/10 text-accent border border-accent/20",
@@ -12,28 +10,12 @@
     "danger": "bg-red-500/10 text-red-400 border border-red-500/20",
     "outline": "bg-transparent text-gray-400 border border-gray-700 hover:text-blue-400 hover:border-blue-400/60"
 } %}
-
-{% set size_classes = {
-    "xs": "px-2 py-0.5 text-[10px]",
-    "sm": "px-2.5 py-0.5 text-xs",
-    "default": "px-3 py-1 text-xs"
-} %}
-
-{% set hover_classes = "hover:opacity-80 cursor-pointer" if href or removable else "" %}
+{% set sizes = {"xs": "px-2 py-0.5 text-[10px]", "sm": "px-2.5 py-0.5 text-xs", "default": "px-3 py-1 text-xs"} %}
+{% set cls = "inline-flex items-center gap-1 font-medium rounded-full " ~ variants[variant] ~ " " ~ sizes[size] %}
+{% set link_hover = "transition-colors hover:text-blue-400 hover:border-blue-400/60 hover:bg-gray-800/80" %}
 
 {% if href %}
-<a
-    href="{{ href }}"
-    class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ hover_classes }}"
-    {{ attrs.render() }}
->
-    {{ text or content }}
-</a>
+<a href="{{ href }}" class="{{ cls }} {{ link_hover }}" {{ attrs.render() }}>{{ text or content }}</a>
 {% else %}
-<span
-    class="{{ base_classes }} {{ variant_classes[variant] }} {{ size_classes[size] }} {{ hover_classes }}"
-    {{ attrs.render() }}
->
-    {{ text or content }}
-</span>
+<span class="{{ cls }}" {{ attrs.render() }}>{{ text or content }}</span>
 {% endif %}

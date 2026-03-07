@@ -1,0 +1,24 @@
+{#def name, size="default", src="" #}
+
+{% set sizes = {"sm": "size-16 sm:size-20", "default": "size-24 sm:size-28"} %}
+{% set words = (name or "Fabio Souza").replace("-", " ").split() %}
+{% set first_initial = words[0][:1] if words else "F" %}
+{% set second_initial = words[1][:1] if words|length > 1 else (words[0][1:2] if words and words[0]|length > 1 else "S") %}
+{% set initials = (first_initial ~ second_initial) | upper %}
+
+<span class="relative flex shrink-0 overflow-hidden rounded-full {{ sizes.get(size, sizes.default) }}" aria-hidden="true" {{ attrs.render() }}>
+    {% if src %}
+    <img
+        class="aspect-square h-full w-full"
+        alt="{{ name }} profile picture"
+        src="{{ src }}"
+    >
+    {% else %}
+    <span
+        class="flex h-full w-full items-center justify-center rounded-full border border-gray-800 font-mono text-2xl sm:text-3xl text-white shadow-lg"
+        style="background: radial-gradient(circle at top, rgba(55, 65, 81, 0.88), rgba(17, 24, 39, 0.98));"
+    >
+        {{ initials }}
+    </span>
+    {% endif %}
+</span>

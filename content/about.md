@@ -1,61 +1,129 @@
 ---
-title: "About"
+name: "Fabio Souza"
 description: >-
   Backend engineer focused on reliable APIs, clean architecture, and observable
   systems.
-name: "Fabio Souza"
 role: "Backend Engineer"
 location: "Sao Paulo, Brazil"
-full_description: >-
-  I am a backend-focused software engineer who enjoys turning product ideas into
-  maintainable systems.
-  My main stack is Python, FastAPI, and PostgreSQL, with a strong focus on
-  operational quality.
 social_links:
   github: "https://github.com/oornnery"
   linkedin: "https://www.linkedin.com/in/fabiohcsouza/"
-  x: "https://x.com/fabiohcsouza"
-work_experience:
-  - title: "Senior Software Engineer"
-    company: "Tech Corp"
-    location: "Remote"
-    start_date: "2020"
-    end_date: "Present"
-    description: "Leading the backend team in building scalable microservices."
-  - title: "Software Developer"
-    company: "Web Solutions"
-    location: "Sao Paulo"
-    start_date: "2018"
-    end_date: "2020"
-    description: "Developed and maintained various client websites and web applications."
-education:
-  - school: "University of Technology"
-    degree: "B.S. in Computer Science"
-    start_date: "2014"
-    end_date: "2018"
-certificates:
-  - name: "AWS Certified Solutions Architect"
-    issuer: "Amazon Web Services"
-    date: "2023"
-    credential_id: "AWS-SAA-123456"
-  - name: "Google Cloud Professional Developer"
-    issuer: "Google Cloud"
-    date: "2022"
-    credential_id: "GCP-PD-789012"
-  - name: "Python Professional Certificate"
-    issuer: "Python Institute"
-    date: "2021"
-    credential_id: "PCPP-2021-345"
-skills:
-  - "Python"
-  - "FastAPI"
-  - "JavaScript"
-  - "Node.js"
-  - "TypeScript"
-  - "React"
-  - "HTMX"
-  - "SQL"
-  - "Tailwind CSS"
-  - "Docker"
-  - "PostgreSQL"
+  twitter: "https://x.com/fabiohcsouza"
 ---
+
+I build backend systems that stay predictable under real traffic, team growth,
+and operational pressure.
+
+My focus is Python, FastAPI, PostgreSQL, and observability-first delivery for
+products that need clarity, safety, and maintainable architecture.
+
+## About
+
+I prefer backend systems that explain themselves quickly.
+
+That means clear boundaries between HTTP, use-case logic, and integrations,
+plus telemetry that tells the team what failed, where, and for whom without
+requiring a long incident call.
+
+Most of my work sits at the intersection of product delivery and operational
+quality: API design, validation strategy, data contracts, abuse-resistant
+defaults, and observability patterns that still feel lightweight enough for
+real teams to keep.
+
+## Work Experience
+
+### Senior Software Engineer
+
+**Company:** Tech Corp
+**Location:** Remote
+**Period:** 2020 - Present
+
+Leading backend delivery for APIs and internal platform services with a strong
+emphasis on architecture and operational defaults.
+
+- Defined service boundaries and validation contracts that kept route handlers
+  thin and easier to test.
+- Rolled out structured logs, request tracing, and alert ownership patterns
+  that shortened production diagnosis time.
+- Helped the team standardize delivery around Python, FastAPI, PostgreSQL, and
+  containerized deployment workflows.
+
+### Software Developer
+
+**Company:** Web Solutions
+**Location:** Sao Paulo
+**Period:** 2018 - 2020
+
+Built and maintained client web applications across backend, frontend, and
+deployment layers.
+
+- Delivered features for custom sites and web applications without turning the
+  codebase into one-off implementations.
+- Improved maintainability by consolidating repeated logic into reusable
+  backend services and shared UI patterns.
+- Supported releases, bug fixes, and production changes with closer attention
+  to input validation and deployment safety.
+
+## Education
+
+### University of Technology
+
+**Degree:** B.S. in Computer Science
+**Period:** 2014 - 2018
+
+## Certificates
+
+### AWS Certified Solutions Architect
+
+**Issuer:** Amazon Web Services
+**Date:** 2023
+**Credential ID:** AWS-SAA-123456
+
+### Google Cloud Professional Developer
+
+**Issuer:** Google Cloud
+**Date:** 2022
+**Credential ID:** GCP-PD-789012
+
+### Python Professional Certificate
+
+**Issuer:** Python Institute
+**Date:** 2021
+**Credential ID:** PCPP-2021-345
+
+## Skills
+
+### Backend
+
+- Python
+- FastAPI
+- Pydantic
+- Jinja2
+
+### Infra
+
+- Docker
+- Traefik
+- GitHub Actions
+- Linux
+
+### Frontend
+
+- JavaScript
+- HTMX
+- Tailwind CSS
+- TypeScript
+
+### Observability
+
+- OpenTelemetry
+- Structured Logging
+- Metrics
+- Alerting
+
+### Data
+
+- PostgreSQL
+- SQL
+- Redis
+- Data Modeling

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import logging
-from typing import Any
 
 from app.core.config import settings
 from app.infrastructure.markdown import load_about
@@ -20,7 +19,7 @@ class ProfileGlobals:
 
 class ProfileService:
     @staticmethod
-    def _normalize_social_links(raw: Any) -> dict[str, str]:
+    def _normalize_social_links(raw: object) -> dict[str, str]:
         fallback_links = {
             key: str(value) for key, value in settings.social_links.items()
         }
@@ -41,8 +40,8 @@ class ProfileService:
         frontmatter = about_content.frontmatter
 
         profile_name = str(frontmatter.name or settings.site_name).strip()
-        profile_role = str(frontmatter.role or "Backend Engineer").strip()
-        profile_location = str(frontmatter.location or "Sao Paulo, Brazil").strip()
+        profile_role = str(frontmatter.role or "").strip()
+        profile_location = str(frontmatter.location or "").strip()
         profile_summary = str(
             frontmatter.description
             or "I build reliable backend systems with Python, FastAPI, and PostgreSQL."
@@ -56,8 +55,8 @@ class ProfileService:
         return ProfileGlobals(
             site_name=profile_name or settings.site_name,
             profile_name=profile_name or settings.site_name,
-            profile_role=profile_role or "Backend Engineer",
-            profile_location=profile_location or "Sao Paulo, Brazil",
+            profile_role=profile_role,
+            profile_location=profile_location,
             profile_summary=profile_summary
             or "I build reliable backend systems with Python, FastAPI, and PostgreSQL.",
             social_links=profile_social_links,

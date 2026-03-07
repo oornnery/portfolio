@@ -1,8 +1,8 @@
+{#import "@ui/section.jinja" as Section #}
 {#def content_html #}
 
-<section class="flex min-h-0 flex-col gap-y-3">
-    <h2 class="text-lg sm:text-xl font-bold text-white">About</h2>
-    <div class="text-sm sm:text-base text-gray-400 leading-relaxed space-y-2">
+<Section title="About" heading_id="about" class_name="gap-y-5">
+    <div class="resume-richtext text-sm sm:text-base text-gray-400 leading-relaxed">
         {{ content_html | safe }}
     </div>
-</section>
+</Section>

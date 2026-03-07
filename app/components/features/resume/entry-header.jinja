@@ -1,0 +1,20 @@
+{#def title, subtitle="", date_text="", chip="", size="base" #}
+
+<div class="resume-entry-header">
+    <div class="resume-entry-header__main">
+        <p class="text-{{ size }} font-semibold text-white">{{ title }}</p>
+        {% if chip %}
+        <div class="resume-entry-subline">
+            {% if subtitle %}
+            <span class="text-gray-300">{{ subtitle }}</span>
+            {% endif %}
+            <span class="resume-inline-chip">{{ chip }}</span>
+        </div>
+        {% elif subtitle %}
+        <p class="text-sm leading-snug text-gray-400">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+    {% if date_text %}
+    <p class="resume-meta-label resume-entry-date">{{ date_text }}</p>
+    {% endif %}
+</div>

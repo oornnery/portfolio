@@ -1,0 +1,16 @@
+{#def max_width="max-w-3xl", content_class="" #}
+
+<div class="blog-post-shell">
+    <section class="blog-post-toc-wrap hidden {{ max_width }}" data-post-toc-wrapper>
+        <h2 class="text-xs uppercase tracking-[0.14em] text-gray-500">On this page</h2>
+        <nav class="blog-post-toc" aria-label="Table of contents">
+            <div class="blog-post-toc-links" data-post-toc></div>
+        </nav>
+    </section>
+
+    <div class="blog-post-main">
+        <div class="{{ max_width }} w-full {{ content_class }}" data-post-content>
+            {{ content }}
+        </div>
+    </div>
+</div>

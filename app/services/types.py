@@ -3,9 +3,16 @@ from typing import TypeAlias
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.domain.models import Project
-from app.domain.schemas import ContactForm
-from app.domain.schemas import AboutFrontmatter, SEOMeta
+from app.domain.models import BlogPost, BlogTag, Project
+from app.domain.schemas import (
+    AboutFrontmatter,
+    CertificateItem,
+    ContactForm,
+    EducationItem,
+    SEOMeta,
+    SkillGroupItem,
+    WorkExperienceItem,
+)
 
 
 class HomePageContext(BaseModel):
@@ -13,6 +20,7 @@ class HomePageContext(BaseModel):
 
     seo: SEOMeta
     featured: tuple[Project, ...]
+    latest_posts: tuple[BlogPost, ...]
     csrf_token: str
     current_path: str = "/"
 
@@ -22,7 +30,12 @@ class AboutPageContext(BaseModel):
 
     seo: SEOMeta
     meta: AboutFrontmatter
-    content_html: str
+    hero_html: str
+    about_html: str
+    work_experience: tuple[WorkExperienceItem, ...] = ()
+    education: tuple[EducationItem, ...] = ()
+    certificates: tuple[CertificateItem, ...] = ()
+    skill_groups: tuple[SkillGroupItem, ...] = ()
     current_path: str = "/about"
 
 
@@ -53,12 +66,55 @@ class ContactPageContext(BaseModel):
     current_path: str = "/contact"
 
 
+class BlogHomePageContext(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
+
+    seo: SEOMeta
+    featured_posts: tuple[BlogPost, ...]
+    recent_posts: tuple[BlogPost, ...]
+    tags: tuple[BlogTag, ...]
+    current_path: str = "/blog"
+
+
+class BlogPostsPageContext(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
+
+    seo: SEOMeta
+    posts: tuple[BlogPost, ...]
+    current_path: str = "/blog"
+
+
+class BlogPostDetailPageContext(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
+
+    seo: SEOMeta
+    post: BlogPost
+    previous_post: BlogPost | None = None
+    next_post: BlogPost | None = None
+    read_time_minutes: int = 1
+    current_path: str = "/blog"
+
+
+class BlogTagsPageContext(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, extra="forbid")
+
+    seo: SEOMeta
+    tags: tuple[BlogTag, ...]
+    posts: tuple[BlogPost, ...]
+    selected_tag: str = ""
+    current_path: str = "/blog"
+
+
 PageContext: TypeAlias = (
     HomePageContext
     | AboutPageContext
     | ProjectsListPageContext
     | ProjectDetailPageContext
     | ContactPageContext
+    | BlogHomePageContext
+    | BlogPostsPageContext
+    | BlogPostDetailPageContext
+    | BlogTagsPageContext
 )
 
 

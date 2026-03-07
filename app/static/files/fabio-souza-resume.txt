@@ -1,0 +1,42 @@
+Fabio Souza
+Backend Engineer
+Sao Paulo, Brazil
+
+Summary
+Backend engineer focused on reliable APIs, clean architecture, and observable systems.
+I build Python and FastAPI services that stay maintainable under real traffic, with strong attention to validation, telemetry, and operational defaults.
+
+Core Stack
+- Python
+- FastAPI
+- PostgreSQL
+- Docker
+- OpenTelemetry
+- Jinja2
+
+Work Experience
+Senior Software Engineer | Tech Corp | 2020 - Present
+- Led backend delivery for internal and customer-facing services with clear service boundaries.
+- Standardized validation, telemetry, and request tracing patterns across multiple APIs.
+- Reduced incident resolution time by improving logs, metrics, and alert ownership.
+
+Software Developer | Web Solutions | 2018 - 2020
+- Built and maintained web applications for client delivery.
+- Improved backend reliability with stronger input validation and safer deployment routines.
+- Supported feature delivery across Python, JavaScript, and SQL-based stacks.
+
+Education
+University of Technology
+B.S. in Computer Science
+2014 - 2018
+
+Certificates
+- AWS Certified Solutions Architect (2023)
+- Google Cloud Professional Developer (2022)
+- Python Professional Certificate (2021)
+
+Links
+Projects: /projects
+Contact: /contact
+GitHub: https://github.com/oornnery
+LinkedIn: https://www.linkedin.com/in/fabiohcsouza/
