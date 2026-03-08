@@ -129,16 +129,17 @@ This file maps current implementation tokens to a Figma-ready structure.
 
 ## Figma Component Set Mapping
 
-| Figma component    | Implementation path                 |
-| ------------------ | ----------------------------------- |
-| `Button`           | `app/templates/ui/button.jinja`     |
-| `Input / Textarea` | `app/templates/ui/input.jinja`      |
-| `Card`             | `app/templates/ui/card.jinja`       |
-| `Tag`              | `app/templates/ui/tag.jinja`        |
-| `Alert`            | `app/templates/ui/alert.jinja`      |
-| `Navbar`           | `app/templates/ui/navbar.jinja`     |
-| `Footer`           | `app/templates/ui/footer.jinja`     |
-| `Breadcrumb`       | `app/templates/ui/breadcrumb.jinja` |
+| Figma component    | Implementation path                        |
+| ------------------ | ------------------------------------------ |
+| `Button`           | `app/templates/ui/form/button.jinja`       |
+| `Input / Textarea` | `app/templates/ui/form/input.jinja`        |
+| `Card`             | `app/templates/ui/card/card.jinja`         |
+| `CardHeading`      | `app/templates/ui/card/card-heading.jinja` |
+| `Tag`              | `app/templates/ui/tag.jinja`               |
+| `Alert`            | `app/templates/ui/alert.jinja`             |
+| `Navbar`           | `app/templates/ui/nav/navbar.jinja`        |
+| `Footer`           | `app/templates/ui/nav/footer.jinja`        |
+| `Breadcrumb`       | `app/templates/ui/nav/breadcrumb.jinja`    |
 
 ## Handoff Checklist
 

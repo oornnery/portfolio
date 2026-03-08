@@ -20,15 +20,38 @@ Foundations are split across:
 
 ## Component Inventory
 
-Core UI components in `app/templates/ui`:
+Core UI components in `app/templates/ui`, organized by subfolder:
 
-- `button.jinja` (variants: default, primary, secondary, ghost, link,
-  accent, danger, outline)
-- `input.jinja` (text/textarea, size and variant support)
-- `card.jinja` (default, elevated, outlined, ghost, glass, gradient)
-- `tag.jinja` (status and accent variants)
-- `alert.jinja`, `navbar.jinja`, `footer.jinja`, `breadcrumb.jinja`
-- `icon.jinja`, `section-link.jinja`, `social-links.jinja`
+**`ui/form/`**
+
+- `button.jinja` — variants: default, primary, secondary, ghost, link,
+  accent, danger, outline
+- `input.jinja` — text/textarea, size and variant support; error and hint slots
+
+**`ui/card/`**
+
+- `card.jinja` — variants: default, elevated, outlined, ghost, glass, gradient;
+  idle border uses `border-accent/20`, hover `border-accent/40`
+- `card-heading.jinja` — title, date, featured badge
+
+**`ui/nav/`**
+
+- `navbar.jinja` — top navigation with theme/palette switcher
+  (checkmark on active palette)
+- `footer.jinja`, `breadcrumb.jinja`, `scroll-indicator.jinja`
+
+**`ui/layout/`**
+
+- `row.jinja`, `stack.jinja`, `grid.jinja`, `center.jinja`, `section.jinja`
+
+**`ui/` root atoms**
+
+- `tag.jinja` — variants: default, outline, accent, secondary, success, warning,
+  danger; hover applies `hover:bg-surface-2/80` on all variants
+- `alert.jinja`, `avatar.jinja`, `icon.jinja`, `section-link.jinja`,
+  `social-links.jinja`
+- `content-shell.jinja`, `empty-state.jinja`, `meta-info.jinja`,
+  `page-header.jinja`, `seo-head.jinja`
 
 ## Page Design Patterns
 
@@ -67,9 +90,21 @@ From `motion.css`:
 ## Notes on Token Consistency
 
 `tokens.css` is the single source of truth for semantic tokens (`--bg`, `--surface`,
-`--accent`, `--border`, `--radius-*`). The legacy palette in `style.css` extends
-(never overrides) this layer with supplementary variables (`--bg-primary`,
-`--accent-primary` which aliases `var(--accent)`, etc.). Tailwind's `accent` color
-in `tailwind.config.cjs` matches the semantic `--accent` value.
+`--accent`, `--border`, `--radius-*`). All colors expose RGB channel variants
+(`--accent-rgb`, `--warn-rgb`, `--danger-rgb`, `--accent-2-rgb`) so Tailwind opacity
+modifiers (`bg-accent/10`, `border-accent/20`) work correctly. `tailwind.config.cjs`
+maps these as `rgb(var(--accent-rgb) / <alpha-value>)` — never use plain `var(--accent)`
+for colors that need opacity modifiers.
+
+### Palette system
+
+Six palettes: `default`, `ocean`, `sunset`, `rose`, `forest`, `mono`. Active
+palette is stored in `localStorage` and applied as `data-palette` on `<html>`.
+Palette overrides in `tokens.css` use `:root[data-palette="..."]` blocks that
+must come **after** the `data-theme` block in the cascade.
+
+All visual accent uses (borders, timeline dots, featured badges, minimap dots)
+must reference `--accent-rgb` or `--accent`. Use `--interactive` only for text
+link hover colors.
 
 For detailed handoff values, see [Figma Tokens and Handoff](figma-tokens.md).

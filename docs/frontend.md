@@ -10,18 +10,28 @@ The frontend is SSR-first using Jx/Jinja templates.
 
 ## Template Organization
 
-| Group    | Path                       | Role                                            |
-| -------- | -------------------------- | ----------------------------------------------- |
-| Layouts  | `app/templates/layouts/*`  | Global shell and page wrappers                  |
-| Pages    | `app/templates/pages/*`    | Route-level templates                           |
-| Features | `app/templates/features/*` | Domain page sections                            |
-| UI       | `app/templates/ui/*`       | Reusable components (button, input, card, etc.) |
+| Group    | Path                       | Role                                       |
+| -------- | -------------------------- | ------------------------------------------ |
+| Layouts  | `app/templates/layouts/*`  | Global shell and page wrappers             |
+| Pages    | `app/templates/pages/*`    | Route-level templates                      |
+| Features | `app/templates/features/*` | Domain page sections                       |
+| UI       | `app/templates/ui/*`       | Reusable components, split into subfolders |
+
+The `ui/` folder is organized into subfolders:
+
+| Subfolder    | Contents                                                                                                                                 |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `ui/layout/` | `center`, `grid`, `row`, `section`, `stack`                                                                                              |
+| `ui/nav/`    | `breadcrumb`, `footer`, `navbar`, `scroll-indicator`                                                                                     |
+| `ui/card/`   | `card`, `card-heading`                                                                                                                   |
+| `ui/form/`   | `button`, `input`                                                                                                                        |
+| `ui/` root   | `alert`, `avatar`, `content-shell`, `empty-state`, `icon`, `meta-info`, `page-header`, `section-link`, `seo-head`, `social-links`, `tag` |
 
 ## Jx Catalog
 
 Registered in `app/core/dependencies.py` with prefixes:
 
-- `@ui/*`
+- `@ui/*` (recursive — subfolders use full path, e.g. `@ui/form/button.jinja`)
 - `@layouts/*`
 - `@features/*`
 - `@pages/*`
@@ -99,9 +109,27 @@ Analytics JS tracks:
 | Layer         | File                          | Notes                                |
 | ------------- | ----------------------------- | ------------------------------------ |
 | Utility CSS   | `app/static/css/tailwind.css` | Generated from Tailwind config       |
-| Base tokens   | `app/static/css/tokens.css`   | Semantic tokens and theme variants   |
+| Base tokens   | `app/static/css/tokens.css`   | Semantic tokens and palette variants |
 | Motion        | `app/static/css/motion.css`   | Animations and interaction utilities |
 | System/custom | `app/static/css/style.css`    | App-specific styles and layouts      |
+
+### Color and palette system
+
+Theme is controlled via two `<html>` attributes:
+
+- `data-theme` — `dark` or `light`
+- `data-palette` — `default`, `ocean`, `sunset`, `rose`, `forest`, or `mono`
+
+All color tokens use RGB channel variables (`--accent-rgb`, `--warn-rgb`,
+`--danger-rgb`, `--accent-2-rgb`) so Tailwind opacity modifiers work:
+`bg-accent/10`, `border-accent/20`. Palette overrides in `tokens.css` use
+`:root[data-palette="..."]` selectors that come **after** the `data-theme`
+block — cascade order is critical.
+
+The Tailwind config maps semantic tokens as
+`rgb(var(--accent-rgb) / <alpha-value>)` so all opacity variants are available.
+Do not use plain `var(--accent)` in `tailwind.config.cjs` for colors that need
+opacity modifiers — it breaks Tailwind's alpha injection.
 
 ## Responsive Strategy
 

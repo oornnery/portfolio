@@ -48,7 +48,7 @@ SSR portfolio app: FastAPI backend renders HTML via Jx/Jinja templates. No SPA f
 | Rendering      | `app/core/dependencies.py` | Jx Catalog setup and `render_template`       |
 | Core           | `app/core/*`               | Settings, security middleware, logging       |
 | Observability  | `app/observability/*`      | OpenTelemetry, analytics service             |
-| Templates      | `app/templates/`           | `ui/`, `layouts/`, `features/`, `pages/`     |
+| Templates      | `app/templates/`           | `ui/` (subfolders), `layouts/`, `features/`, `pages/` |
 | Content        | `content/`                 | Markdown files (about, projects, blog)       |
 
 ### Key patterns
@@ -64,3 +64,19 @@ SSR portfolio app: FastAPI backend renders HTML via Jx/Jinja templates. No SPA f
 ### Styling
 
 Tailwind CSS (generated via `tailwind.config.cjs`) plus custom CSS layers: `tokens.css` (semantic tokens), `motion.css` (animations), `style.css` (app-specific). Vanilla JS for progressive enhancement.
+
+Color tokens use RGB channels (`--accent-rgb`, `--warn-rgb`, `--danger-rgb`, `--accent-2-rgb`) so Tailwind opacity modifiers work: `bg-accent/10`, `border-accent/20`. Active theme and palette are set on `<html>` via `data-theme` (dark/light) and `data-palette` (default/ocean/sunset/rose/forest/mono). Palette overrides live in `tokens.css` as `:root[data-palette="..."]` blocks that come after the `data-theme` block in the cascade — cascade order matters.
+
+### UI component paths
+
+`ui/` is split into subfolders registered recursively under the `@ui/` prefix:
+
+| Subfolder    | Components                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| `ui/layout/` | `center`, `grid`, `row`, `section`, `stack`                                                             |
+| `ui/nav/`    | `breadcrumb`, `footer`, `navbar`, `scroll-indicator`                                                    |
+| `ui/card/`   | `card`, `card-heading`                                                                                  |
+| `ui/form/`   | `button`, `input`                                                                                       |
+| `ui/` root   | `alert`, `avatar`, `content-shell`, `empty-state`, `icon`, `meta-info`, `page-header`, `section-link`, `seo-head`, `social-links`, `tag` |
+
+Import with the full subfolder path: `{#import "@ui/form/button.jinja" as Button #}`

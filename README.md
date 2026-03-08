@@ -41,6 +41,7 @@ Detailed technical documentation lives in [docs/README.md](docs/README.md):
 | GET    | `/blog/tags`              | Blog tags           |
 | GET    | `/blog/tags/{tag}`        | Blog tag detail     |
 | GET    | `/blog/feed.xml`          | Blog RSS feed       |
+| GET    | `/about/resume.md`        | Resume download     |
 | GET    | `/contact`                | Contact page        |
 | POST   | `/contact`                | Contact submission  |
 | POST   | `/api/v1/analytics/track` | Analytics ingestion |

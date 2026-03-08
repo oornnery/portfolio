@@ -4,12 +4,14 @@ description: >-
   Backend engineer focused on reliable APIs, clean architecture, and observable
   systems.
 role: "Backend Engineer"
-location: "Sao Paulo, Brazil"
+location: "São Paulo, Brazil"
 social_links:
   github: "https://github.com/oornnery"
   linkedin: "https://www.linkedin.com/in/fabiohcsouza/"
   twitter: "https://x.com/fabiohcsouza"
 ---
+
+# Fabio Souza
 
 I build backend systems that stay predictable under real traffic, team growth,
 and operational pressure.
