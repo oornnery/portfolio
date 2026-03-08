@@ -4,6 +4,7 @@
 {#import "@ui/row.jinja" as Row #}
 {#import "@ui/content-shell.jinja" as ContentShell #}
 {#import "@ui/meta-info.jinja" as MetaInfo #}
+{#import "@ui/card.jinja" as Card #}
 {#import "@features/blog/github-comments.jinja" as GithubComments #}
 {#def seo, post, previous_post=None, next_post=None, read_time_minutes=1, current_path="/blog" #}
 
@@ -82,24 +83,28 @@
             </div>
             <nav class="grid grid-cols-1 sm:grid-cols-2 gap-3" aria-label="Post navigation">
                 {% if previous_post %}
-                <a href="/blog/posts/{{ previous_post.slug }}" class="card-link group p-3 sm:p-4 space-y-1.5">
-                    <span class="text-xs text-gray-500">&larr; Previous</span>
-                    <p class="text-sm font-semibold heading-hover line-clamp-1">{{ previous_post.title }}</p>
-                    {% if previous_post.description %}
-                    <p class="text-xs text-gray-500 leading-relaxed line-clamp-1">{{ previous_post.description }}</p>
-                    {% endif %}
-                </a>
+                <Card href={{ '/blog/posts/' ~ previous_post.slug }} padding="sm">
+                    <div class="space-y-1.5">
+                        <span class="text-xs text-gray-500">&larr; Previous</span>
+                        <p class="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-1">{{ previous_post.title }}</p>
+                        {% if previous_post.description %}
+                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-1">{{ previous_post.description }}</p>
+                        {% endif %}
+                    </div>
+                </Card>
                 {% else %}
                 <div></div>
                 {% endif %}
                 {% if next_post %}
-                <a href="/blog/posts/{{ next_post.slug }}" class="card-link group p-3 sm:p-4 space-y-1.5 text-right">
-                    <span class="text-xs text-gray-500">Next &rarr;</span>
-                    <p class="text-sm font-semibold heading-hover line-clamp-1">{{ next_post.title }}</p>
-                    {% if next_post.description %}
-                    <p class="text-xs text-gray-500 leading-relaxed line-clamp-1">{{ next_post.description }}</p>
-                    {% endif %}
-                </a>
+                <Card href={{ '/blog/posts/' ~ next_post.slug }} padding="sm">
+                    <div class="space-y-1.5">
+                        <span class="text-xs text-gray-500 block text-right">Next &rarr;</span>
+                        <p class="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-1">{{ next_post.title }}</p>
+                        {% if next_post.description %}
+                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-1">{{ next_post.description }}</p>
+                        {% endif %}
+                    </div>
+                </Card>
                 {% else %}
                 <div></div>
                 {% endif %}

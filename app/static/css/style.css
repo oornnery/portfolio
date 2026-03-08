@@ -1171,20 +1171,6 @@ textarea:focus-visible {
    Reusable Patterns
    ========================================== */
 
-/* Interactive card link — used for blog posts, project cards, and nav cards */
-.card-link {
-    display: block;
-    border-radius: var(--radius-lg);
-    transition: all 200ms ease;
-    background: rgba(17, 24, 39, 0.5);
-    border: 1px solid rgba(31, 41, 55, 1);
-}
-
-.card-link:hover {
-    border-color: rgba(55, 65, 81, 1);
-    background: rgba(31, 41, 55, 0.5);
-}
-
 /* Heading text that highlights on group hover */
 .heading-hover {
     color: #fafafa;
