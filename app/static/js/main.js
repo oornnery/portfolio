@@ -320,11 +320,90 @@
         initToc(content);
     };
 
+    /* ── Theme (mode + palette) ── */
+
+    const initTheme = () => {
+        const root = document.documentElement;
+
+        const setMode = (mode) => {
+            root.dataset.theme = mode;
+            root.classList.toggle("dark", mode === "dark");
+            localStorage.setItem("theme", mode);
+
+            for (const btn of $$("[data-theme-toggle]")) {
+                $("[data-theme-icon-light]", btn)?.classList.toggle("hidden", mode === "dark");
+                $("[data-theme-icon-dark]", btn)?.classList.toggle("hidden", mode === "light");
+            }
+        };
+
+        const setPalette = (palette) => {
+            if (palette && palette !== "default") {
+                root.dataset.palette = palette;
+            } else {
+                delete root.dataset.palette;
+            }
+            localStorage.setItem("palette", palette || "default");
+
+            for (const opt of $$("[data-palette-option]")) {
+                const active = opt.dataset.paletteOption === (palette || "default");
+                opt.classList.toggle("text-accent", active);
+                opt.classList.toggle("text-foreground", active);
+                opt.setAttribute("aria-selected", String(active));
+                const check = $("[data-palette-check]", opt);
+                if (check) check.classList.toggle("hidden", !active);
+            }
+        };
+
+        /* Init from stored values */
+        setMode(root.dataset.theme || "dark");
+        setPalette(localStorage.getItem("palette") || "default");
+
+        /* Mode toggle */
+        for (const btn of $$("[data-theme-toggle]")) {
+            btn.addEventListener("click", () => {
+                setMode(root.dataset.theme === "dark" ? "light" : "dark");
+            });
+        }
+
+        /* Palette dropdown */
+        for (const selector of $$("[data-palette-selector]")) {
+            const trigger = $("[data-palette-trigger]", selector);
+            const dropdown = $("[data-palette-dropdown]", selector);
+            if (!trigger || !dropdown) continue;
+
+            const toggle = (open) => {
+                const show = open ?? dropdown.classList.contains("hidden");
+                dropdown.classList.toggle("hidden", !show);
+                trigger.setAttribute("aria-expanded", String(show));
+            };
+
+            trigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                toggle();
+            });
+
+            for (const opt of $$("[data-palette-option]", dropdown)) {
+                opt.addEventListener("click", () => {
+                    setPalette(opt.dataset.paletteOption);
+                    toggle(false);
+                });
+            }
+
+            document.addEventListener("click", (e) => {
+                if (!selector.contains(e.target)) toggle(false);
+            });
+            addEventListener("keydown", (e) => {
+                if (e.key === "Escape") toggle(false);
+            });
+        }
+    };
+
     /* ── Bootstrap ── */
 
     onReady(() => {
         initCurrentYear();
         initNavbar();
+        initTheme();
         initScrollSnap();
         initFeaturedCarousel();
         initPostEnhancements();
