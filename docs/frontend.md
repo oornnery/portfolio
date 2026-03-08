@@ -10,12 +10,12 @@ The frontend is SSR-first using Jx/Jinja templates.
 
 ## Template Organization
 
-| Group    | Path                        | Role                                            |
-| -------- | --------------------------- | ----------------------------------------------- |
-| Layouts  | `app/components/layouts/*`  | Global shell and page wrappers                  |
-| Pages    | `app/components/pages/*`    | Route-level templates                           |
-| Features | `app/components/features/*` | Domain page sections                            |
-| UI       | `app/components/ui/*`       | Reusable components (button, input, card, etc.) |
+| Group    | Path                       | Role                                            |
+| -------- | -------------------------- | ----------------------------------------------- |
+| Layouts  | `app/templates/layouts/*`  | Global shell and page wrappers                  |
+| Pages    | `app/templates/pages/*`    | Route-level templates                           |
+| Features | `app/templates/features/*` | Domain page sections                            |
+| UI       | `app/templates/ui/*`       | Reusable components (button, input, card, etc.) |
 
 ## Jx Catalog
 

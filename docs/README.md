@@ -32,7 +32,7 @@ The docs were derived from the current implementation in:
 - `app/services/*`
 - `app/core/security.py`
 - `app/core/config.py`
-- `app/components/*`
+- `app/templates/*`
 - `app/static/css/*`
 - `app/static/js/*`
 - `docker/*`

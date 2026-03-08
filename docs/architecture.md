@@ -20,7 +20,7 @@ flowchart LR
     A --> R[API Routers]
     R --> S[Use-case Services]
     S --> C[Markdown Content\ncontent/*.md]
-    S --> J[Jx Catalog + Jinja Templates\napp/components/*]
+    S --> J[Jx Catalog + Jinja Templates\napp/templates/*]
     S --> N[Notification Channels\nWebhook + SMTP]
     A --> O[OpenTelemetry Exporters\nOTLP endpoint]
 ```
@@ -37,7 +37,7 @@ flowchart LR
 
 ### Domain and Content
 
-- Domain models and schemas are in `app/domain/*`.
+- Domain models and schemas are in `app/models/*`.
 - Content is file-based (`content/about.md`, `content/projects/*.md`,
   and `content/blog/*.md`).
 - Markdown is parsed, sanitized with nh3, and transformed into structured data.

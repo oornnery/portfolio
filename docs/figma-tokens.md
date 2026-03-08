@@ -129,16 +129,16 @@ This file maps current implementation tokens to a Figma-ready structure.
 
 ## Figma Component Set Mapping
 
-| Figma component    | Implementation path                  |
-| ------------------ | ------------------------------------ |
-| `Button`           | `app/components/ui/button.jinja`     |
-| `Input / Textarea` | `app/components/ui/input.jinja`      |
-| `Card`             | `app/components/ui/card.jinja`       |
-| `Tag`              | `app/components/ui/tag.jinja`        |
-| `Alert`            | `app/components/ui/alert.jinja`      |
-| `Navbar`           | `app/components/ui/navbar.jinja`     |
-| `Footer`           | `app/components/ui/footer.jinja`     |
-| `Breadcrumb`       | `app/components/ui/breadcrumb.jinja` |
+| Figma component    | Implementation path                 |
+| ------------------ | ----------------------------------- |
+| `Button`           | `app/templates/ui/button.jinja`     |
+| `Input / Textarea` | `app/templates/ui/input.jinja`      |
+| `Card`             | `app/templates/ui/card.jinja`       |
+| `Tag`              | `app/templates/ui/tag.jinja`        |
+| `Alert`            | `app/templates/ui/alert.jinja`      |
+| `Navbar`           | `app/templates/ui/navbar.jinja`     |
+| `Footer`           | `app/templates/ui/footer.jinja`     |
+| `Breadcrumb`       | `app/templates/ui/breadcrumb.jinja` |
 
 ## Handoff Checklist
 

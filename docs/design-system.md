@@ -20,7 +20,7 @@ Foundations are split across:
 
 ## Component Inventory
 
-Core UI components in `app/components/ui`:
+Core UI components in `app/templates/ui`:
 
 - `button.jinja` (variants: default, primary, secondary, ghost, link,
   accent, danger, outline)
@@ -28,7 +28,7 @@ Core UI components in `app/components/ui`:
 - `card.jinja` (default, elevated, outlined, ghost, glass, gradient)
 - `tag.jinja` (status and accent variants)
 - `alert.jinja`, `navbar.jinja`, `footer.jinja`, `breadcrumb.jinja`
-- `prose.jinja` for sanitized markdown rendering
+- `icon.jinja`, `section-link.jinja`, `social-links.jinja`
 
 ## Page Design Patterns
 

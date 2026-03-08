@@ -2,16 +2,16 @@
 
 ## Layered Structure
 
-| Layer          | Path                   | Responsibility                                       |
-| -------------- | ---------------------- | ---------------------------------------------------- |
-| Entry point    | `app/main.py`          | App factory, middleware, startup wiring              |
-| Routing        | `app/api/*`            | HTTP endpoints and dependency injection              |
-| Use-cases      | `app/services/*`       | Page building and business orchestration             |
-| Domain         | `app/domain/*`         | Typed schemas and entities                           |
-| Infrastructure | `app/infrastructure/*` | Markdown IO, sanitization, notifications             |
-| Rendering      | `app/rendering/*`      | Typed page render path                               |
-| Core           | `app/core/*`           | Settings, security, logging, dependencies, utilities |
-| Observability  | `app/observability/*`  | Analytics service and app metrics                    |
+| Layer          | Path                    | Responsibility                                       |
+| -------------- | ----------------------- | ---------------------------------------------------- |
+| Entry point    | `app/main.py`           | App factory, middleware, startup wiring              |
+| Routing        | `app/api/*`             | HTTP endpoints and dependency injection              |
+| Use-cases      | `app/services/*`        | Page building and business orchestration             |
+| Domain         | `app/models/*`          | Typed schemas and entities                           |
+| Infrastructure | `app/infrastructure/*`  | Markdown IO, sanitization, notifications             |
+| Rendering      | `app/core/rendering.py` | Typed page render path                               |
+| Core           | `app/core/*`            | Settings, security, logging, dependencies, utilities |
+| Observability  | `app/observability/*`   | Analytics service and app metrics                    |
 
 ## App Factory
 
@@ -82,7 +82,7 @@
 
 ## Domain Contracts
 
-Defined in `app/domain/schemas.py`:
+Defined in `app/models/schemas.py`:
 
 - `ContactForm`: strict form schema (`extra="forbid"`)
 - `AboutFrontmatter` and content models
