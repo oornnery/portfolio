@@ -2,13 +2,13 @@
 
 {% set base = "inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 focus:ring-4 focus:outline-none disabled:pointer-events-none disabled:opacity-50" %}
 {% set variants = {
-    "default": "border border-gray-700 text-gray-200 hover:bg-gray-800 hover:text-accent hover:border-gray-600 focus:ring-gray-700",
-    "primary": "bg-white text-gray-950 hover:bg-gray-200 shadow-sm focus:ring-gray-300",
-    "secondary": "bg-gray-800 text-gray-200 border border-gray-700 hover:bg-gray-700 hover:text-accent focus:ring-gray-700",
-    "ghost": "text-gray-400 hover:bg-gray-800/50 hover:text-accent focus:ring-gray-700",
-    "link": "text-gray-400 hover:text-accent underline-offset-4 hover:underline p-0 h-auto focus:ring-0",
-    "accent": "bg-accent text-gray-950 hover:bg-accent/90 shadow-sm shadow-accent/20 focus:ring-accent/50",
-    "danger": "bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 focus:ring-red-500/30",
+    "default": "border border-accent/15 text-foreground/80 hover:bg-surface-2 hover:text-accent hover:border-accent/30 focus:ring-accent/20",
+    "primary": "bg-accent text-background hover:bg-accent/85 shadow-sm shadow-accent/15 focus:ring-accent/30",
+    "secondary": "bg-surface-2 text-foreground/80 border border-accent/15 hover:bg-surface-2/80 hover:text-accent hover:border-accent/30 focus:ring-accent/20",
+    "ghost": "text-foreground/60 hover:bg-surface-2/50 hover:text-accent focus:ring-accent/20",
+    "link": "text-foreground/60 hover:text-accent underline-offset-4 hover:underline p-0 h-auto focus:ring-0",
+    "accent": "bg-accent text-background hover:bg-accent/90 shadow-sm shadow-accent/20 focus:ring-accent/50",
+    "danger": "bg-danger/10 text-danger border border-danger/20 hover:bg-danger/20 focus:ring-danger/30",
     "outline": "border border-accent/50 text-accent hover:bg-accent/10 hover:border-accent focus:ring-accent/30"
 } %}
 {% set sizes = {"xs": "h-7 px-2 text-xs", "sm": "h-8 px-3 text-xs", "default": "h-9 px-4 py-2 text-sm", "lg": "h-11 px-6 text-base", "icon": "h-9 w-9 p-0"} %}

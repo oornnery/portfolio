@@ -2,7 +2,7 @@
 
 {% if visible %}
 <section class="{{ ('flex min-h-0 flex-col gap-y-3 ' ~ class_name).strip() }}" {{ attrs.render() }}>
-    <h2 {% if heading_id %}id="{{ heading_id }}"{% endif %} class="{{ ('text-lg sm:text-xl font-bold text-white ' ~ title_class).strip() }}">{{ title }}</h2>
+    <h2 {% if heading_id %}id="{{ heading_id }}"{% endif %} class="{{ ('text-lg sm:text-xl font-bold text-foreground ' ~ title_class).strip() }}">{{ title }}</h2>
     {{ content }}
 </section>
 {% endif %}

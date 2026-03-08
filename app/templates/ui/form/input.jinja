@@ -1,20 +1,20 @@
 {#def name, label="", type="text", placeholder="", value="", required=False, disabled=False, readonly=False, rows=4, variant="default", size="default", error="", hint="" #}
 
-{% set base = "block w-full rounded-lg text-sm transition-all duration-200 placeholder:text-gray-500 disabled:cursor-not-allowed disabled:opacity-50" %}
+{% set base = "block w-full rounded-lg text-sm transition-all duration-200 placeholder:text-foreground/50 disabled:cursor-not-allowed disabled:opacity-50" %}
 {% set variants = {
-    "default": "bg-gray-900 border border-gray-700 text-white focus:ring-accent/30 focus:border-accent",
-    "filled": "bg-gray-800 border border-transparent text-white focus:ring-accent/30 focus:border-accent",
-    "outline": "bg-transparent border-2 border-gray-600 text-white focus:ring-accent/30 focus:border-accent",
-    "ghost": "bg-transparent border border-transparent text-white hover:border-gray-700 focus:ring-accent/30 focus:border-accent"
+    "default": "bg-surface border border-accent/15 text-foreground focus:ring-accent/30 focus:border-accent",
+    "filled": "bg-surface-2 border border-transparent text-foreground focus:ring-accent/30 focus:border-accent",
+    "outline": "bg-transparent border-2 border-accent/20 text-foreground focus:ring-accent/30 focus:border-accent",
+    "ghost": "bg-transparent border border-transparent text-foreground hover:border-accent/20 focus:ring-accent/30 focus:border-accent"
 } %}
 {% set sizes = {"sm": "p-2 text-sm", "default": "p-2.5 text-sm", "lg": "p-3 text-base"} %}
-{% set err_cls = "border-red-500/50 focus:border-red-500 focus:ring-red-500/30" if error else "" %}
+{% set err_cls = "border-danger/50 focus:border-danger focus:ring-danger/30" if error else "" %}
 {% set cls = base ~ " " ~ variants[variant] ~ " " ~ sizes[size] ~ " " ~ err_cls %}
 
 <div>
     {% if label %}
-    <label for="{{ name }}" class="block mb-2 text-sm font-medium text-gray-300">
-        {{ label }}{% if required %}<span class="text-red-400 ml-0.5">*</span>{% endif %}
+    <label for="{{ name }}" class="block mb-2 text-sm font-medium text-foreground/70">
+        {{ label }}{% if required %}<span class="text-danger ml-0.5">*</span>{% endif %}
     </label>
     {% endif %}
 
@@ -25,8 +25,8 @@
     {% endif %}
 
     {% if error %}
-    <p class="mt-1 text-sm text-red-400">{{ error }}</p>
+    <p class="mt-1 text-sm text-danger">{{ error }}</p>
     {% elif hint %}
-    <p class="mt-1 text-sm text-gray-500">{{ hint }}</p>
+    <p class="mt-1 text-sm text-foreground/50">{{ hint }}</p>
     {% endif %}
 </div>

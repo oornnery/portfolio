@@ -1,15 +1,15 @@
 {#def href="", variant="default", padding="default", hoverable=True, clickable=False #}
 
 {% set variant_map = {
-    "default": "bg-gray-900/50 border border-gray-800",
-    "elevated": "bg-gray-900 shadow-lg shadow-black/20",
-    "outlined": "bg-transparent border-2 border-gray-700",
-    "ghost": "bg-gray-800/30",
-    "glass": "bg-gray-900/30 backdrop-blur-md border border-gray-700/50",
-    "gradient": "bg-gradient-to-br from-gray-900/80 via-gray-800/50 to-accent/5 border border-gray-700/50"
+    "default": "bg-surface/50 border border-accent/20",
+    "elevated": "bg-surface shadow-lg shadow-background/20",
+    "outlined": "bg-transparent border-2 border-accent/30",
+    "ghost": "bg-surface-2/30",
+    "glass": "bg-surface/30 backdrop-blur-md border border-accent/20",
+    "gradient": "bg-gradient-to-br from-surface/80 via-surface-2/50 to-accent/5 border border-accent/20"
 } %}
 {% set pad_map = {"none": "", "sm": "p-3 sm:p-4", "default": "p-4 sm:p-6", "lg": "p-6 sm:p-8"} %}
-{% set hover = "hover:border-gray-600 hover:bg-gray-800/60" if hoverable else "" %}
+{% set hover = "hover:border-accent/40 hover:bg-surface-2/60" if hoverable else "" %}
 {% set cls = "rounded-lg transition-all duration-200 " ~ variant_map[variant] ~ " " ~ pad_map[padding] ~ " " ~ hover %}
 
 {% if href %}
