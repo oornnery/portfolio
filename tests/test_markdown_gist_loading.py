@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from textwrap import dedent
 
-from app.domain.models import BlogComment
+from app.models.models import BlogComment
 from app.infrastructure import markdown as markdown_infra
 
 

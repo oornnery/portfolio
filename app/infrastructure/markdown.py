@@ -15,8 +15,8 @@ from pydantic import ValidationError
 import yaml
 
 from app.core.config import settings
-from app.domain.models import BlogComment, BlogPost, Project
-from app.domain.schemas import (
+from app.models.models import BlogComment, BlogPost, Project
+from app.models.schemas import (
     AboutContent,
     AboutFrontmatter,
     BlogPostFrontmatter,
@@ -32,7 +32,7 @@ CONTENT_DIR = PROJECT_ROOT / "content"
 PROJECTS_DIR = CONTENT_DIR / "projects"
 BLOG_DIR = CONTENT_DIR / "blog"
 logger = logging.getLogger(__name__)
-_GIST_ID_PATTERN = re.compile(r"^[0-9a-fA-F]{8,}$")
+_GIST_ID_PATTERN = re.compile(r"^[0-9a-fA-F]{8,40}$")
 
 
 def _parse_frontmatter(filepath: Path) -> tuple[dict[str, Any], str]:

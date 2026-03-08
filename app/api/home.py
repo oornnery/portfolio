@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 
 from app.core.dependencies import get_home_page_service
-from app.rendering.engine import render_page
+from app.core.rendering import render_page
 from app.services import HomePageService
 
 router = APIRouter(tags=["home"])

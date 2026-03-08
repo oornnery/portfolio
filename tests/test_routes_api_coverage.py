@@ -10,7 +10,7 @@ from app.core.dependencies import (
     get_analytics_service,
     get_contact_orchestrator,
 )
-from app.domain.schemas import ContactForm
+from app.models.schemas import ContactForm
 from app.infrastructure.notifications.email import (
     NotificationChannelResult,
     NotificationDispatchResult,

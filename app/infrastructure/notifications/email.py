@@ -9,7 +9,7 @@ from typing import Protocol, Sequence
 import httpx
 
 from app.observability.metrics import AppMetrics, get_app_metrics
-from app.domain.schemas import ContactForm
+from app.models.schemas import ContactForm
 
 logger = logging.getLogger(__name__)
 
@@ -258,7 +258,7 @@ class ContactNotificationService:
         fallback_channel_name = channel.__class__.__name__.lower()
         try:
             result = await channel.send(contact=contact, context=context)
-        except BaseException:
+        except Exception:
             duration_ms = (time.perf_counter() - started_at) * 1000
             self._metrics.record_notification(
                 channel=fallback_channel_name,

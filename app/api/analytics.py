@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Request
 
 from app.core.config import settings
 from app.core.dependencies import get_analytics_service, limiter
-from app.domain.schemas import AnalyticsTrackRequest, AnalyticsTrackResponse
+from app.models.schemas import AnalyticsTrackRequest, AnalyticsTrackResponse
 from app.observability.analytics import AnalyticsService
 
 router = APIRouter(prefix="/api/v1/analytics", tags=["analytics"])

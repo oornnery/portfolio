@@ -11,14 +11,14 @@
                 links={{ social_links }}
                 variant="labels_inline"
                 container_class="flex flex-wrap items-center gap-4"
-                link_class="text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5"
+                link_class="link-hover inline-flex items-center gap-1.5"
                 icon_size="sm"
             />
             {% endif %}
             {% if current_path and current_path.startswith("/blog") %}
             <a
                 href="/blog/feed.xml"
-                class="text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5"
+                class="link-hover inline-flex items-center gap-1.5"
                 aria-label="RSS"
                 data-analytics-event="click"
                 data-analytics-id="footer-rss"

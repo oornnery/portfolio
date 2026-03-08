@@ -1,8 +1,8 @@
 import logging
 
 from app.core.config import settings
-from app.domain.models import Project
-from app.domain.schemas import SEOMeta
+from app.models.models import Project
+from app.models.schemas import SEOMeta
 
 logger = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@ from email.utils import format_datetime
 from xml.sax.saxutils import escape
 
 from app.core.config import settings
-from app.domain.models import BlogPost, BlogTag
+from app.models.models import BlogPost, BlogTag
 from app.infrastructure.markdown import (
     get_blog_post_by_slug,
     load_about,

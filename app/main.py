@@ -14,7 +14,7 @@ from app.api.router import api_router
 from app.core.config import settings
 from app.core.dependencies import limiter, render_template
 from app.core.logger import configure_logging
-from app.core.utils import split_csv
+from app.core.config import split_csv
 from app.core.security import (
     AnalyticsSourceGuardMiddleware,
     RequestBodySizeLimitMiddleware,

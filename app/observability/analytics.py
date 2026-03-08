@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.security import _anonymize_identifier
 from app.observability.events import LogEvent
 from app.core.logger import event_message
-from app.domain.schemas import AnalyticsTrackEvent
+from app.models.schemas import AnalyticsTrackEvent
 from app.observability.telemetry import get_meter, get_tracer
 
 logger = logging.getLogger(__name__)

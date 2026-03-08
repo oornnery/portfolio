@@ -1,17 +1,15 @@
+{#import "@ui/card.jinja" as Card #}
 {#import "@ui/tag.jinja" as Tag #}
 {#import "@ui/card-heading.jinja" as CardHeading #}
 {#def project, tight=False #}
 
-{% set card_padding = "p-3 sm:p-5" if tight else "p-4 sm:p-6" %}
+{% set card_padding = "sm" if tight else "default" %}
 {% set heading_class = "text-base sm:text-lg" if tight else "text-lg" %}
 {% set description_class = "text-gray-400 text-sm line-clamp-2 mb-2.5" if tight else "text-gray-400 text-sm line-clamp-2 mb-3" %}
 {% set chips_limit = 3 if tight else 4 %}
 {% set top_margin = "mb-2.5" if tight else "mb-3" %}
 
-<a
-    href="/projects/{{ project.slug }}"
-    class="block group rounded-lg transition-all duration-200 bg-gray-900/50 border border-gray-800 hover:border-gray-700 hover:bg-gray-800/50 {{ card_padding }}"
->
+<Card href={{ '/projects/' ~ project.slug }} padding={{ card_padding }}>
     <article>
         <CardHeading title={{ project.title }} date={{ project.date }} featured={{ project.featured }} title_class="{{ heading_class }} font-medium text-white group-hover:text-blue-400 transition-colors" featured_class="text-green-500" class="{{ top_margin }}" />
 
@@ -23,9 +21,9 @@
         {% if chips %}
         <div class="flex flex-wrap gap-1.5">
             {% for tech in chips[:chips_limit] %}
-            <Tag text={{ tech }} variant="accent" />
+            <Tag text={{ tech }} variant="outline" />
             {% endfor %}
         </div>
         {% endif %}
     </article>
-</a>
+</Card>

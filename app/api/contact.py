@@ -13,11 +13,11 @@ from app.core.dependencies import (
 from app.core.logger import event_message
 from app.core.security import _anonymize_identifier
 from app.observability.events import LogEvent
-from app.rendering.engine import render_page
+from app.core.rendering import render_page
 from app.services import ContactPageService
 from app.services.contact import ContactOrchestrator
 
-router = APIRouter(tags=["contact"])
+router = APIRouter(prefix="/contact", tags=["contact"])
 logger = logging.getLogger(__name__)
 
 ContactPageServiceDep = Annotated[ContactPageService, Depends(get_contact_page_service)]
@@ -26,7 +26,7 @@ ContactOrchestratorDep = Annotated[
 ]
 
 
-@router.get("/contact", response_class=HTMLResponse)
+@router.get("", response_class=HTMLResponse)
 async def contact_get(
     request: Request,
     page_service: ContactPageServiceDep,
@@ -42,7 +42,7 @@ async def contact_get(
     return render_page(page)
 
 
-@router.post("/contact", response_class=HTMLResponse)
+@router.post("", response_class=HTMLResponse)
 @limiter.limit(settings.rate_limit)
 async def contact_post(
     request: Request,

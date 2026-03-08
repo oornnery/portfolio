@@ -9,7 +9,7 @@ from app.core.security import (
     is_allowed_form_content_type,
     validate_csrf_token,
 )
-from app.domain.schemas import AnalyticsEventName, AnalyticsTrackEvent, ContactForm
+from app.models.schemas import AnalyticsEventName, AnalyticsTrackEvent, ContactForm
 from app.infrastructure.notifications.email import (
     ContactNotificationContext,
     ContactNotificationService,

@@ -1,7 +1,7 @@
 from datetime import date
 
 from app.core.config import settings
-from app.domain.models import Project
+from app.models.models import Project
 from app.infrastructure.markdown import load_about
 from app.services.seo import seo_for_page, seo_for_project
 

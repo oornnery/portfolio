@@ -14,7 +14,7 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from app.core.config import settings
 from app.core.logger import bind_request_context, event_message, reset_request_context
-from app.core.utils import split_csv
+from app.core.config import split_csv
 from app.observability.events import LogEvent
 from app.observability.metrics import get_app_metrics
 

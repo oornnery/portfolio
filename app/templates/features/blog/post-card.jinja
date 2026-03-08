@@ -1,8 +1,9 @@
+{#import "@ui/card.jinja" as Card #}
 {#import "@ui/tag.jinja" as Tag #}
 {#import "@ui/card-heading.jinja" as CardHeading #}
 {#def post, compact=False, dense=False, tight=False #}
 
-{% set card_padding = "p-3" if dense else ("p-3 sm:p-5" if tight else "p-4 sm:p-6") %}
+{% set card_padding = "sm" if dense or tight else "default" %}
 {% set title_size = "text-sm sm:text-base" if dense else ("text-base sm:text-lg" if tight else "text-lg sm:text-xl") %}
 {% set title_weight = "font-medium" if dense or tight else "font-semibold" %}
 {% set content_gap = "space-y-1.5" if dense else ("space-y-2" if tight else "space-y-3") %}
@@ -11,13 +12,7 @@
 {% set tag_gap = "gap-1.5" if dense or tight else "gap-2" %}
 {% set show_description = post.description and (dense or not compact) %}
 
-<a
-    href="/blog/posts/{{ post.slug }}"
-    class="block group rounded-lg transition-all duration-200 bg-gray-900/50 border border-gray-800 hover:border-gray-700 hover:bg-gray-800/50 {{ card_padding }}"
-    data-analytics-event="click"
-    data-analytics-id="blog-post-card"
-    data-analytics-target="/blog/posts/{{ post.slug }}"
->
+<Card href={{ '/blog/posts/' ~ post.slug }} padding={{ card_padding }}>
     <article class="{{ content_gap }}">
         <CardHeading title={{ post.title }} date={{ post.date }} featured={{ post.featured }} title_class="{{ title_size }} {{ title_weight }} text-white group-hover:text-blue-400 transition-colors" />
 
@@ -35,4 +30,4 @@
         </div>
         {% endif %}
     </article>
-</a>
+</Card>

@@ -1,6 +1,6 @@
 import logging
 
-from app.domain.models import Project
+from app.models.models import Project
 from app.infrastructure.markdown import get_project_by_slug, load_all_projects
 from app.services.seo import seo_for_page, seo_for_project
 from app.services.types import (

@@ -3,8 +3,8 @@ from typing import TypeAlias
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.domain.models import BlogPost, BlogTag, Project
-from app.domain.schemas import (
+from app.models.models import BlogPost, BlogTag, Project
+from app.models.schemas import (
     AboutFrontmatter,
     CertificateItem,
     ContactForm,
