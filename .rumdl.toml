@@ -15,8 +15,8 @@
 # Use this to activate opt-in rules like MD060, MD063, MD072, MD073, MD074
 extend-enable = ["MD055", "MD056", "MD058", "MD060"]
 
-# Additional rules to disable on top of the disable list (additive)
-# extend-disable = ["MD041"]
+# MD041: First line should be heading — false positive with YAML frontmatter
+disable = ["MD041"]
 
 # List of file/directory patterns to include for linting (if provided, only these will be linted)
 # include = [
@@ -30,6 +30,8 @@ exclude = [
     # Common directories to exclude
     ".git",
     ".github",
+    ".agents",
+    ".claude",
     "node_modules",
     "vendor",
     "dist",
@@ -38,10 +40,12 @@ exclude = [
     # Specific files or patterns
     "CHANGELOG.md",
     "LICENSE.md",
+    "CLAUDE.md",
 ]
 
 # Respect .gitignore files when scanning directories (default: true)
 respect-gitignore = true
+
 
 # Markdown flavor/dialect
 # Options: standard (default), gfm, commonmark, mkdocs, mdx, quarto

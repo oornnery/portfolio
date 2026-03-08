@@ -27,7 +27,7 @@ uv run task test_security          # security-focused tests
 uv run task ci                     # fmt + lint + typecheck + test + md_check + jx_check
 
 # Jx template validation
-DEBUG=true PYTHONPATH=. uv run jx check app/rendering/catalog.py:catalog
+DEBUG=true PYTHONPATH=. uv run jx check app/catalog.py:catalog
 ```
 
 Pre-commit hooks run ruff format, ruff check --fix, ty check, and rumdl fmt/check.
@@ -43,12 +43,12 @@ SSR portfolio app: FastAPI backend renders HTML via Jx/Jinja templates. No SPA f
 | Entry point    | `app/main.py`              | App factory (`create_app`), middleware stack |
 | Routing        | `app/api/*`                | Thin routers that delegate to services       |
 | Services       | `app/services/*`           | Page builders and orchestrators              |
-| Domain         | `app/domain/*`             | Pydantic schemas and models                  |
+| Models         | `app/models/*`             | Pydantic schemas and models                  |
 | Infrastructure | `app/infrastructure/*`     | Markdown IO, sanitization, notifications     |
 | Rendering      | `app/core/dependencies.py` | Jx Catalog setup and `render_template`       |
 | Core           | `app/core/*`               | Settings, security middleware, logging       |
 | Observability  | `app/observability/*`      | OpenTelemetry, analytics service             |
-| Templates      | `app/components/`          | `ui/`, `layouts/`, `features/`, `pages/`     |
+| Templates      | `app/templates/`           | `ui/`, `layouts/`, `features/`, `pages/`     |
 | Content        | `content/`                 | Markdown files (about, projects, blog)       |
 
 ### Key patterns

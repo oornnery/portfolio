@@ -59,7 +59,7 @@ test_routes = "pytest --cov=app/api --cov-report=term-missing --cov-fail-under=1
 test_security = "pytest tests/test_security_csrf.py tests/test_markdown_sanitization.py tests/test_security_owasp.py -q"
 md_check = "rumdl check ."
 md_fmt = "rumdl fmt ."
-jx_check = "DEBUG=true PYTHONPATH=. jx check app/rendering/catalog.py:catalog"
+jx_check = "DEBUG=true PYTHONPATH=. jx check app/catalog.py:catalog"
 fmt = "task format && task md_fmt"
 check = "task lint && task typecheck && task test && task md_check && task jx_check"
 ci = "task fmt && task check"

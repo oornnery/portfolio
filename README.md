@@ -86,7 +86,7 @@ uv run ruff check app tests app/static/js
 uv run ty check app
 uv run pytest -q
 uv run rumdl check .
-DEBUG=true PYTHONPATH=. uv run jx check app/rendering/catalog.py:catalog
+DEBUG=true PYTHONPATH=. uv run jx check app/catalog.py:catalog
 ```
 
 Task aliases are available in `pyproject.toml` (`task check`, `task ci`, etc.).
