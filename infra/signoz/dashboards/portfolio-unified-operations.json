@@ -1,10 +1,10 @@
 {
-  "description": "Operational backend dashboard for the portfolio app: traffic, latency, errors, top routes, contact flow, notifications, and OTLP proxy health.",
+  "description": "Unified operational dashboard for the portfolio app: backend health, frontend browser telemetry, contact flow, and OTLP proxy health in one view.",
   "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJGUyI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwYTBhMGEiLz4KICA8dGV4dAogICAgeD0iNTAlIgogICAgeT0iNTQlIgogICAgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiCiAgICBmb250LWZhbWlseT0iSW50ZXIsIEFyaWFsLCBzYW5zLXNlcmlmIgogICAgZm9udC1zaXplPSIyOCIKICAgIGZvbnQtd2VpZ2h0PSI3MDAiCiAgICBmaWxsPSIjZmFmYWZhIgogID4KICAgIEZTCiAgPC90ZXh0Pgo8L3N2Zz4K",
   "layout": [
     {
       "h": 6,
-      "i": "9cd5fb52-2327-4c69-8dcf-d1608d360ad7",
+      "i": "b6348bd0-3b17-41ba-86e0-a6b63cf2176e",
       "moved": false,
       "static": false,
       "w": 6,
@@ -13,7 +13,7 @@
     },
     {
       "h": 6,
-      "i": "0292ea6e-9856-43c5-9fd5-ca23718f9e4f",
+      "i": "c826f9c7-432c-4028-981c-bfee588ac4d6",
       "moved": false,
       "static": false,
       "w": 6,
@@ -22,7 +22,7 @@
     },
     {
       "h": 6,
-      "i": "350d3087-d7f2-4f34-82de-79be24c4690a",
+      "i": "443567ae-7927-49e8-8aea-ede7839fe5a7",
       "moved": false,
       "static": false,
       "w": 6,
@@ -31,7 +31,7 @@
     },
     {
       "h": 6,
-      "i": "34e27404-f108-4cd6-a534-10688a2f7120",
+      "i": "0b3cdefe-e78c-4f60-bf9d-c13f9f10d57f",
       "moved": false,
       "static": false,
       "w": 6,
@@ -40,7 +40,7 @@
     },
     {
       "h": 6,
-      "i": "7c42c9ef-e9bc-41f1-a504-21ffb1537621",
+      "i": "cd7d9fbf-bd0c-4f72-8d8e-d081cd4b6cf9",
       "moved": false,
       "static": false,
       "w": 6,
@@ -49,7 +49,7 @@
     },
     {
       "h": 6,
-      "i": "6225dd89-af79-4a09-a725-8fa738dc7e51",
+      "i": "4b5c81c9-3c55-4295-b99e-561a42decc42",
       "moved": false,
       "static": false,
       "w": 6,
@@ -58,7 +58,7 @@
     },
     {
       "h": 6,
-      "i": "4c61e2a9-5c26-4fe5-8ae4-4a2a06585d46",
+      "i": "9c4aee2a-0a98-4312-bfdf-4bd27f195163",
       "moved": false,
       "static": false,
       "w": 6,
@@ -67,7 +67,7 @@
     },
     {
       "h": 6,
-      "i": "b2955907-168e-4ad4-bbd3-de12edf987e0",
+      "i": "9ee67afc-c817-47ca-80ad-5658253a9f46",
       "moved": false,
       "static": false,
       "w": 6,
@@ -76,7 +76,7 @@
     },
     {
       "h": 6,
-      "i": "ead40be7-ee05-4e0e-8b5d-d9ceb2c3bae2",
+      "i": "fdc76e84-a9e4-4c32-9ec8-3c6342aea91d",
       "moved": false,
       "static": false,
       "w": 6,
@@ -85,7 +85,7 @@
     },
     {
       "h": 6,
-      "i": "7436b50f-1a55-498a-844f-365acd4b6964",
+      "i": "15ca0692-c11b-400e-9cb7-408d3a5e9bd3",
       "moved": false,
       "static": false,
       "w": 6,
@@ -94,7 +94,7 @@
     },
     {
       "h": 6,
-      "i": "783d2e4a-a739-4784-9555-62f330f380c0",
+      "i": "c87b6685-d41a-4387-9e60-b134535c253c",
       "moved": false,
       "static": false,
       "w": 6,
@@ -103,60 +103,26 @@
     },
     {
       "h": 6,
-      "i": "5ffd347a-86c3-458b-ad67-7e6480e4af97",
+      "i": "182c1e6f-8426-454c-9c55-140e5e38452d",
       "moved": false,
       "static": false,
       "w": 6,
       "x": 6,
       "y": 30
-    },
-    {
-      "h": 6,
-      "i": "d6533ace-8f1a-4aca-bbf3-feaf78968532",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 0,
-      "y": 36
-    },
-    {
-      "h": 6,
-      "i": "adc0c738-7998-404e-b71f-9d579ab6ed2f",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 6,
-      "y": 36
-    },
-    {
-      "h": 6,
-      "i": "76c16de0-de2e-4cc2-8949-a3afbafe9dbf",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 0,
-      "y": 42
-    },
-    {
-      "h": 6,
-      "i": "3dc2bcc9-2adf-4464-9873-195f12c09909",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 6,
-      "y": 42
     }
   ],
   "panelMap": {},
   "tags": [
     "portfolio",
+    "overview",
     "backend",
+    "frontend",
     "otel",
     "signoz"
   ],
-  "title": "Portfolio Backend Overview",
+  "title": "Portfolio Unified Operations",
   "uploadedGrafana": false,
-  "uuid": "e5c46c4c-fdf0-4f9b-9bda-98f8e4b5a901",
+  "uuid": "8e0e92ee-2f7e-4f5a-8718-f5da7bb5fd4a",
   "variables": {},
   "version": "v5",
   "widgets": [
@@ -171,7 +137,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "9cd5fb52-2327-4c69-8dcf-d1608d360ad7",
+      "id": "b6348bd0-3b17-41ba-86e0-a6b63cf2176e",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -193,7 +159,7 @@
             "query": ""
           }
         ],
-        "id": "82577893-ad79-46ed-a4d1-4f0a09bfc893",
+        "id": "58ea780f-d59e-4bc9-b301-30c0d641241c",
         "promql": [
           {
             "disabled": false,
@@ -262,7 +228,7 @@
       "stackedBarChart": false,
       "thresholds": [],
       "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP request rate",
+      "title": "Backend request rate",
       "yAxisUnit": "none"
     },
     {
@@ -276,7 +242,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "0292ea6e-9856-43c5-9fd5-ca23718f9e4f",
+      "id": "c826f9c7-432c-4028-981c-bfee588ac4d6",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -298,217 +264,7 @@
             "query": ""
           }
         ],
-        "id": "c541f885-ac1f-4056-9f1e-903d68258655",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "{{method}}",
-            "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\"}[5m])) by (\"method\")"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP request rate by method",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "350d3087-d7f2-4f34-82de-79be24c4690a",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "74403f35-3591-46ad-88ae-77b88aae04c2",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "{{status_code}}",
-            "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\"}[5m])) by (\"status_code\")"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP responses by status",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "34e27404-f108-4cd6-a534-10688a2f7120",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "e10a20ed-2b43-4122-852d-33d9c1308fa8",
+        "id": "a4102d3c-8891-4115-bbe4-604a4799ff62",
         "promql": [
           {
             "disabled": false,
@@ -577,7 +333,7 @@
       "stackedBarChart": false,
       "thresholds": [],
       "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP p95 latency",
+      "title": "Backend p95 latency",
       "yAxisUnit": "none"
     },
     {
@@ -591,7 +347,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "7c42c9ef-e9bc-41f1-a504-21ffb1537621",
+      "id": "443567ae-7927-49e8-8aea-ede7839fe5a7",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -613,217 +369,7 @@
             "query": ""
           }
         ],
-        "id": "cffe1b87-0ca6-4701-b98b-a82dd96e2571",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "{{path}}",
-            "name": "A",
-            "query": "topk(8, histogram_quantile(0.95, sum by (le, \"path\") (rate({\"portfolio.http.request_duration_ms.bucket\"}[5m]))))"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP p95 latency by path",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "6225dd89-af79-4a09-a725-8fa738dc7e51",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "90954638-6e1b-404a-9175-7c9ec4554dd9",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\",\"status_code\"=~\"4..\"}[5m])) / clamp_min(sum(rate({\"portfolio.http.requests_total\"}[5m])), 1) * 100"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP 4xx ratio",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "4c61e2a9-5c26-4fe5-8ae4-4a2a06585d46",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "1cbee9b4-bb78-4c00-a1a0-f8b103d9dd2a",
+        "id": "9a49e52b-9076-493b-8593-2429ec4172d5",
         "promql": [
           {
             "disabled": false,
@@ -892,7 +438,7 @@
       "stackedBarChart": false,
       "thresholds": [],
       "timePreferance": "GLOBAL_TIME",
-      "title": "HTTP 5xx ratio",
+      "title": "Backend 5xx ratio",
       "yAxisUnit": "none"
     },
     {
@@ -906,7 +452,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "b2955907-168e-4ad4-bbd3-de12edf987e0",
+      "id": "0b3cdefe-e78c-4f60-bf9d-c13f9f10d57f",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -928,112 +474,7 @@
             "query": ""
           }
         ],
-        "id": "e57072aa-1856-4a06-91fc-0d6924a80acb",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": "sum({\"portfolio.http.requests_in_flight\"})"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "In-flight requests",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "ead40be7-ee05-4e0e-8b5d-d9ceb2c3bae2",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "543dd3e6-82a3-4748-a7a5-fbcef962f1fa",
+        "id": "5739a303-633b-48f0-ab7a-2333d1a5ff46",
         "promql": [
           {
             "disabled": false,
@@ -1102,7 +543,7 @@
       "stackedBarChart": false,
       "thresholds": [],
       "timePreferance": "GLOBAL_TIME",
-      "title": "Top routes by traffic",
+      "title": "Top backend routes",
       "yAxisUnit": "none"
     },
     {
@@ -1116,7 +557,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "7436b50f-1a55-498a-844f-365acd4b6964",
+      "id": "cd7d9fbf-bd0c-4f72-8d8e-d081cd4b6cf9",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -1138,7 +579,427 @@
             "query": ""
           }
         ],
-        "id": "83c975e6-9ff9-43d2-9bc3-33494da23261",
+        "id": "acde43d3-6a95-4ba4-bfa1-9f50d762fef4",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "{{operation}}",
+            "name": "A",
+            "query": "sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\"}[5m])) by (\"operation\")"
+          }
+        ],
+        "queryType": "promql",
+        "unit": ""
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "timestamp",
+          "signal": "logs",
+          "type": "log"
+        },
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "body",
+          "signal": "logs",
+          "type": "log"
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http_method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "response_status_code",
+          "signal": "traces"
+        }
+      ],
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Frontend span throughput",
+      "yAxisUnit": "none"
+    },
+    {
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
+      "description": "",
+      "fillSpans": false,
+      "id": "4b5c81c9-3c55-4295-b99e-561a42decc42",
+      "isLogScale": false,
+      "isStacked": false,
+      "legendPosition": "bottom",
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [],
+          "queryFormulas": [],
+          "queryTraceOperator": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "f6cd3dfa-fe07-494f-9352-12cd28c56649",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "{{operation}}",
+            "name": "A",
+            "query": "histogram_quantile(0.95, sum by (le, \"operation\") (rate({\"signoz_latency.bucket\",\"service_name\"=\"portfolio-frontend\"}[5m])))"
+          }
+        ],
+        "queryType": "promql",
+        "unit": ""
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "timestamp",
+          "signal": "logs",
+          "type": "log"
+        },
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "body",
+          "signal": "logs",
+          "type": "log"
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http_method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "response_status_code",
+          "signal": "traces"
+        }
+      ],
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Frontend p95 latency",
+      "yAxisUnit": "none"
+    },
+    {
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
+      "description": "",
+      "fillSpans": false,
+      "id": "9c4aee2a-0a98-4312-bfdf-4bd27f195163",
+      "isLogScale": false,
+      "isStacked": false,
+      "legendPosition": "bottom",
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [],
+          "queryFormulas": [],
+          "queryTraceOperator": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "86881a23-6db4-4767-a362-c3d50145e647",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\",\"status_code\"=\"STATUS_CODE_ERROR\"}[5m])) / clamp_min(sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\"}[5m])), 1) * 100"
+          }
+        ],
+        "queryType": "promql",
+        "unit": ""
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "timestamp",
+          "signal": "logs",
+          "type": "log"
+        },
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "body",
+          "signal": "logs",
+          "type": "log"
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http_method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "response_status_code",
+          "signal": "traces"
+        }
+      ],
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Frontend error ratio",
+      "yAxisUnit": "none"
+    },
+    {
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
+      "description": "",
+      "fillSpans": false,
+      "id": "9ee67afc-c817-47ca-80ad-5658253a9f46",
+      "isLogScale": false,
+      "isStacked": false,
+      "legendPosition": "bottom",
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [],
+          "queryFormulas": [],
+          "queryTraceOperator": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "aef3ce28-0c36-4056-a87a-e2ce4910d09a",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "{{operation}}",
+            "name": "A",
+            "query": "topk(10, sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\"}[5m])) by (\"operation\"))"
+          }
+        ],
+        "queryType": "promql",
+        "unit": ""
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "timestamp",
+          "signal": "logs",
+          "type": "log"
+        },
+        {
+          "dataType": "",
+          "fieldContext": "log",
+          "fieldDataType": "",
+          "isIndexed": false,
+          "name": "body",
+          "signal": "logs",
+          "type": "log"
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http_method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "response_status_code",
+          "signal": "traces"
+        }
+      ],
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Top frontend operations",
+      "yAxisUnit": "none"
+    },
+    {
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
+      "description": "",
+      "fillSpans": false,
+      "id": "fdc76e84-a9e4-4c32-9ec8-3c6342aea91d",
+      "isLogScale": false,
+      "isStacked": false,
+      "legendPosition": "bottom",
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [],
+          "queryFormulas": [],
+          "queryTraceOperator": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "1e0d1546-e150-4e60-83fb-a4f92bf6f7e5",
         "promql": [
           {
             "disabled": false,
@@ -1221,7 +1082,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "783d2e4a-a739-4784-9555-62f330f380c0",
+      "id": "15ca0692-c11b-400e-9cb7-408d3a5e9bd3",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -1243,112 +1104,7 @@
             "query": ""
           }
         ],
-        "id": "5b2e489a-c5e2-4736-b877-3eb417e04b90",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": "sum(rate({\"portfolio.contact.submissions_total\",\"outcome\"=~\"notification_failed|success_partial\"}[10m])) / clamp_min(sum(rate({\"portfolio.contact.submissions_total\"}[10m])), 1) * 100"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "Contact degraded ratio",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "5ffd347a-86c3-458b-ad67-7e6480e4af97",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "8f2764aa-e02e-4a1f-9b93-53eb1726661c",
+        "id": "9ae6523c-58c4-4a39-b676-7419d2cda0ef",
         "promql": [
           {
             "disabled": false,
@@ -1431,7 +1187,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "d6533ace-8f1a-4aca-bbf3-feaf78968532",
+      "id": "c87b6685-d41a-4387-9e60-b134535c253c",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -1453,112 +1209,7 @@
             "query": ""
           }
         ],
-        "id": "06fb0f93-75c1-4217-a593-d3896d6a849d",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "{{channel}}",
-            "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le, \"channel\") (rate({\"portfolio.contact.notification_duration_ms.bucket\"}[5m])))"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "Notification p95 latency by channel",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "adc0c738-7998-404e-b71f-9d579ab6ed2f",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "5a843c26-a2da-449c-8c75-872e5762a253",
+        "id": "b1f3d79d-a181-4c22-b882-415e99585cbe",
         "promql": [
           {
             "disabled": false,
@@ -1641,7 +1292,7 @@
       "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
-      "id": "76c16de0-de2e-4cc2-8949-a3afbafe9dbf",
+      "id": "182c1e6f-8426-454c-9c55-140e5e38452d",
       "isLogScale": false,
       "isStacked": false,
       "legendPosition": "bottom",
@@ -1663,7 +1314,7 @@
             "query": ""
           }
         ],
-        "id": "8748a092-97aa-4200-9185-817e8107f9f3",
+        "id": "c30546cd-e41a-4b9a-a222-3b66c0893a84",
         "promql": [
           {
             "disabled": false,
@@ -1733,111 +1384,6 @@
       "thresholds": [],
       "timePreferance": "GLOBAL_TIME",
       "title": "OTLP proxy p95 latency",
-      "yAxisUnit": "none"
-    },
-    {
-      "bucketCount": 30,
-      "bucketWidth": 0,
-      "columnUnits": {},
-      "contextLinks": {
-        "linksData": []
-      },
-      "customLegendColors": {},
-      "decimalPrecision": 2,
-      "description": "",
-      "fillSpans": false,
-      "id": "3dc2bcc9-2adf-4464-9873-195f12c09909",
-      "isLogScale": false,
-      "isStacked": false,
-      "legendPosition": "bottom",
-      "mergeAllActiveQueries": false,
-      "nullZeroValues": "zero",
-      "opacity": "1",
-      "panelTypes": "graph",
-      "query": {
-        "builder": {
-          "queryData": [],
-          "queryFormulas": [],
-          "queryTraceOperator": []
-        },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "86f4ec3d-2268-40d5-a5bd-ec87966a6fab",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\",\"path\"=\"/otel/v1/traces\",\"status_code\"=~\"5..\"}[5m])) / clamp_min(sum(rate({\"portfolio.http.requests_total\",\"path\"=\"/otel/v1/traces\"}[5m])), 1) * 100"
-          }
-        ],
-        "queryType": "promql",
-        "unit": ""
-      },
-      "selectedLogFields": [
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "timestamp",
-          "signal": "logs",
-          "type": "log"
-        },
-        {
-          "dataType": "",
-          "fieldContext": "log",
-          "fieldDataType": "",
-          "isIndexed": false,
-          "name": "body",
-          "signal": "logs",
-          "type": "log"
-        }
-      ],
-      "selectedTracesFields": [
-        {
-          "fieldContext": "resource",
-          "fieldDataType": "string",
-          "name": "service.name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "string",
-          "name": "name",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "duration_nano",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "http_method",
-          "signal": "traces"
-        },
-        {
-          "fieldContext": "span",
-          "fieldDataType": "",
-          "name": "response_status_code",
-          "signal": "traces"
-        }
-      ],
-      "softMax": 0,
-      "softMin": 0,
-      "stackedBarChart": false,
-      "thresholds": [],
-      "timePreferance": "GLOBAL_TIME",
-      "title": "OTLP proxy 5xx ratio",
       "yAxisUnit": "none"
     }
   ]

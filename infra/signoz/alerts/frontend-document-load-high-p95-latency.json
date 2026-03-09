@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_frontend_high_error_rate",
+  "alert": "portfolio_frontend_document_load_high_p95_latency",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -8,7 +8,7 @@
       "spec": [
         {
           "name": "warning",
-          "target": 10,
+          "target": 3000,
           "matchType": "2",
           "op": "1",
           "channels": [
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\",\"status_code\"=\"STATUS_CODE_ERROR\"}[5m])) / clamp_min(sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\"}[5m])), 1) * 100"
+            "query": "histogram_quantile(0.95, sum by (le) (rate({\"signoz_latency.bucket\",\"service_name\"=\"portfolio-frontend\",\"operation\"=\"documentLoad\"}[10m])))"
           }
         }
       ]
@@ -44,8 +44,8 @@
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio frontend span error ratio above 10%",
-    "description": "Frontend span error ratio is {{$value}}%, above the {{$threshold}}% threshold for portfolio-frontend."
+    "summary": "Portfolio frontend documentLoad p95 latency above 3000ms",
+    "description": "The documentLoad span p95 is {{$value}}ms, above the {{$threshold}}ms threshold for portfolio-frontend."
   },
   "notificationSettings": {
     "groupBy": [

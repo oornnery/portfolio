@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_frontend_high_error_rate",
+  "alert": "portfolio_backend_notification_high_p95_latency",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -8,7 +8,7 @@
       "spec": [
         {
           "name": "warning",
-          "target": 10,
+          "target": 5000,
           "matchType": "2",
           "op": "1",
           "channels": [
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\",\"status_code\"=\"STATUS_CODE_ERROR\"}[5m])) / clamp_min(sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\"}[5m])), 1) * 100"
+            "query": "max(histogram_quantile(0.95, sum by (le, \"channel\") (rate({\"portfolio.contact.notification_duration_ms.bucket\"}[10m]))))"
           }
         }
       ]
@@ -40,12 +40,12 @@
     }
   },
   "labels": {
-    "service": "portfolio-frontend",
+    "service": "portfolio-backend",
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio frontend span error ratio above 10%",
-    "description": "Frontend span error ratio is {{$value}}%, above the {{$threshold}}% threshold for portfolio-frontend."
+    "summary": "Portfolio notification p95 latency above 5000ms",
+    "description": "Notification p95 latency reached {{$value}}ms, above the {{$threshold}}ms threshold across at least one delivery channel."
   },
   "notificationSettings": {
     "groupBy": [

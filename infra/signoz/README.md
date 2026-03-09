@@ -17,19 +17,27 @@ Import the JSON files from `infra/signoz/dashboards/` in the SigNoz UI.
 2. Go to `Dashboards`.
 3. Choose the import option in the dashboard UI.
 4. Import:
+   - `portfolio-unified-operations.json`
    - `portfolio-backend-overview.json`
    - `portfolio-frontend-telemetry.json`
 
 What they cover:
 
+- `portfolio-unified-operations.json`
+  - single operational view for backend traffic, backend latency and errors
+  - frontend span throughput, latency, and error ratio
+  - contact outcomes, notification outcomes, and OTLP proxy health
 - `portfolio-backend-overview.json`
-  - request rate, p95 latency, 5xx ratio, in-flight requests
-  - contact submission outcomes
-  - notification outcomes and notification latency
+  - request rate and request breakdowns by method, status, and top route
+  - p95 latency overall and by path
+  - 4xx ratio, 5xx ratio, in-flight requests
+  - contact submission outcomes and degraded delivery ratio
+  - notification outcomes, per-channel latency, and OTLP proxy health
 - `portfolio-frontend-telemetry.json`
-  - frontend span throughput and p95 latency
-  - frontend error ratio and errored operations
-  - OTLP proxy traffic and OTLP proxy 5xx ratio
+  - frontend span throughput and p95 latency by operation
+  - error ratio, errored operations, and span-kind breakdown
+  - page lifecycle spans, user interaction events, and contact form client flow
+  - top operations plus OTLP proxy traffic, latency, and 5xx ratio
 
 ## Alerts
 
@@ -62,7 +70,9 @@ Included rules:
 
 - `backend-high-5xx-rate.json`
 - `backend-high-p95-latency.json`
+- `backend-notification-high-p95-latency.json`
 - `contact-delivery-degraded.json`
+- `frontend-document-load-high-p95-latency.json`
 - `frontend-high-error-rate.json`
 - `frontend-otlp-proxy-failures.json`
 
@@ -81,6 +91,11 @@ Frontend panels and alerts use SigNoz trace-derived metrics:
 
 - `signoz_calls_total`
 - `signoz_latency.bucket`
+
+For SigNoz `v0.112.x`, the imported frontend dashboard and alert manifests use
+the normalized PromQL label aliases (`service_name`, `status_code`) for these
+derived metrics, even though trace views display attributes as `service.name`
+and `status.code`.
 
 The OTLP proxy panels and alerts use backend request metrics filtered on:
 

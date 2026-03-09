@@ -82,14 +82,27 @@ From `docker/docker-compose.prod.yml`:
 
 ## Observability Assets
 
+- `infra/signoz/dashboards/portfolio-unified-operations.json`
 - `infra/signoz/dashboards/portfolio-backend-overview.json`
 - `infra/signoz/dashboards/portfolio-frontend-telemetry.json`
 - `infra/signoz/alerts/*.json`
+- The unified dashboard is the main day-to-day operations view across backend,
+  frontend, contact flow, and OTLP proxy health
+- The backend dashboard covers traffic, latency, status breakdowns, top paths,
+  contact outcomes, notification latency, and OTLP proxy health
+- The frontend dashboard covers lifecycle spans, user interaction events,
+  contact form client flow, top operations, and OTLP proxy health
+- Alert manifests cover backend 5xx ratio, backend p95 latency, notification
+  latency, contact delivery degradation, frontend error rate, frontend
+  document-load latency, and OTLP proxy failures
 - Runbooks: `infra/README.md` and `infra/signoz/README.md`
 - `scripts/run_otel.py` maps app telemetry settings to standard `OTEL_*`
   environment variables before launching `opentelemetry-instrument`
 - `uv run task run_otel` is the supported local entrypoint for auto-instrumented
   runs
+- Plain `uv run opentelemetry-instrument uvicorn app.main:app ...` is also
+  supported: `usercustomize.py` applies the project resource defaults early so
+  auto-instrumented spans do not fall back to `unknown_service`
 - Browser tracing is configured with `FRONTEND_TELEMETRY_*` settings and uses
   the same-origin OTLP proxy route `/otel/v1/traces`
 - Grafana and Prometheus rule assets are no longer maintained in this repo;

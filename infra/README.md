@@ -5,12 +5,19 @@ Grafana- and Prometheus-specific assets were removed from this repository.
 
 ## Contents
 
+- `signoz/dashboards/portfolio-unified-operations.json`
+  - Unified operations dashboard spanning backend health, frontend telemetry,
+    contact flow, and OTLP proxy health in one view.
 - `signoz/dashboards/portfolio-backend-overview.json`
-  - Backend service health dashboard built from app-level OpenTelemetry metrics.
+  - Backend service operations dashboard: traffic, latency, errors, top routes,
+    contact flow, notifications, and OTLP proxy health.
 - `signoz/dashboards/portfolio-frontend-telemetry.json`
-  - Frontend tracing and OTLP proxy dashboard for browser telemetry.
+  - Frontend telemetry dashboard: lifecycle spans, user interactions, contact
+    form flow, client errors, and OTLP proxy health.
 - `signoz/alerts/*.json`
-  - Alert rule manifests for the SigNoz `/api/v1/rules` API.
+  - Alert rule manifests for backend errors/latency, notification latency,
+    contact delivery degradation, frontend error rate, document load latency,
+    and OTLP proxy failures.
 - `signoz/README.md`
   - Import runbook for dashboards and alerts.
 
