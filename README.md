@@ -118,7 +118,7 @@ More details: [docker/README.md](docker/README.md).
 
 GHCR publishing:
 
-- GitHub Actions publishes the production image to `ghcr.io/<owner>/<repo>`
+- GitHub Actions publishes the production image to `ghcr.io/oornnery/site`
   on pushes to `master`, tags matching `v*`, and manual dispatch.
 
 ## Security and Observability Notes

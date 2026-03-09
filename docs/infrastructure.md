@@ -126,6 +126,6 @@ From `docker/docker-compose.prod.yml`:
 - GHCR login with `GITHUB_TOKEN`
 - OCI metadata/label generation
 - production image build from `docker/Dockerfile.prod`
-- push to `ghcr.io/<owner>/<repo>` on `master`, `v*` tags, and manual dispatch
+- push to `ghcr.io/oornnery/site` on `master`, `v*` tags, and manual dispatch
 
 Task automation is available via Taskipy in `pyproject.toml`.
