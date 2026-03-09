@@ -30,16 +30,16 @@
         <Stack gap="4" class_name="sm:space-y-5">
             {% if featured_posts %}
             {% set featured_total = featured_posts | length %}
-            <div class="space-y-4" data-featured-carousel data-featured-autoplay-ms="3000">
+            <div class="space-y-4" x-data="carousel(3000)" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()" @focusin="stopAutoplay()" @focusout="startAutoplay()">
                 <div class="flex items-center justify-between gap-3">
                     <h2 class="text-xl sm:text-2xl font-bold text-foreground">Featured Posts</h2>
                     {% if featured_total > 1 %}
                     <div class="flex items-center gap-2">
                         <button
                             type="button"
-                            data-featured-prev
                             class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-accent/15 text-foreground/70 hover:text-accent hover:border-accent/40 transition-colors"
                             aria-label="Previous featured post"
+                            @click="prev()"
                             data-analytics-event="click"
                             data-analytics-id="blog-home-featured-prev"
                             data-analytics-label="Previous featured post"
@@ -50,9 +50,9 @@
                         </button>
                         <button
                             type="button"
-                            data-featured-next
                             class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-accent/15 text-foreground/70 hover:text-accent hover:border-accent/40 transition-colors"
                             aria-label="Next featured post"
+                            @click="next()"
                             data-analytics-event="click"
                             data-analytics-id="blog-home-featured-next"
                             data-analytics-label="Next featured post"
@@ -65,11 +65,11 @@
                     {% endif %}
                 </div>
 
-                <div class="featured-carousel-viewport">
-                    <div class="featured-carousel-track" data-featured-track>
+                <div class="featured-carousel-viewport" data-carousel-viewport>
+                    <div class="featured-carousel-track" data-carousel-track>
                         {% for post in featured_posts %}
                         <div
-                            data-featured-slide
+                            data-slide
                             class="featured-carousel-slide"
                             aria-hidden="{{ 'false' if loop.first else 'true' }}"
                         >
@@ -82,17 +82,17 @@
                 {% if featured_total > 1 %}
                 <div class="flex items-center justify-between gap-3">
                     <p class="text-xs text-foreground/50">
-                        <span data-featured-current>1</span>/<span data-featured-total>{{ featured_total }}</span>
+                        <span x-text="current + 1">1</span>/<span>{{ featured_total }}</span>
                     </p>
                     <div class="flex items-center gap-2" aria-label="Featured posts slide indicators">
                         {% for post in featured_posts %}
                         <button
                             type="button"
-                            data-featured-dot
-                            data-featured-index="{{ loop.index0 }}"
-                            class="featured-carousel-dot {{ 'is-active' if loop.first else '' }}"
+                            class="featured-carousel-dot"
+                            :class="{ 'is-active': isActive({{ loop.index0 }}) }"
                             aria-label="Go to featured post {{ loop.index }}"
-                            aria-current="{{ 'true' if loop.first else 'false' }}"
+                            :aria-current="isActive({{ loop.index0 }})"
+                            @click="goTo({{ loop.index0 }}); startAutoplay()"
                         ></button>
                         {% endfor %}
                     </div>
