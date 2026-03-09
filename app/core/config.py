@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, cast
 from urllib.parse import urlsplit, urlunsplit
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import AliasChoices, AnyHttpUrl, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,6 +10,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        populate_by_name=True,
     )
 
     # App
@@ -19,14 +20,47 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     request_id_header: str = "X-Request-ID"
     telemetry_enabled: bool = True
-    telemetry_service_name: str = "portfolio-backend"
+    telemetry_service_name: str = Field(
+        default="portfolio-backend",
+        validation_alias=AliasChoices("TELEMETRY_SERVICE_NAME", "OTEL_SERVICE_NAME"),
+    )
     telemetry_service_namespace: str = "portfolio"
     telemetry_traces_sample_ratio: float = Field(default=1.0, ge=0.0, le=1.0)
-    telemetry_exporter_otlp_endpoint: str = ""
-    telemetry_exporter_otlp_insecure: bool = True
-    telemetry_exporter_otlp_headers: str = ""
+    telemetry_exporter_otlp_endpoint: str = Field(
+        default="",
+        validation_alias=AliasChoices(
+            "TELEMETRY_EXPORTER_OTLP_ENDPOINT",
+            "OTEL_EXPORTER_OTLP_ENDPOINT",
+        ),
+    )
+    telemetry_exporter_otlp_insecure: bool = Field(
+        default=True,
+        validation_alias=AliasChoices(
+            "TELEMETRY_EXPORTER_OTLP_INSECURE",
+            "OTEL_EXPORTER_OTLP_INSECURE",
+        ),
+    )
+    telemetry_exporter_otlp_headers: str = Field(
+        default="",
+        validation_alias=AliasChoices(
+            "TELEMETRY_EXPORTER_OTLP_HEADERS",
+            "OTEL_EXPORTER_OTLP_HEADERS",
+        ),
+    )
     telemetry_console_exporters: bool = False
     telemetry_logs_enabled: bool = True
+    otel_sdk_disabled_raw: str | None = Field(
+        default=None,
+        validation_alias="OTEL_SDK_DISABLED",
+        exclude=True,
+        repr=False,
+    )
+    otel_logs_exporter_raw: str | None = Field(
+        default=None,
+        validation_alias="OTEL_LOGS_EXPORTER",
+        exclude=True,
+        repr=False,
+    )
 
     # Site
     site_name: str = "Fabio Souza"
@@ -82,6 +116,24 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = True
     smtp_use_ssl: bool = False
     smtp_timeout_seconds: int = Field(default=10, ge=1, le=120)
+
+    @model_validator(mode="after")
+    def _apply_otel_fallbacks(self) -> "Settings":
+        if (
+            "telemetry_enabled" not in self.model_fields_set
+            and self.otel_sdk_disabled_raw is not None
+        ):
+            value = self.otel_sdk_disabled_raw.strip().lower()
+            self.telemetry_enabled = value not in {"1", "true", "yes", "on"}
+
+        if (
+            "telemetry_logs_enabled" not in self.model_fields_set
+            and self.otel_logs_exporter_raw is not None
+        ):
+            value = self.otel_logs_exporter_raw.strip().lower()
+            self.telemetry_logs_enabled = value not in {"", "none"}
+
+        return self
 
     def frontend_telemetry_collector_endpoint(self) -> str:
         explicit = self.frontend_telemetry_otlp_endpoint.strip()

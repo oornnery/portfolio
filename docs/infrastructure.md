@@ -96,13 +96,12 @@ From `docker/docker-compose.prod.yml`:
   latency, contact delivery degradation, frontend error rate, frontend
   document-load latency, and OTLP proxy failures
 - Runbooks: `infra/README.md` and `infra/signoz/README.md`
-- `scripts/run_otel.py` maps app telemetry settings to standard `OTEL_*`
-  environment variables before launching `opentelemetry-instrument`
-- `uv run task run_otel` is the supported local entrypoint for auto-instrumented
-  runs
-- Plain `uv run opentelemetry-instrument uvicorn app.main:app ...` is also
-  supported: `usercustomize.py` applies the project resource defaults early so
-  auto-instrumented spans do not fall back to `unknown_service`
+- `uv run task run_otel` is a convenience alias for the direct
+  `opentelemetry-instrument uvicorn app.main:app ...` command
+- `usercustomize.py` applies project telemetry defaults early in interpreter
+  startup, mapping `.env` telemetry settings to standard `OTEL_*` variables so
+  shell runs and task-based runs use the same collector, headers, and service
+  labels
 - Browser tracing is configured with `FRONTEND_TELEMETRY_*` settings and uses
   the same-origin OTLP proxy route `/otel/v1/traces`
 - Grafana and Prometheus rule assets are no longer maintained in this repo;

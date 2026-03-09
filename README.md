@@ -130,11 +130,12 @@ More details: [docker/README.md](docker/README.md).
 - Frontend telemetry uses same-origin `POST /otel/v1/traces`, and the app
   forwards OTLP HTTP payloads to the configured collector.
 - `uv run task run` uses the app-managed telemetry bootstrap.
-- `uv run task run_otel` runs under `opentelemetry-instrument` and reuses
-  preconfigured global providers instead of configuring them twice.
-- Plain `uv run opentelemetry-instrument uvicorn app.main:app ...` also picks up
-  the project telemetry resource defaults from `.env`, so spans are labeled as
-  `portfolio-backend` instead of `unknown_service`.
+- `uv run task run_otel` is just a convenience alias for
+  `uv run opentelemetry-instrument uvicorn app.main:app ...`.
+- `usercustomize.py` maps the project's `.env` telemetry settings into
+  standard `OTEL_*` variables early in process startup, so direct
+  auto-instrumented runs pick up the same collector, headers, and
+  `service.name` defaults as the app-managed bootstrap.
 - Importable SigNoz dashboards and alert manifests live under
   [infra/signoz](infra/signoz).
 - Observability runbook: [infra/README.md](infra/README.md).

@@ -165,6 +165,122 @@ def test_frontend_telemetry_browser_endpoint_uses_same_origin_proxy() -> None:
     assert settings.frontend_telemetry_browser_endpoint() == "/otel/v1/traces"
 
 
+def test_settings_accept_standard_otel_environment_aliases(monkeypatch) -> None:
+    monkeypatch.setenv("OTEL_SERVICE_NAME", "portfolio-shell")
+    monkeypatch.setenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://collector:4317")
+    monkeypatch.setenv("OTEL_EXPORTER_OTLP_INSECURE", "false")
+    monkeypatch.setenv("OTEL_EXPORTER_OTLP_HEADERS", "x-scope-orgid=test")
+    monkeypatch.setenv("OTEL_LOGS_EXPORTER", "none")
+    monkeypatch.setenv("OTEL_SDK_DISABLED", "true")
+
+    settings = Settings(
+        _env_file=None,
+        secret_key="test-secret-key-with-sufficient-length",
+    )
+
+    assert settings.telemetry_service_name == "portfolio-shell"
+    assert settings.telemetry_exporter_otlp_endpoint == "http://collector:4317"
+    assert settings.telemetry_exporter_otlp_insecure is False
+    assert settings.telemetry_exporter_otlp_headers == "x-scope-orgid=test"
+    assert settings.telemetry_logs_enabled is False
+    assert settings.telemetry_enabled is False
+
+
+def test_configure_auto_instrumentation_environment_sets_otel_defaults(
+    monkeypatch,
+) -> None:
+    env: dict[str, str] = {}
+
+    monkeypatch.setattr(bootstrap.settings, "telemetry_enabled", True)
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_service_name",
+        "portfolio-backend",
+    )
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_service_namespace",
+        "portfolio",
+    )
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_exporter_otlp_endpoint",
+        "http://localhost:4317",
+    )
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_exporter_otlp_insecure",
+        True,
+    )
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_exporter_otlp_headers",
+        "authorization=Bearer test",
+    )
+    monkeypatch.setattr(bootstrap.settings, "telemetry_logs_enabled", True)
+    monkeypatch.setattr(bootstrap.settings, "debug", True)
+
+    assert bootstrap.configure_auto_instrumentation_environment(env) is True
+    assert env["OTEL_SERVICE_NAME"] == "portfolio-backend"
+    assert env["OTEL_TRACES_EXPORTER"] == "otlp"
+    assert env["OTEL_METRICS_EXPORTER"] == "otlp"
+    assert env["OTEL_LOGS_EXPORTER"] == "otlp"
+    assert env["OTEL_EXPORTER_OTLP_ENDPOINT"] == "http://localhost:4317"
+    assert env["OTEL_EXPORTER_OTLP_INSECURE"] == "true"
+    assert env["OTEL_EXPORTER_OTLP_HEADERS"] == "authorization=Bearer test"
+    assert env["OTEL_RESOURCE_ATTRIBUTES"] == (
+        "service.namespace=portfolio,deployment.environment=development"
+    )
+
+
+def test_configure_auto_instrumentation_environment_respects_explicit_otel_values(
+    monkeypatch,
+) -> None:
+    env = {
+        "OTEL_SERVICE_NAME": "custom-service",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://collector:4317",
+        "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=custom",
+    }
+
+    monkeypatch.setattr(bootstrap.settings, "telemetry_enabled", True)
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_service_name",
+        "portfolio-backend",
+    )
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_service_namespace",
+        "portfolio",
+    )
+    monkeypatch.setattr(
+        bootstrap.settings,
+        "telemetry_exporter_otlp_endpoint",
+        "http://localhost:4317",
+    )
+    monkeypatch.setattr(bootstrap.settings, "telemetry_logs_enabled", False)
+    monkeypatch.setattr(bootstrap.settings, "debug", False)
+
+    assert bootstrap.configure_auto_instrumentation_environment(env) is True
+    assert env["OTEL_SERVICE_NAME"] == "custom-service"
+    assert env["OTEL_EXPORTER_OTLP_ENDPOINT"] == "http://collector:4317"
+    assert env["OTEL_LOGS_EXPORTER"] == "none"
+    assert env["OTEL_RESOURCE_ATTRIBUTES"] == (
+        "service.namespace=custom,deployment.environment=production"
+    )
+
+
+def test_configure_auto_instrumentation_environment_disables_sdk_when_needed(
+    monkeypatch,
+) -> None:
+    env: dict[str, str] = {}
+
+    monkeypatch.setattr(bootstrap.settings, "telemetry_enabled", False)
+
+    assert bootstrap.configure_auto_instrumentation_environment(env) is True
+    assert env == {"OTEL_SDK_DISABLED": "true"}
+
+
 def test_auto_instrumentation_resource_defaults_replace_unknown_service_name(
     monkeypatch,
 ) -> None:

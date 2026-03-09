@@ -153,5 +153,8 @@ Per-channel metrics capture outcome and latency.
 - `configure_telemetry()` auto-detects preconfigured global providers
   (for `opentelemetry-instrument`) and reuses them instead of trying to
   override tracer/meter/logger providers a second time
+- `usercustomize.py` maps `.env` telemetry settings to `OTEL_*` variables
+  early enough for direct `opentelemetry-instrument` runs, so shell launches
+  and app-managed launches share the same collector and `service.name`
 - FastAPI and HTTPX instrumentation are only applied when they are not already
   instrumented

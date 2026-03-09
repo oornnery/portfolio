@@ -58,7 +58,7 @@ watch_js  = "npm run watch:js"
 # --- dev server ---
 run      = "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
 run_prod = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
-run_otel = "python scripts/run_otel.py --host 0.0.0.0 --port 8000"
+run_otel = "opentelemetry-instrument uvicorn app.main:app --host 0.0.0.0 --port 8000"
 
 # --- formatting ---
 md_fmt = "rumdl fmt ."
