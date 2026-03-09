@@ -109,7 +109,7 @@ def test_blog_post_detail_page_snapshot_sections() -> None:
         post.title,
         "min read",
         "On this page",
-        "data-reading-progress-bar",
+        'data-reading-progress-target="bar"',
         "Comments",
     )
 

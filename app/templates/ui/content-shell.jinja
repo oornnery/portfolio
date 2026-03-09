@@ -1,10 +1,14 @@
 {#def max_width="max-w-3xl", content_class="" #}
 
-<div class="blog-post-shell">
-    <section class="blog-post-toc-wrap hidden {{ max_width }}" data-post-toc-wrapper>
+<div
+    class="blog-post-shell"
+    data-controller="toc"
+    data-toc-content-selector-value="[data-post-content]"
+>
+    <section class="blog-post-toc-wrap hidden {{ max_width }}" data-toc-target="wrapper">
         <h2 class="text-xs uppercase tracking-[0.14em] text-foreground/50">On this page</h2>
         <nav class="blog-post-toc" aria-label="Table of contents">
-            <div class="blog-post-toc-links" data-post-toc></div>
+            <div class="blog-post-toc-links" data-toc-target="container"></div>
         </nav>
     </section>
 

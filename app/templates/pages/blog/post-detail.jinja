@@ -16,8 +16,13 @@
         {"label": post.title, "current": true},
     ) %}
 
-    <div class="reading-progress" data-reading-progress aria-hidden="true">
-        <div class="reading-progress__bar" data-reading-progress-bar></div>
+    <div
+        class="reading-progress"
+        data-controller="reading-progress"
+        data-reading-progress-content-selector-value="[data-post-content]"
+        aria-hidden="true"
+    >
+        <div class="reading-progress__bar" data-reading-progress-target="bar"></div>
     </div>
 
     <div class="space-y-8 sm:space-y-10">
