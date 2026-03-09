@@ -3,8 +3,7 @@
 {#import "@ui/page-header.jinja" as PageHeader #}
 {#import "@ui/tag.jinja" as Tag #}
 {#import "@ui/layout/stack.jinja" as Stack #}
-{#import "@ui/empty-state.jinja" as EmptyState #}
-{#import "@features/blog/post-card.jinja" as PostCard #}
+{#import "@features/blog/tag-posts-fragment.jinja" as TagPosts #}
 {#def seo, tags=(), posts=(), selected_tag="", current_path="/blog" #}
 
 <PublicLayout seo={{ seo }} current_path={{ current_path }}>
@@ -38,22 +37,24 @@
                 href="/blog/tags"
                 text="All"
                 variant={{ "accent" if selected_tag == "" else "outline" }}
+                hx-get="/blog/tags"
+                hx-target="#tag-posts"
+                hx-swap="outerHTML"
+                hx-push-url="true"
             />
             {% for tag in tags %}
             <Tag
                 href={{ "/blog/tags/" ~ (tag.name | urlencode) }}
                 text={{ tag.name ~ " (" ~ tag.count ~ ")" }}
                 variant={{ "accent" if selected_tag and selected_tag | lower == tag.name | lower else "outline" }}
+                hx-get={{ "/blog/tags/" ~ (tag.name | urlencode) }}
+                hx-target="#tag-posts"
+                hx-swap="outerHTML"
+                hx-push-url="true"
             />
             {% endfor %}
         </div>
 
-        <Stack gap="3" class_name="sm:space-y-4">
-            {% for post in posts %}
-            <PostCard post={{ post }} compact={{ true }} />
-            {% else %}
-            <EmptyState message="No posts found for this tag." />
-            {% endfor %}
-        </Stack>
+        <TagPosts posts={{ posts }} />
     </Stack>
 </PublicLayout>

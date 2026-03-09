@@ -1,12 +1,13 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Request
 from fastapi.responses import HTMLResponse, Response
 
 from app.core.dependencies import get_blog_page_service
-from app.core.rendering import render_page
+from app.core.rendering import is_htmx, render_fragment, render_page
 from app.services import BlogPageService
+from app.services.types import BlogTagsPageContext
 
 router = APIRouter(prefix="/blog", tags=["blog"])
 logger = logging.getLogger(__name__)
@@ -43,19 +44,34 @@ async def blog_post_detail(
 
 
 @router.get("/tags", response_class=HTMLResponse)
-async def blog_tags(page_service: BlogPageServiceDep) -> HTMLResponse:
+async def blog_tags(request: Request, page_service: BlogPageServiceDep) -> HTMLResponse:
     page = page_service.build_tags_page()
     logger.debug("Blog tags page rendered.")
+    if is_htmx(request):
+        ctx = page.context
+        assert isinstance(ctx, BlogTagsPageContext)
+        return render_fragment(
+            "@features/blog/tag-posts-fragment.jinja",
+            posts=ctx.posts,
+        )
     return render_page(page)
 
 
 @router.get("/tags/{tag}", response_class=HTMLResponse)
 async def blog_tag_detail(
     tag: Annotated[str, Path()],
+    request: Request,
     page_service: BlogPageServiceDep,
 ) -> HTMLResponse:
     page = page_service.build_tags_page(tag=tag)
     logger.debug(f"Blog tag page rendered for tag={tag}.")
+    if is_htmx(request):
+        ctx = page.context
+        assert isinstance(ctx, BlogTagsPageContext)
+        return render_fragment(
+            "@features/blog/tag-posts-fragment.jinja",
+            posts=ctx.posts,
+        )
     return render_page(page)
 
 

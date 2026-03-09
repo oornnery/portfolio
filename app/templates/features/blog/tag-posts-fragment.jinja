@@ -1,0 +1,11 @@
+{#import "@features/blog/post-card.jinja" as PostCard #}
+{#import "@ui/empty-state.jinja" as EmptyState #}
+{#def posts=() #}
+
+<div id="tag-posts" class="space-y-3 sm:space-y-4">
+    {% for post in posts %}
+    <PostCard post={{ post }} compact={{ true }} />
+    {% else %}
+    <EmptyState message="No posts found for this tag." />
+    {% endfor %}
+</div>
