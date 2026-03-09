@@ -1,5 +1,5 @@
 {#import "@layouts/public.jinja" as PublicLayout #}
-{#import "@features/contact/contact-form.jinja" as ContactForm #}
+{#import "@features/contact/contact-form-fragment.jinja" as ContactFormSection #}
 {#import "@ui/social-links.jinja" as SocialLinks #}
 {#import "@ui/nav/breadcrumb.jinja" as Breadcrumb #}
 {#import "@ui/page-header.jinja" as PageHeader #}
@@ -25,15 +25,12 @@
                 <SocialLinks links={{ social_links }} />
             </section>
 
-            <section>
-                <h2 class="text-lg font-medium text-foreground mb-4">Send a Message</h2>
-                <ContactForm
-                    csrf_token={{ csrf_token }}
-                    success={{ success }}
-                    errors={{ errors }}
-                    form_data={{ form_data }}
-                />
-            </section>
+            <ContactFormSection
+                csrf_token={{ csrf_token }}
+                success={{ success }}
+                errors={{ errors }}
+                form_data={{ form_data }}
+            />
         </Grid>
     </Stack>
 </PublicLayout>

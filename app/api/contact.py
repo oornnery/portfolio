@@ -13,7 +13,8 @@ from app.core.dependencies import (
 from app.core.logger import event_message
 from app.core.security import _anonymize_identifier
 from app.observability.events import LogEvent
-from app.core.rendering import render_page
+from app.core.rendering import is_htmx, render_fragment, render_page
+from app.services.types import ContactPageContext
 from app.services import ContactPageService
 from app.services.contact import ContactOrchestrator
 
@@ -77,4 +78,15 @@ async def contact_post(
         user_agent=user_agent,
         request_id=request_id,
     )
+    if is_htmx(request):
+        ctx = result.page.context
+        assert isinstance(ctx, ContactPageContext)
+        return render_fragment(
+            "@features/contact/contact-form-fragment.jinja",
+            status_code=result.status_code,
+            csrf_token=ctx.csrf_token,
+            success=ctx.success,
+            errors=ctx.errors,
+            form_data=ctx.form_data,
+        )
     return render_page(result.page, status_code=result.status_code)

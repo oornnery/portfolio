@@ -1,0 +1,15 @@
+{#import "@features/contact/contact-form.jinja" as ContactForm #}
+{#def csrf_token, success="", errors={}, form_data={} #}
+
+<section id="contact-form-section">
+    <h2 class="text-lg font-medium text-foreground mb-4">Send a Message</h2>
+    <ContactForm
+        csrf_token={{ csrf_token }}
+        success={{ success }}
+        errors={{ errors }}
+        form_data={{ form_data }}
+        hx-post="/contact"
+        hx-target="#contact-form-section"
+        hx-swap="outerHTML"
+    />
+</section>
