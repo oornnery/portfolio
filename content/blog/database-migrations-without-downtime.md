@@ -9,7 +9,7 @@ tags:
   - "backend"
   - "infra"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Zero-downtime migrations require thinking about schema changes in two phases:

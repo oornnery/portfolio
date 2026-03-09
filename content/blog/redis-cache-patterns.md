@@ -9,7 +9,7 @@ tags:
   - "caching"
   - "backend"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Redis is simple to add and easy to misuse. The patterns below cover the common

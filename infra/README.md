@@ -5,13 +5,13 @@ Grafana- and Prometheus-specific assets were removed from this repository.
 
 ## Contents
 
-- `signoz/dashboards/portfolio-unified-operations.json`
+- `signoz/dashboards/site-unified-operations.json`
   - Unified operations dashboard spanning backend health, frontend telemetry,
     contact flow, and OTLP proxy health in one view.
-- `signoz/dashboards/portfolio-backend-overview.json`
+- `signoz/dashboards/site-backend-overview.json`
   - Backend service operations dashboard: traffic, latency, errors, top routes,
     contact flow, notifications, and OTLP proxy health.
-- `signoz/dashboards/portfolio-frontend-telemetry.json`
+- `signoz/dashboards/site-frontend-telemetry.json`
   - Frontend telemetry dashboard: lifecycle spans, user interactions, contact
     form flow, client errors, and OTLP proxy health.
 - `signoz/alerts/*.json`
@@ -24,7 +24,7 @@ Grafana- and Prometheus-specific assets were removed from this repository.
 ## Runtime dependencies
 
 These assets assume the application is exporting telemetry through
-OpenTelemetry, as configured in the app settings.
+OpenTelemetry via `opentelemetry-instrument`.
 
 ## SigNoz setup (logs, metrics, traces)
 
@@ -33,29 +33,31 @@ Configure the application environment with OTLP endpoint values.
 For local SigNoz (default OTLP gRPC):
 
 ```env
-TELEMETRY_ENABLED=true
-TELEMETRY_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-TELEMETRY_EXPORTER_OTLP_INSECURE=true
-TELEMETRY_LOGS_ENABLED=true
+OTEL_SERVICE_NAME=site-backend
+OTEL_RESOURCE_ATTRIBUTES=service.namespace=site,deployment.environment=development
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+OTEL_EXPORTER_OTLP_INSECURE=true
+OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
 FRONTEND_TELEMETRY_ENABLED=true
 ```
 
 For SigNoz Cloud, include auth headers:
 
 ```env
-TELEMETRY_ENABLED=true
-TELEMETRY_EXPORTER_OTLP_ENDPOINT=https://ingest.<region>.signoz.cloud:443
-TELEMETRY_EXPORTER_OTLP_INSECURE=false
-TELEMETRY_LOGS_ENABLED=true
+OTEL_SERVICE_NAME=site-backend
+OTEL_RESOURCE_ATTRIBUTES=service.namespace=site,deployment.environment=production
+OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<region>.signoz.cloud:443
+OTEL_EXPORTER_OTLP_INSECURE=false
+OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
 FRONTEND_TELEMETRY_ENABLED=true
-TELEMETRY_EXPORTER_OTLP_HEADERS=signoz-ingestion-key=<your-key>
+OTEL_EXPORTER_OTLP_HEADERS=signoz-ingestion-key=<your-key>
 ```
 
 ## Validation checklist
 
 1. Start the app and hit `/`, `/about`, `/projects`, `/contact`.
-2. Open SigNoz and confirm services `portfolio-backend` and
-   `portfolio-frontend` appear.
+2. Open SigNoz and confirm services `site-backend` and
+   `site-frontend` appear.
 3. Verify traces, metrics, and logs are ingesting.
 4. Confirm `POST /otel/v1/traces` traffic appears in the frontend dashboard.
 5. Import the dashboards and alerts from `infra/signoz/`.

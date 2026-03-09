@@ -9,7 +9,7 @@ tags:
   - "python"
   - "backend"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Good test coverage is not about hitting a percentage target. It is about having

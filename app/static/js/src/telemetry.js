@@ -17,7 +17,7 @@ const TELEMETRY_SECTION_SELECTOR = "[data-telemetry-section]";
 const state = {
     initialized: false,
     enabled: false,
-    tracer: trace.getTracer("portfolio.frontend.noop"),
+    tracer: trace.getTracer("site.frontend.noop"),
     sectionObserver: null,
 };
 
@@ -58,20 +58,20 @@ const configFromMeta = () => {
         otlpEndpoint,
         sampleRatio: clampSampleRatio(metaContent("frontend-telemetry-sample-ratio")),
         serviceName:
-            metaContent("frontend-telemetry-service-name") || "portfolio-frontend",
+            metaContent("frontend-telemetry-service-name") || "site-frontend",
         serviceNamespace: metaContent("frontend-telemetry-service-namespace"),
         environment: metaContent("frontend-telemetry-environment") || "production",
     };
 };
 
 const telemetryAttributes = (element) => ({
-    "portfolio.event.name": limit(element.dataset.telemetryEvent || "ui.event"),
-    "portfolio.element.id": limit(element.dataset.telemetryId || element.id || ""),
-    "portfolio.element.label": limit(
+    "site.event.name": limit(element.dataset.telemetryEvent || "ui.event"),
+    "site.element.id": limit(element.dataset.telemetryId || element.id || ""),
+    "site.element.label": limit(
         element.dataset.telemetryLabel || element.textContent || "",
         512,
     ),
-    "portfolio.navigation.target": limit(
+    "site.navigation.target": limit(
         element.dataset.telemetryTarget || element.getAttribute("href") || "",
         512,
     ),
@@ -79,7 +79,7 @@ const telemetryAttributes = (element) => ({
 });
 
 const sectionAttributes = (element) => ({
-    "portfolio.section.name": limit(
+    "site.section.name": limit(
         element.dataset.telemetrySection || element.id || "section",
     ),
     "url.path": window.location.pathname,
@@ -143,7 +143,7 @@ const buildTracerProvider = (config) => {
     const provider = new WebTracerProvider({
         resource: resourceFromAttributes({
             "service.name": config.serviceName,
-            "service.namespace": config.serviceNamespace || "portfolio",
+            "service.namespace": config.serviceNamespace || "site",
             "deployment.environment": config.environment,
         }),
         sampler: new TraceIdRatioBasedSampler(config.sampleRatio),
@@ -205,10 +205,10 @@ export const initFrontendTelemetry = () => {
 
     try {
         const provider = buildTracerProvider(config);
-        state.tracer = provider.getTracer("portfolio.frontend.manual");
+        state.tracer = provider.getTracer("site.frontend.manual");
         state.enabled = true;
         onReady(initManualInteractionTelemetry);
-        window.portfolioTelemetry = { recordSpan };
+        window.siteTelemetry = { recordSpan };
         return true;
     } catch (error) {
         console.error("Frontend telemetry init failed", error);

@@ -67,7 +67,11 @@ Recommended production values in `.env`:
 PROD_BASE_URL=https://example.com
 PROD_TRUSTED_HOSTS=example.com,www.example.com
 PROD_CORS_ALLOW_ORIGINS=https://example.com
-PROD_TELEMETRY_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317
+PROD_OTEL_SERVICE_NAME=site-backend
+PROD_OTEL_RESOURCE_ATTRIBUTES=service.namespace=site,deployment.environment=production
+PROD_OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317
+PROD_OTEL_EXPORTER_OTLP_INSECURE=true
+PROD_OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
 PROD_FRONTEND_TELEMETRY_ENABLED=true
 PROD_FRONTEND_TELEMETRY_OTLP_ENDPOINT=
 PROD_PUBLIC_HTTP_PORT=80
@@ -78,6 +82,29 @@ Stop and remove:
 ```bash
 docker compose --env-file .env -f docker/docker-compose.prod.yml down
 ```
+
+## Publish to GHCR
+
+GitHub Actions publishes the production image from `docker/Dockerfile.prod` to:
+
+- `ghcr.io/oornnery/site`
+
+Workflow file:
+
+- `.github/workflows/docker-publish.yml`
+
+Triggers:
+
+- push to `master`
+- push tags matching `v*`
+- manual `workflow_dispatch`
+
+Published tags include:
+
+- `latest` on the default branch
+- branch tag (`master`)
+- git tag names (`v1.2.3`, etc.)
+- `sha-<commit>`
 
 ## Port and URL
 
@@ -98,9 +125,10 @@ Defined in compose files:
 ### Development (`docker-compose.yml`)
 
 - Uses `Dockerfile.dev`.
-- Builds tagged image `portfolio-app-dev:latest`.
+- Builds tagged image `site-app-dev:latest`.
 - Installs all dependency groups (`--all-groups`).
-- Enables auto-reload (`uvicorn --reload`) for code/template/content changes.
+- Runs `opentelemetry-instrument uvicorn --reload` for code/template/content
+  changes.
 - Mounts source folders as bind volumes:
   - `app`, `content`
 - Defaults to `DEBUG=true`.
@@ -108,8 +136,9 @@ Defined in compose files:
 ### Production (`docker-compose.prod.yml`)
 
 - Uses `Dockerfile.prod`.
-- Builds tagged image `portfolio-app:latest`.
+- Builds tagged image `site-app:latest`.
 - Installs only runtime dependencies (`--no-dev`).
+- Runs `opentelemetry-instrument uvicorn`.
 - Runs behind Traefik (`traefik:v3`) as reverse proxy on
   `${PROD_PUBLIC_HTTP_PORT:-80}`.
 - App container is not exposed directly; requests flow through Traefik.
@@ -122,6 +151,8 @@ Defined in compose files:
   (`PROD_BASE_URL`, `PROD_TRUSTED_HOSTS`, `PROD_CORS_ALLOW_ORIGINS`).
 - Frontend OTLP export is configured with `PROD_FRONTEND_TELEMETRY_*`
   variables and uses the same-origin proxy route `POST /otel/v1/traces`.
+- Backend OTLP export is configured with `PROD_OTEL_*` variables passed
+  directly to the CLI-managed SDK.
 - Both dev and prod compose files map `host.docker.internal` to the Docker host
   so the app container can reach a collector published on host ports `4317/4318`.
 - Applies container hardening:
@@ -134,16 +165,16 @@ Defined in compose files:
 
 `docker/traefik/dynamic/routing.yml` defines two Traefik routers:
 
-- `portfolio-web`: serves all regular routes.
-- `portfolio-contact`: handles only `POST /contact` with stricter body-size cap.
+- `site-web`: serves all regular routes.
+- `site-contact`: handles only `POST /contact` with stricter body-size cap.
 
 Main middlewares in Traefik dynamic config:
 
-- `portfolio-rate-limit-global`: global edge rate limit.
-- `portfolio-body-limit-web`: global request body cap.
-- `portfolio-body-limit-contact`: stricter cap for contact form submission.
-- `portfolio-inflight-global`: caps concurrent in-flight requests.
-- `portfolio-compress`: response compression.
+- `site-rate-limit-global`: global edge rate limit.
+- `site-body-limit-web`: global request body cap.
+- `site-body-limit-contact`: stricter cap for contact form submission.
+- `site-inflight-global`: caps concurrent in-flight requests.
+- `site-compress`: response compression.
 
 To customize host matching, edit:
 
@@ -161,10 +192,11 @@ rule in `routing.yml` and keep them aligned with `TRUSTED_HOSTS`.
 
 ## Notes
 
-- The service runs `uvicorn app.main:app`.
+- The service runs `opentelemetry-instrument uvicorn app.main:app`.
 - The healthcheck calls `GET /health` from inside the container.
 - The build context is the project root (`..`), using
   `docker/Dockerfile.dev` or `docker/Dockerfile.prod`.
+- The GHCR workflow publishes only the production image, not the dev image.
 
 ## Refs
 

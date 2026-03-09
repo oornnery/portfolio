@@ -43,7 +43,7 @@ def _contact_payload(*, csrf_token: str = "csrf-token") -> dict[str, str]:
     return {
         "name": "Alice Example",
         "email": "alice@example.com",
-        "subject": "Portfolio Contact",
+        "subject": "Site Contact",
         "message": "Hello, this is a valid contact message for route tests.",
         "csrf_token": csrf_token,
     }

@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_backend_notification_high_p95_latency",
+  "alert": "site_backend_notification_high_p95_latency",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "max(histogram_quantile(0.95, sum by (le, \"channel\") (rate({\"portfolio.contact.notification_duration_ms.bucket\"}[10m]))))"
+            "query": "max(histogram_quantile(0.95, sum by (le, \"channel\") (rate({\"site.contact.notification_duration_ms.bucket\"}[10m]))))"
           }
         }
       ]
@@ -40,11 +40,11 @@
     }
   },
   "labels": {
-    "service": "portfolio-backend",
+    "service": "site-backend",
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio notification p95 latency above 5000ms",
+    "summary": "Site notification p95 latency above 5000ms",
     "description": "Notification p95 latency reached {{$value}}ms, above the {{$threshold}}ms threshold across at least one delivery channel."
   },
   "notificationSettings": {

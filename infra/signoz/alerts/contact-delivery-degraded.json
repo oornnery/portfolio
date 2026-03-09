@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_contact_delivery_degraded",
+  "alert": "site_contact_delivery_degraded",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "sum(rate({\"portfolio.contact.submissions_total\",\"outcome\"=~\"notification_failed|success_partial\"}[10m])) / clamp_min(sum(rate({\"portfolio.contact.submissions_total\"}[10m])), 1) * 100"
+            "query": "sum(rate({\"site.contact.submissions_total\",\"outcome\"=~\"notification_failed|success_partial\"}[10m])) / clamp_min(sum(rate({\"site.contact.submissions_total\"}[10m])), 1) * 100"
           }
         }
       ]
@@ -40,11 +40,11 @@
     }
   },
   "labels": {
-    "service": "portfolio-backend",
+    "service": "site-backend",
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio contact delivery degradation detected",
+    "summary": "Site contact delivery degradation detected",
     "description": "Contact submissions with degraded delivery reached {{$value}}%, above the {{$threshold}}% threshold."
   },
   "notificationSettings": {

@@ -9,7 +9,7 @@ tags:
   - "async"
   - "backend"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Async Python is genuinely useful for I/O-heavy workloads. It is also easy to

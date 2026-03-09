@@ -1,4 +1,5 @@
 {
+  "name": "site",
   "scripts": {
     "build:js": "esbuild app/static/js/src/main.js --bundle --outfile=app/static/js/main.js --format=iife --target=es2018 --minify",
     "watch:js": "esbuild app/static/js/src/main.js --bundle --outfile=app/static/js/main.js --format=iife --target=es2018 --watch",

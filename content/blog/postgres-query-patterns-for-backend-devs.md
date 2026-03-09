@@ -9,7 +9,7 @@ tags:
   - "backend"
   - "python"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 The queries that slow down a system are rarely the obvious ones. They hide behind

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, cast
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import SplitResult, urlsplit, urlunsplit
 
-from pydantic import AliasChoices, AnyHttpUrl, Field, model_validator
+from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -14,53 +14,12 @@ class Settings(BaseSettings):
     )
 
     # App
-    app_name: str = "Portfolio"
-    app_description: str = "My personal portfolio website"
+    app_name: str = "Site"
+    app_description: str = "My personal website"
     debug: bool = False
     log_level: str = "INFO"
     request_id_header: str = "X-Request-ID"
-    telemetry_enabled: bool = True
-    telemetry_service_name: str = Field(
-        default="portfolio-backend",
-        validation_alias=AliasChoices("TELEMETRY_SERVICE_NAME", "OTEL_SERVICE_NAME"),
-    )
-    telemetry_service_namespace: str = "portfolio"
-    telemetry_traces_sample_ratio: float = Field(default=1.0, ge=0.0, le=1.0)
-    telemetry_exporter_otlp_endpoint: str = Field(
-        default="",
-        validation_alias=AliasChoices(
-            "TELEMETRY_EXPORTER_OTLP_ENDPOINT",
-            "OTEL_EXPORTER_OTLP_ENDPOINT",
-        ),
-    )
-    telemetry_exporter_otlp_insecure: bool = Field(
-        default=True,
-        validation_alias=AliasChoices(
-            "TELEMETRY_EXPORTER_OTLP_INSECURE",
-            "OTEL_EXPORTER_OTLP_INSECURE",
-        ),
-    )
-    telemetry_exporter_otlp_headers: str = Field(
-        default="",
-        validation_alias=AliasChoices(
-            "TELEMETRY_EXPORTER_OTLP_HEADERS",
-            "OTEL_EXPORTER_OTLP_HEADERS",
-        ),
-    )
-    telemetry_console_exporters: bool = False
-    telemetry_logs_enabled: bool = True
-    otel_sdk_disabled_raw: str | None = Field(
-        default=None,
-        validation_alias="OTEL_SDK_DISABLED",
-        exclude=True,
-        repr=False,
-    )
-    otel_logs_exporter_raw: str | None = Field(
-        default=None,
-        validation_alias="OTEL_LOGS_EXPORTER",
-        exclude=True,
-        repr=False,
-    )
+    otel_exporter_otlp_endpoint: str = ""
 
     # Site
     site_name: str = "Fabio Souza"
@@ -78,7 +37,8 @@ class Settings(BaseSettings):
     default_language: str = "en"
     supported_languages: list[str] = Field(default_factory=lambda: ["en", "pt"])
     frontend_telemetry_enabled: bool = True
-    frontend_telemetry_service_name: str = "portfolio-frontend"
+    frontend_telemetry_service_name: str = "site-frontend"
+    frontend_telemetry_service_namespace: str = "site"
     frontend_telemetry_otlp_endpoint: str = ""
     frontend_telemetry_sample_ratio: float = Field(default=1.0, ge=0.0, le=1.0)
     frontend_telemetry_proxy_path: str = "/otel/v1/traces"
@@ -107,7 +67,7 @@ class Settings(BaseSettings):
     # Contact
     contact_webhook_url: str = ""
     contact_email_to: str = ""
-    contact_email_subject: str = "New contact form submission from portfolio website"
+    contact_email_subject: str = "New contact form submission from website"
     smtp_host: str = ""
     smtp_port: int = Field(default=587, ge=1, le=65535)
     smtp_username: str = ""
@@ -117,30 +77,31 @@ class Settings(BaseSettings):
     smtp_use_ssl: bool = False
     smtp_timeout_seconds: int = Field(default=10, ge=1, le=120)
 
-    @model_validator(mode="after")
-    def _apply_otel_fallbacks(self) -> "Settings":
-        if (
-            "telemetry_enabled" not in self.model_fields_set
-            and self.otel_sdk_disabled_raw is not None
-        ):
-            value = self.otel_sdk_disabled_raw.strip().lower()
-            self.telemetry_enabled = value not in {"1", "true", "yes", "on"}
+    @staticmethod
+    def _netloc_with_port(parsed: SplitResult, port: int) -> str:
+        hostname = parsed.hostname
+        if hostname is None:
+            return parsed.netloc
 
-        if (
-            "telemetry_logs_enabled" not in self.model_fields_set
-            and self.otel_logs_exporter_raw is not None
-        ):
-            value = self.otel_logs_exporter_raw.strip().lower()
-            self.telemetry_logs_enabled = value not in {"", "none"}
-
-        return self
+        host = (
+            f"[{hostname}]"
+            if ":" in hostname and not hostname.startswith("[")
+            else hostname
+        )
+        credentials = ""
+        if parsed.username is not None:
+            credentials = parsed.username
+            if parsed.password is not None:
+                credentials = f"{credentials}:{parsed.password}"
+            credentials = f"{credentials}@"
+        return f"{credentials}{host}:{port}"
 
     def frontend_telemetry_collector_endpoint(self) -> str:
         explicit = self.frontend_telemetry_otlp_endpoint.strip()
         if explicit:
             return explicit
 
-        backend = self.telemetry_exporter_otlp_endpoint.strip()
+        backend = self.otel_exporter_otlp_endpoint.strip()
         if not backend:
             return ""
 
@@ -148,19 +109,18 @@ class Settings(BaseSettings):
         if parsed.scheme not in {"http", "https"} or not parsed.hostname:
             return ""
 
-        port = parsed.port
-        path = parsed.path.strip() or "/"
-        if port == 4317:
-            netloc = parsed.hostname
-            if parsed.username:
-                credentials = parsed.username
-                if parsed.password:
-                    credentials = f"{credentials}:{parsed.password}"
-                netloc = f"{credentials}@{netloc}"
-            netloc = f"{netloc}:4318"
-            return urlunsplit((parsed.scheme, netloc, "/v1/traces", "", ""))
+        if parsed.port == 4317:
+            return urlunsplit(
+                (
+                    parsed.scheme,
+                    self._netloc_with_port(parsed, 4318),
+                    "/v1/traces",
+                    parsed.query,
+                    parsed.fragment,
+                )
+            )
 
-        if port == 4318 and path == "/":
+        if parsed.path.strip() in {"", "/"}:
             return urlunsplit(
                 (
                     parsed.scheme,

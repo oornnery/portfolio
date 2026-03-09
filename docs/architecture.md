@@ -2,7 +2,7 @@
 
 ## System Goal
 
-The system is a server-side rendered portfolio application with:
+The system is a server-side rendered personal site with:
 
 - FastAPI as web backend
 - Jx/Jinja components for SSR pages with htmx progressive enhancement
@@ -29,7 +29,7 @@ flowchart LR
 
 ### Application Layer
 
-- App factory in `app/main.py` wires middleware, routes, static files, and telemetry.
+- App factory in `app/main.py` wires middleware, routes, and static files.
 - Routers in `app/api/*` stay thin and delegate to services.
 - Complex flows use orchestrator services (e.g. `ContactOrchestrator`).
 - Page rendering uses typed context models and `render_page`.
@@ -55,12 +55,9 @@ flowchart LR
 ### Integrations
 
 - Contact notifications: webhook (HTTPX) and SMTP channels.
-- Telemetry export: OTLP (traces/metrics/logs) with optional console exporter.
-- Runtime supports two observability bootstraps:
-  - app-managed setup via `configure_telemetry()`
-  - auto-instrumented setup via `opentelemetry-instrument`, with provider reuse
-    to avoid double instrumentation; this path expects `OTEL_*` to already be
-    exported in the process environment
+- Telemetry export: OTLP (traces/metrics/logs) via `opentelemetry-instrument`.
+- Browser traces are proxied through `POST /otel/v1/traces` before reaching the
+  collector.
 
 ## Request Lifecycle (Conceptual)
 
@@ -109,14 +106,14 @@ sequenceDiagram
 flowchart TB
     subgraph Dev
         D1[docker-compose.yml]
-        D2[portfolio-app-dev]
+        D2[site-app-dev]
         D1 --> D2
     end
 
     subgraph Prod
         P1[docker-compose.prod.yml]
         P2[Traefik]
-        P3[portfolio-app]
+        P3[site-app]
         P1 --> P2 --> P3
     end
 ```

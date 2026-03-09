@@ -9,7 +9,7 @@ tags:
   - "content"
   - "python"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Markdown-driven sites stay pleasant only when the content pipeline stays boring.

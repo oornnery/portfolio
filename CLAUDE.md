@@ -42,7 +42,7 @@ Pre-commit hooks run ruff format, ruff check --fix, ty check, and rumdl fmt/chec
 
 ## Architecture
 
-SSR portfolio app: FastAPI backend renders HTML via Jx/Jinja templates. No SPA
+SSR personal site: FastAPI backend renders HTML via Jx/Jinja templates. No SPA
 framework. Progressive enhancement via Alpine.js (reactive state), Stimulus
 (controllers), and htmx (fragment swaps).
 

@@ -9,7 +9,7 @@ tags:
   - "infra"
   - "devx"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Local Docker environments become useful when they expose real constraints early.

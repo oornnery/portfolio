@@ -7,32 +7,32 @@ class AppMetrics:
     def __init__(self) -> None:
         meter = metrics.get_meter(__name__)
         self._requests_total = meter.create_counter(
-            name="portfolio.http.requests_total",
+            name="site.http.requests_total",
             description="Total HTTP requests served.",
             unit="1",
         )
         self._request_duration_ms = meter.create_histogram(
-            name="portfolio.http.request_duration_ms",
+            name="site.http.request_duration_ms",
             description="HTTP request duration in milliseconds.",
             unit="ms",
         )
         self._requests_in_flight = meter.create_up_down_counter(
-            name="portfolio.http.requests_in_flight",
+            name="site.http.requests_in_flight",
             description="In-flight HTTP requests.",
             unit="1",
         )
         self._contact_submissions_total = meter.create_counter(
-            name="portfolio.contact.submissions_total",
+            name="site.contact.submissions_total",
             description="Total contact submissions by outcome.",
             unit="1",
         )
         self._notification_duration_ms = meter.create_histogram(
-            name="portfolio.contact.notification_duration_ms",
+            name="site.contact.notification_duration_ms",
             description="Notification channel send duration in milliseconds.",
             unit="ms",
         )
         self._notification_total = meter.create_counter(
-            name="portfolio.contact.notification_total",
+            name="site.contact.notification_total",
             description="Notification channel outcomes.",
             unit="1",
         )

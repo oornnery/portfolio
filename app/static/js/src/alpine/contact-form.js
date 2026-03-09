@@ -38,10 +38,10 @@ export default () => ({
     submit() {
         if (!this.validateAll()) {
             recordTelemetryEvent("contact.validation.client_error", {
-                "portfolio.contact.error_count": Object.values(this.clientErrors).filter(
+                "site.contact.error_count": Object.values(this.clientErrors).filter(
                     Boolean,
                 ).length,
-                "portfolio.contact.invalid_fields": FIELD_ORDER.filter(
+                "site.contact.invalid_fields": FIELD_ORDER.filter(
                     (fieldName) => this.clientErrors[fieldName],
                 ).join(","),
                 "url.path": window.location.pathname,
@@ -52,7 +52,7 @@ export default () => ({
 
         const form = this.$el;
         recordTelemetryEvent("contact.submit.attempt", {
-            "portfolio.contact.transport": "htmx",
+            "site.contact.transport": "htmx",
             "url.path": window.location.pathname,
         });
         this._attachRequestTelemetry(form);
@@ -150,9 +150,9 @@ export default () => ({
                 }
                 const statusCode = event.detail?.xhr?.status || 0;
                 recordTelemetryEvent("contact.submit.response", {
-                    "portfolio.contact.transport": "htmx",
-                    "portfolio.contact.status_code": statusCode,
-                    "portfolio.contact.outcome":
+                    "site.contact.transport": "htmx",
+                    "site.contact.status_code": statusCode,
+                    "site.contact.outcome":
                         statusCode >= 200 && statusCode < 400 ? "success" : "error",
                     "url.path": window.location.pathname,
                 });

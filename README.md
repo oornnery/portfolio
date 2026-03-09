@@ -1,6 +1,6 @@
-# Portfolio (FastAPI + Jx)
+# Site (FastAPI + Jx)
 
-Server-side portfolio built with FastAPI, Jx components, markdown content,
+Server-side personal site built with FastAPI, Jx components, markdown content,
 and a service-driven backend architecture.
 
 ## Documentation
@@ -23,7 +23,7 @@ Detailed technical documentation lives in [docs/README.md](docs/README.md):
 - Markdown-driven content model with TTL-cached nh3 sanitization.
 - Contact flow with CSRF, strict validation, rate limiting,
   and decoupled notifications (webhook + SMTP).
-- Browser telemetry via OpenTelemetry JS plus backend OTLP export.
+- Browser telemetry via OpenTelemetry JS plus CLI-managed backend OTLP export.
 - Health check endpoint for container probes.
 - OpenTelemetry traces, metrics, and logs export.
 
@@ -83,12 +83,6 @@ uv run task build
 uv run task run
 ```
 
-Auto-instrumented runtime with OpenTelemetry distro:
-
-```bash
-uv run task run_otel
-```
-
 1. Open:
 
 - <http://localhost:8000>
@@ -122,6 +116,11 @@ docker compose --env-file .env -f docker/docker-compose.prod.yml up --build -d
 
 More details: [docker/README.md](docker/README.md).
 
+GHCR publishing:
+
+- GitHub Actions publishes the production image to `ghcr.io/<owner>/<repo>`
+  on pushes to `master`, tags matching `v*`, and manual dispatch.
+
 ## Security and Observability Notes
 
 - Security controls exist at both edge (Traefik) and app middleware levels.
@@ -129,14 +128,14 @@ More details: [docker/README.md](docker/README.md).
 - OTLP export supports local and cloud backends (including SigNoz).
 - Frontend telemetry uses same-origin `POST /otel/v1/traces`, and the app
   forwards OTLP HTTP payloads to the configured collector.
-- `uv run task run` uses the app-managed telemetry bootstrap.
-- `uv run task run_otel` is just a convenience alias for
-  `uv run opentelemetry-instrument uvicorn app.main:app ...`.
-- Direct `opentelemetry-instrument` runs only see `OTEL_*` variables that are
-  already exported in the shell or process environment; values present only in
-  `.env` are not loaded by the OTel distro.
-- The app still accepts `OTEL_*` aliases in [app/core/config.py](app/core/config.py),
-  so exported `OTEL_*` values are reused by both the SDK and the app bootstrap.
+- `uv run task run`, `uv run task run_prod`, and Docker all start the app with
+  `opentelemetry-instrument`.
+- Local task commands load `.env` into the CLI process via `uv run --env-file .env`.
+- `OTEL_*` is the source of truth for backend telemetry configuration.
+- Set `OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true` to export stdlib
+  logs through the CLI-managed logger provider.
+- GitHub Actions publishes the production image with OCI source labels so the
+  GHCR package stays linked to this repository.
 - Importable SigNoz dashboards and alert manifests live under
   [infra/signoz](infra/signoz).
 - Observability runbook: [infra/README.md](infra/README.md).

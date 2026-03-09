@@ -27,7 +27,7 @@ class HomePageService:
         csrf_token = self._csrf_token_factory(user_agent=user_agent)
         seo = seo_for_page(
             title="Home",
-            description="Python developer portfolio with projects, experience, and contact details.",
+            description="Python developer site with projects, experience, and contact details.",
             path="/",
         )
         logger.debug(

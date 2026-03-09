@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_frontend_document_load_high_p95_latency",
+  "alert": "site_frontend_document_load_high_p95_latency",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le) (rate({\"signoz_latency.bucket\",\"service_name\"=\"portfolio-frontend\",\"operation\"=\"documentLoad\"}[10m])))"
+            "query": "histogram_quantile(0.95, sum by (le) (rate({\"signoz_latency.bucket\",\"service_name\"=\"site-frontend\",\"operation\"=\"documentLoad\"}[10m])))"
           }
         }
       ]
@@ -40,12 +40,12 @@
     }
   },
   "labels": {
-    "service": "portfolio-frontend",
+    "service": "site-frontend",
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio frontend documentLoad p95 latency above 3000ms",
-    "description": "The documentLoad span p95 is {{$value}}ms, above the {{$threshold}}ms threshold for portfolio-frontend."
+    "summary": "Site frontend documentLoad p95 latency above 3000ms",
+    "description": "The documentLoad span p95 is {{$value}}ms, above the {{$threshold}}ms threshold for site-frontend."
   },
   "notificationSettings": {
     "groupBy": [

@@ -1,5 +1,5 @@
 {
-  "description": "Operational backend dashboard for the portfolio app: traffic, latency, errors, top routes, contact flow, notifications, and OTLP proxy health.",
+  "description": "Operational backend dashboard for the site app: traffic, latency, errors, top routes, contact flow, notifications, and OTLP proxy health.",
   "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJGUyI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwYTBhMGEiLz4KICA8dGV4dAogICAgeD0iNTAlIgogICAgeT0iNTQlIgogICAgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiCiAgICBmb250LWZhbWlseT0iSW50ZXIsIEFyaWFsLCBzYW5zLXNlcmlmIgogICAgZm9udC1zaXplPSIyOCIKICAgIGZvbnQtd2VpZ2h0PSI3MDAiCiAgICBmaWxsPSIjZmFmYWZhIgogID4KICAgIEZTCiAgPC90ZXh0Pgo8L3N2Zz4K",
   "layout": [
     {
@@ -149,12 +149,12 @@
   ],
   "panelMap": {},
   "tags": [
-    "portfolio",
+    "site",
     "backend",
     "otel",
     "signoz"
   ],
-  "title": "Portfolio Backend Overview",
+  "title": "Site Backend Overview",
   "uploadedGrafana": false,
   "uuid": "e5c46c4c-fdf0-4f9b-9bda-98f8e4b5a901",
   "variables": {},
@@ -199,7 +199,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\"}[5m]))"
+            "query": "sum(rate({\"site.http.requests_total\"}[5m]))"
           }
         ],
         "queryType": "promql",
@@ -304,7 +304,7 @@
             "disabled": false,
             "legend": "{{method}}",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\"}[5m])) by (\"method\")"
+            "query": "sum(rate({\"site.http.requests_total\"}[5m])) by (\"method\")"
           }
         ],
         "queryType": "promql",
@@ -409,7 +409,7 @@
             "disabled": false,
             "legend": "{{status_code}}",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\"}[5m])) by (\"status_code\")"
+            "query": "sum(rate({\"site.http.requests_total\"}[5m])) by (\"status_code\")"
           }
         ],
         "queryType": "promql",
@@ -514,7 +514,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le) (rate({\"portfolio.http.request_duration_ms.bucket\"}[5m])))"
+            "query": "histogram_quantile(0.95, sum by (le) (rate({\"site.http.request_duration_ms.bucket\"}[5m])))"
           }
         ],
         "queryType": "promql",
@@ -619,7 +619,7 @@
             "disabled": false,
             "legend": "{{path}}",
             "name": "A",
-            "query": "topk(8, histogram_quantile(0.95, sum by (le, \"path\") (rate({\"portfolio.http.request_duration_ms.bucket\"}[5m]))))"
+            "query": "topk(8, histogram_quantile(0.95, sum by (le, \"path\") (rate({\"site.http.request_duration_ms.bucket\"}[5m]))))"
           }
         ],
         "queryType": "promql",
@@ -724,7 +724,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\",\"status_code\"=~\"4..\"}[5m])) / clamp_min(sum(rate({\"portfolio.http.requests_total\"}[5m])), 1) * 100"
+            "query": "sum(rate({\"site.http.requests_total\",\"status_code\"=~\"4..\"}[5m])) / clamp_min(sum(rate({\"site.http.requests_total\"}[5m])), 1) * 100"
           }
         ],
         "queryType": "promql",
@@ -829,7 +829,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\",\"status_code\"=~\"5..\"}[5m])) / clamp_min(sum(rate({\"portfolio.http.requests_total\"}[5m])), 1) * 100"
+            "query": "sum(rate({\"site.http.requests_total\",\"status_code\"=~\"5..\"}[5m])) / clamp_min(sum(rate({\"site.http.requests_total\"}[5m])), 1) * 100"
           }
         ],
         "queryType": "promql",
@@ -934,7 +934,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "sum({\"portfolio.http.requests_in_flight\"})"
+            "query": "sum({\"site.http.requests_in_flight\"})"
           }
         ],
         "queryType": "promql",
@@ -1039,7 +1039,7 @@
             "disabled": false,
             "legend": "{{path}}",
             "name": "A",
-            "query": "topk(8, sum(rate({\"portfolio.http.requests_total\"}[5m])) by (\"path\"))"
+            "query": "topk(8, sum(rate({\"site.http.requests_total\"}[5m])) by (\"path\"))"
           }
         ],
         "queryType": "promql",
@@ -1144,7 +1144,7 @@
             "disabled": false,
             "legend": "{{outcome}}",
             "name": "A",
-            "query": "sum(rate({\"portfolio.contact.submissions_total\"}[5m])) by (\"outcome\")"
+            "query": "sum(rate({\"site.contact.submissions_total\"}[5m])) by (\"outcome\")"
           }
         ],
         "queryType": "promql",
@@ -1249,7 +1249,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "sum(rate({\"portfolio.contact.submissions_total\",\"outcome\"=~\"notification_failed|success_partial\"}[10m])) / clamp_min(sum(rate({\"portfolio.contact.submissions_total\"}[10m])), 1) * 100"
+            "query": "sum(rate({\"site.contact.submissions_total\",\"outcome\"=~\"notification_failed|success_partial\"}[10m])) / clamp_min(sum(rate({\"site.contact.submissions_total\"}[10m])), 1) * 100"
           }
         ],
         "queryType": "promql",
@@ -1354,7 +1354,7 @@
             "disabled": false,
             "legend": "{{channel}} \u00b7 {{outcome}}",
             "name": "A",
-            "query": "sum(rate({\"portfolio.contact.notification_total\"}[5m])) by (\"channel\", \"outcome\")"
+            "query": "sum(rate({\"site.contact.notification_total\"}[5m])) by (\"channel\", \"outcome\")"
           }
         ],
         "queryType": "promql",
@@ -1459,7 +1459,7 @@
             "disabled": false,
             "legend": "{{channel}}",
             "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le, \"channel\") (rate({\"portfolio.contact.notification_duration_ms.bucket\"}[5m])))"
+            "query": "histogram_quantile(0.95, sum by (le, \"channel\") (rate({\"site.contact.notification_duration_ms.bucket\"}[5m])))"
           }
         ],
         "queryType": "promql",
@@ -1564,7 +1564,7 @@
             "disabled": false,
             "legend": "{{status_code}}",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\",\"path\"=\"/otel/v1/traces\"}[5m])) by (\"status_code\")"
+            "query": "sum(rate({\"site.http.requests_total\",\"path\"=\"/otel/v1/traces\"}[5m])) by (\"status_code\")"
           }
         ],
         "queryType": "promql",
@@ -1669,7 +1669,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le) (rate({\"portfolio.http.request_duration_ms.bucket\",\"path\"=\"/otel/v1/traces\"}[5m])))"
+            "query": "histogram_quantile(0.95, sum by (le) (rate({\"site.http.request_duration_ms.bucket\",\"path\"=\"/otel/v1/traces\"}[5m])))"
           }
         ],
         "queryType": "promql",
@@ -1774,7 +1774,7 @@
             "disabled": false,
             "legend": "",
             "name": "A",
-            "query": "sum(rate({\"portfolio.http.requests_total\",\"path\"=\"/otel/v1/traces\",\"status_code\"=~\"5..\"}[5m])) / clamp_min(sum(rate({\"portfolio.http.requests_total\",\"path\"=\"/otel/v1/traces\"}[5m])), 1) * 100"
+            "query": "sum(rate({\"site.http.requests_total\",\"path\"=\"/otel/v1/traces\",\"status_code\"=~\"5..\"}[5m])) / clamp_min(sum(rate({\"site.http.requests_total\",\"path\"=\"/otel/v1/traces\"}[5m])), 1) * 100"
           }
         ],
         "queryType": "promql",

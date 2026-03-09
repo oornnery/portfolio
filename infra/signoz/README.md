@@ -2,11 +2,11 @@
 
 These assets are designed for the telemetry emitted by this repository:
 
-- backend service name: `portfolio-backend`
-- frontend service name: `portfolio-frontend`
+- backend service name: `site-backend`
+- frontend service name: `site-frontend`
 - frontend browser ingestion path: `POST /otel/v1/traces`
 
-If you changed `TELEMETRY_SERVICE_NAME` or `FRONTEND_TELEMETRY_SERVICE_NAME`,
+If you changed `OTEL_SERVICE_NAME` or `FRONTEND_TELEMETRY_SERVICE_NAME`,
 replace those service names in the JSON manifests before importing.
 
 ## Dashboards
@@ -17,23 +17,23 @@ Import the JSON files from `infra/signoz/dashboards/` in the SigNoz UI.
 2. Go to `Dashboards`.
 3. Choose the import option in the dashboard UI.
 4. Import:
-   - `portfolio-unified-operations.json`
-   - `portfolio-backend-overview.json`
-   - `portfolio-frontend-telemetry.json`
+   - `site-unified-operations.json`
+   - `site-backend-overview.json`
+   - `site-frontend-telemetry.json`
 
 What they cover:
 
-- `portfolio-unified-operations.json`
+- `site-unified-operations.json`
   - single operational view for backend traffic, backend latency and errors
   - frontend span throughput, latency, and error ratio
   - contact outcomes, notification outcomes, and OTLP proxy health
-- `portfolio-backend-overview.json`
+- `site-backend-overview.json`
   - request rate and request breakdowns by method, status, and top route
   - p95 latency overall and by path
   - 4xx ratio, 5xx ratio, in-flight requests
   - contact submission outcomes and degraded delivery ratio
   - notification outcomes, per-channel latency, and OTLP proxy health
-- `portfolio-frontend-telemetry.json`
+- `site-frontend-telemetry.json`
   - frontend span throughput and p95 latency by operation
   - error ratio, errored operations, and span-kind breakdown
   - page lifecycle spans, user interaction events, and contact form client flow
@@ -80,12 +80,12 @@ Included rules:
 
 Backend metrics come from the app meter:
 
-- `portfolio.http.requests_total`
-- `portfolio.http.request_duration_ms`
-- `portfolio.http.requests_in_flight`
-- `portfolio.contact.submissions_total`
-- `portfolio.contact.notification_total`
-- `portfolio.contact.notification_duration_ms`
+- `site.http.requests_total`
+- `site.http.request_duration_ms`
+- `site.http.requests_in_flight`
+- `site.contact.submissions_total`
+- `site.contact.notification_total`
+- `site.contact.notification_duration_ms`
 
 Frontend panels and alerts use SigNoz trace-derived metrics:
 

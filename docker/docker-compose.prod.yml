@@ -1,6 +1,6 @@
 services:
   traefik:
-    container_name: portfolio-traefik
+    container_name: site-traefik
     image: traefik:v3.3
     command:
       - "--configFile=/etc/traefik/traefik.yml"
@@ -16,8 +16,8 @@ services:
       - edge
 
   app:
-    container_name: portfolio-app
-    image: portfolio-app:latest
+    container_name: site-app
+    image: site-app:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.prod
@@ -26,9 +26,12 @@ services:
     environment:
       DEBUG: "false"
       LOG_LEVEL: "INFO"
-      TELEMETRY_ENABLED: "true"
-      TELEMETRY_LOGS_ENABLED: "true"
-      TELEMETRY_EXPORTER_OTLP_ENDPOINT: "${PROD_TELEMETRY_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}"
+      OTEL_SERVICE_NAME: "${PROD_OTEL_SERVICE_NAME:-site-backend}"
+      OTEL_RESOURCE_ATTRIBUTES: "${PROD_OTEL_RESOURCE_ATTRIBUTES:-service.namespace=site,deployment.environment=production}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "${PROD_OTEL_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}"
+      OTEL_EXPORTER_OTLP_INSECURE: "${PROD_OTEL_EXPORTER_OTLP_INSECURE:-true}"
+      OTEL_EXPORTER_OTLP_HEADERS: "${PROD_OTEL_EXPORTER_OTLP_HEADERS:-}"
+      OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED: "${PROD_OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED:-true}"
       TRUST_FORWARDED_IP_HEADERS: "true"
       BASE_URL: "${PROD_BASE_URL:-https://example.com}"
       TRUSTED_HOSTS: "${PROD_TRUSTED_HOSTS:-example.com,www.example.com}"
@@ -38,6 +41,7 @@ services:
       FRONTEND_TELEMETRY_SAMPLE_RATIO: "${PROD_FRONTEND_TELEMETRY_SAMPLE_RATIO:-1.0}"
     command:
       [
+        "opentelemetry-instrument",
         "uvicorn",
         "app.main:app",
         "--host",
@@ -76,7 +80,7 @@ services:
 
 networks:
   edge:
-    name: portfolio-edge
+    name: site-edge
     ipam:
       config:
         - subnet: 172.28.0.0/16

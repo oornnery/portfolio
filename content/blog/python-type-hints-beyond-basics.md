@@ -9,7 +9,7 @@ tags:
   - "types"
   - "architecture"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Basic type hints (`str`, `int`, `list[str]`) get you most of the way. Beyond

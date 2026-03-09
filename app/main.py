@@ -13,8 +13,8 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.api.router import api_router
 from app.core.config import settings
-from app.core.dependencies import limiter, render_template
 from app.core.logger import configure_logging
+from app.core.dependencies import limiter, render_template
 from app.core.config import split_csv
 from app.core.security import (
     RequestBodySizeLimitMiddleware,
@@ -22,7 +22,6 @@ from app.core.security import (
     SecurityHeadersMiddleware,
 )
 from app.services.seo import seo_for_page
-from app.observability.telemetry import configure_telemetry
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,6 @@ def create_app() -> FastAPI:
         redoc_url=None,
         openapi_url="/openapi.json" if settings.debug else None,
     )
-    configure_telemetry(app)
 
     static_dir = Path(__file__).resolve().parent / "static"
     if static_dir.exists():

@@ -401,7 +401,7 @@ def _github_api_headers() -> dict[str, str]:
     headers = {
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "portfolio-app",
+        "User-Agent": "site-app",
     }
     token = settings.github_token.strip()
     if token:
@@ -440,7 +440,7 @@ def _fetch_gist_raw_content(raw_url: str) -> str:
             follow_redirects=True,
             timeout=float(settings.github_api_timeout_seconds),
         ) as client:
-            response = client.get(raw_url, headers={"User-Agent": "portfolio-app"})
+            response = client.get(raw_url, headers={"User-Agent": "site-app"})
         response.raise_for_status()
         return response.text.strip()
     except httpx.HTTPError:

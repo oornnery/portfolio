@@ -1,4 +1,4 @@
-# Portfolio Documentation
+# Site Documentation
 
 This folder centralizes the technical documentation of the project.
 

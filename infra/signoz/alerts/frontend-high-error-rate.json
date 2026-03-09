@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_frontend_high_error_rate",
+  "alert": "site_frontend_high_error_rate",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\",\"status_code\"=\"STATUS_CODE_ERROR\"}[5m])) / clamp_min(sum(rate({\"signoz_calls_total\",\"service_name\"=\"portfolio-frontend\"}[5m])), 1) * 100"
+            "query": "sum(rate({\"signoz_calls_total\",\"service_name\"=\"site-frontend\",\"status_code\"=\"STATUS_CODE_ERROR\"}[5m])) / clamp_min(sum(rate({\"signoz_calls_total\",\"service_name\"=\"site-frontend\"}[5m])), 1) * 100"
           }
         }
       ]
@@ -40,12 +40,12 @@
     }
   },
   "labels": {
-    "service": "portfolio-frontend",
+    "service": "site-frontend",
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio frontend span error ratio above 10%",
-    "description": "Frontend span error ratio is {{$value}}%, above the {{$threshold}}% threshold for portfolio-frontend."
+    "summary": "Site frontend span error ratio above 10%",
+    "description": "Frontend span error ratio is {{$value}}%, above the {{$threshold}}% threshold for site-frontend."
   },
   "notificationSettings": {
     "groupBy": [

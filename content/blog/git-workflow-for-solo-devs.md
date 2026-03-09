@@ -8,7 +8,7 @@ tags:
   - "git"
   - "devx"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Working alone removes the pressure to follow a team workflow, but discipline

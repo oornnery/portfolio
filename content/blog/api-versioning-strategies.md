@@ -9,7 +9,7 @@ tags:
   - "architecture"
   - "backend"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Every public API eventually needs versioning. Choosing the right strategy early

@@ -9,7 +9,7 @@ tags:
   - "ssr"
   - "javascript"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Server-rendered pages do not have to feel static.
@@ -55,7 +55,7 @@ server decisions.
 If navigation, content loading, or page contracts are duplicated in JavaScript,
 the codebase begins carrying two applications instead of one.
 
-For a portfolio or content site, that is usually not worth it.
+For a personal or content site, that is usually not worth it.
 
 ## Measure the trade-off honestly
 

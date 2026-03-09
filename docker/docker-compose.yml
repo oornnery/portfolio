@@ -1,7 +1,7 @@
 services:
   app:
-    container_name: portfolio-app-dev
-    image: portfolio-app-dev:latest
+    container_name: site-app-dev
+    image: site-app-dev:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.dev
@@ -12,10 +12,13 @@ services:
     environment:
       DEBUG: "true"
       LOG_LEVEL: "DEBUG"
-      TELEMETRY_ENABLED: "${DEV_TELEMETRY_ENABLED:-true}"
-      TELEMETRY_LOGS_ENABLED: "${DEV_TELEMETRY_LOGS_ENABLED:-true}"
-      TELEMETRY_EXPORTER_OTLP_ENDPOINT: "${DEV_TELEMETRY_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}"
+      OTEL_SERVICE_NAME: "${DEV_OTEL_SERVICE_NAME:-site-backend}"
+      OTEL_RESOURCE_ATTRIBUTES: "${DEV_OTEL_RESOURCE_ATTRIBUTES:-service.namespace=site,deployment.environment=development}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "${DEV_OTEL_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}"
+      OTEL_EXPORTER_OTLP_INSECURE: "${DEV_OTEL_EXPORTER_OTLP_INSECURE:-true}"
+      OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED: "${DEV_OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED:-true}"
       FRONTEND_TELEMETRY_ENABLED: "${DEV_FRONTEND_TELEMETRY_ENABLED:-true}"
+      FRONTEND_TELEMETRY_OTLP_ENDPOINT: "${DEV_FRONTEND_TELEMETRY_OTLP_ENDPOINT:-}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

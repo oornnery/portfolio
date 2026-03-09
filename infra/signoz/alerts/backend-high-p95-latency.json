@@ -1,5 +1,5 @@
 {
-  "alert": "portfolio_backend_high_p95_latency",
+  "alert": "site_backend_high_p95_latency",
   "ruleType": "promql_rule",
   "alertType": "METRIC_BASED_ALERT",
   "condition": {
@@ -25,7 +25,7 @@
           "type": "promql",
           "spec": {
             "name": "A",
-            "query": "histogram_quantile(0.95, sum by (le) (rate({\"portfolio.http.request_duration_ms.bucket\"}[5m])))"
+            "query": "histogram_quantile(0.95, sum by (le) (rate({\"site.http.request_duration_ms.bucket\"}[5m])))"
           }
         }
       ]
@@ -40,12 +40,12 @@
     }
   },
   "labels": {
-    "service": "portfolio-backend",
+    "service": "site-backend",
     "severity": "warning"
   },
   "annotations": {
-    "summary": "Portfolio backend p95 latency above 800ms",
-    "description": "HTTP p95 latency is {{$value}}ms, above the {{$threshold}}ms threshold for the portfolio backend."
+    "summary": "Site backend p95 latency above 800ms",
+    "description": "HTTP p95 latency is {{$value}}ms, above the {{$threshold}}ms threshold for the site backend."
   },
   "notificationSettings": {
     "groupBy": [

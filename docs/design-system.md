@@ -2,7 +2,7 @@
 
 ## Design Direction
 
-The UI follows a dark, developer-portfolio visual language:
+The UI follows a dark, developer-focused visual language:
 
 - High-contrast typography
 - Neutral surfaces with accent highlights

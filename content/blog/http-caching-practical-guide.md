@@ -9,7 +9,7 @@ tags:
   - "caching"
   - "backend"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 HTTP caching is one of the highest-leverage performance tools available. Most

@@ -56,7 +56,9 @@ def get_catalog() -> Catalog:
         profile_summary=profile_globals.profile_summary,
         frontend_telemetry_enabled=settings.frontend_telemetry_is_enabled(),
         frontend_telemetry_service_name=settings.frontend_telemetry_service_name,
-        frontend_telemetry_service_namespace=settings.telemetry_service_namespace,
+        frontend_telemetry_service_namespace=(
+            settings.frontend_telemetry_service_namespace
+        ),
         frontend_telemetry_otlp_endpoint=settings.frontend_telemetry_browser_endpoint(),
         frontend_telemetry_sample_ratio=settings.frontend_telemetry_sample_ratio,
         frontend_telemetry_environment=(

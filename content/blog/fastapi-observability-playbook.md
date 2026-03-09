@@ -9,7 +9,7 @@ tags:
   - "observability"
   - "opentelemetry"
 featured: true
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Good observability starts with **consistent naming** and **clear ownership**.

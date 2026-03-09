@@ -103,7 +103,7 @@ class WebhookNotificationChannel:
     def _build_payload(contact: ContactForm) -> dict[str, str]:
         return {
             "content": (
-                f"**New portfolio message**\n"
+                f"**New site message**\n"
                 f"**Name:** {contact.name}\n"
                 f"**Email:** {contact.email}\n"
                 f"**Subject:** {contact.subject}\n"
@@ -171,12 +171,12 @@ class EmailNotificationChannel:
         subject_prefix = self._config.subject_prefix.strip()
         if subject_prefix:
             return f"{subject_prefix} | {contact.subject}"
-        return f"Portfolio contact | {contact.subject}"
+        return f"Site contact | {contact.subject}"
 
     @staticmethod
     def _build_body(contact: ContactForm, context: ContactNotificationContext) -> str:
         return (
-            f"New portfolio message\n\n"
+            f"New site message\n\n"
             f"Name: {contact.name}\n"
             f"Email: {contact.email}\n"
             f"Subject: {contact.subject}\n"

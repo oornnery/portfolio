@@ -229,7 +229,7 @@ class BlogPageService:
             "<channel>"
             f"<title>{escape(site_name)} Blog</title>"
             f"<link>{escape(blog_url)}</link>"
-            "<description>Latest posts from the portfolio blog.</description>"
+            "<description>Latest posts from the site blog.</description>"
             "<language>en-us</language>"
             f'<atom:link href="{escape(feed_url)}" rel="self" type="application/rss+xml"/>'
             f"{''.join(items)}"

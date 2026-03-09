@@ -178,12 +178,12 @@ class ContactOrchestrator:
             "app.request_id": request_id,
             "client.ip_hash": client_ip,
             "client.user_agent_hash": user_agent_hash,
-            "portfolio.contact.path": "/contact",
+            "site.contact.path": "/contact",
         }
         if outcome:
-            attributes["portfolio.contact.outcome"] = outcome
+            attributes["site.contact.outcome"] = outcome
         if reason:
-            attributes["portfolio.contact.reason"] = reason
+            attributes["site.contact.reason"] = reason
         if extra:
             attributes.update(extra)
         add_current_span_event(name, attributes)
@@ -201,7 +201,7 @@ class ContactOrchestrator:
                 "app.request_id": request_id,
                 "client.ip_hash": client_ip,
                 "client.user_agent_hash": user_agent_hash,
-                "portfolio.contact.path": "/contact",
+                "site.contact.path": "/contact",
             }
         )
 
@@ -249,7 +249,7 @@ class ContactOrchestrator:
             request_id=request_id,
             client_ip=client_ip,
             user_agent=user_agent,
-            extra={"portfolio.contact.source": "contact_form"},
+            extra={"site.contact.source": "contact_form"},
         )
 
         if not is_allowed_form_content_type(content_type):

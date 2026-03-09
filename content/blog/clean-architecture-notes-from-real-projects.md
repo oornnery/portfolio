@@ -9,7 +9,7 @@ tags:
   - "python"
   - "backend"
 featured: true
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 The most useful architecture rule in day-to-day work is simple:
@@ -76,7 +76,7 @@ each page explicit:
 - optional fields are intentional instead of accidental
 - missing values fail early during development
 
-For portfolios, docs, and admin apps, this approach removes a surprising amount
+For personal sites, docs, and admin apps, this approach removes a surprising amount
 of UI confusion.
 
 ## Service boundaries and telemetry

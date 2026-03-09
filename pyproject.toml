@@ -1,6 +1,6 @@
 [project]
-name = "portfolio"
-version = "0.0.4"
+name = "site"
+version = "0.0.5"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -56,9 +56,9 @@ build     = "task build_js && task build_css"
 watch_js  = "npm run watch:js"
 
 # --- dev server ---
-run      = "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
-run_prod = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
-run_otel = "opentelemetry-instrument uvicorn app.main:app --host 0.0.0.0 --port 8000"
+run      = "uv run --env-file .env opentelemetry-instrument uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+run_prod = "uv run --env-file .env opentelemetry-instrument uvicorn app.main:app --host 0.0.0.0 --port 8000"
+run_otel = "uv run --env-file .env opentelemetry-instrument uvicorn app.main:app --host 0.0.0.0 --port 8000"
 
 # --- formatting ---
 md_fmt = "rumdl fmt ."

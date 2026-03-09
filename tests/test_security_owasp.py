@@ -27,7 +27,7 @@ def _contact_payload(csrf_token: str, **overrides: str) -> dict[str, str]:
     payload = {
         "name": "Alice Example",
         "email": "alice@example.com",
-        "subject": "Portfolio Contact",
+        "subject": "Site Contact",
         "message": "Hello, this is a valid contact message for security tests.",
         "csrf_token": csrf_token,
     }
@@ -90,7 +90,7 @@ def test_owasp_contact_requires_csrf_token_field(client: TestClient) -> None:
         data={
             "name": "Alice Example",
             "email": "alice@example.com",
-            "subject": "Portfolio Contact",
+            "subject": "Site Contact",
             "message": "Hello, this is a valid contact message.",
         },
         headers={"user-agent": "pytest-agent"},
@@ -278,7 +278,7 @@ def test_owasp_invalid_content_length_header_is_rejected(
         data={
             "name": "Alice Example",
             "email": "alice@example.com",
-            "subject": "Portfolio Contact",
+            "subject": "Site Contact",
             "message": "Hello, this is a valid contact message.",
             "csrf_token": "invalid-token",
         },

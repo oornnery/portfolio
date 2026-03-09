@@ -11,7 +11,7 @@
 | Infrastructure | `app/infrastructure/*`  | Markdown IO, sanitization, notifications             |
 | Rendering      | `app/core/rendering.py` | `render_page`, `render_fragment`, `is_htmx` helpers  |
 | Core           | `app/core/*`            | Settings, security, logging, dependencies, utilities |
-| Observability  | `app/observability/*`   | OpenTelemetry bootstrap and app metrics              |
+| Observability  | `app/observability/*`   | Span helpers and app metrics                         |
 
 ## App Factory
 
@@ -20,13 +20,14 @@
 - Structured logging (`configure_logging`)
 - FastAPI docs toggled by `DEBUG`
 - Static mount at `/static`
-- Telemetry (`configure_telemetry`)
 - Middlewares (security headers, body limits, tracing, CORS,
   host validation)
   - All custom middleware uses pure ASGI protocol
 - Rate-limit exception handler
 - Router inclusion via `app/api/router.py`
 - Rendered 404 page handler
+- OpenTelemetry providers are expected to be supplied by
+  `opentelemetry-instrument` at process startup
 
 ## API Endpoints
 
@@ -144,19 +145,13 @@ Per-channel metrics capture outcome and latency.
 
 - Request lifecycle metrics in `app/observability/metrics.py`
 - Structured event logs with request/trace IDs
-- Trace, metrics, and logs exporter setup in `app/observability/telemetry.py`
 - Helper functions in `app/observability/telemetry.py` attach manual span
   attributes/events to the current request
 - `app/api/telemetry.py` forwards browser OTLP HTTP payloads to the collector
-  derived from `TELEMETRY_EXPORTER_OTLP_ENDPOINT` (or overridden by
+  derived from `OTEL_EXPORTER_OTLP_ENDPOINT` (or overridden by
   `FRONTEND_TELEMETRY_OTLP_ENDPOINT`)
-- `configure_telemetry()` auto-detects preconfigured global providers
-  (for `opentelemetry-instrument`) and reuses them instead of trying to
-  override tracer/meter/logger providers a second time
-- Direct `opentelemetry-instrument` runs must receive `OTEL_*` via exported
-  process environment; values stored only in `.env` are not read by the OTel
-  distro before provider initialization
-- `Settings` accepts `OTEL_*` aliases too, so exported OTel variables are
-  reused consistently by app code after startup
-- FastAPI and HTTPX instrumentation are only applied when they are not already
-  instrumented
+- Backend traces, metrics, and logs are configured once by
+  `opentelemetry-instrument`
+- Local task commands load `.env` into the CLI process before startup
+- `OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true` keeps stdlib logging
+  flowing into the CLI-managed logger provider

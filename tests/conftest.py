@@ -5,7 +5,6 @@ import pytest
 
 os.environ["DEBUG"] = "false"
 os.environ["SECRET_KEY"] = "test-secret-key-with-sufficient-length"
-os.environ["TELEMETRY_ENABLED"] = "false"
 os.environ["FRONTEND_TELEMETRY_ENABLED"] = "false"
 
 

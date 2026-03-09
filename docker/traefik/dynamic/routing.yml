@@ -1,53 +1,53 @@
 http:
   routers:
-    portfolio-contact:
+    site-contact:
       entryPoints:
         - web
       rule: Path(`/contact`) && Method(`POST`)
       priority: 90
-      service: portfolio-app
+      service: site-app
       middlewares:
-        - portfolio-rate-limit-global
-        - portfolio-inflight-global
-        - portfolio-body-limit-contact
-        - portfolio-compress
+        - site-rate-limit-global
+        - site-inflight-global
+        - site-body-limit-contact
+        - site-compress
 
-    portfolio-web:
+    site-web:
       entryPoints:
         - web
       rule: PathPrefix(`/`)
       priority: 1
-      service: portfolio-app
+      service: site-app
       middlewares:
-        - portfolio-rate-limit-global
-        - portfolio-inflight-global
-        - portfolio-body-limit-web
-        - portfolio-compress
+        - site-rate-limit-global
+        - site-inflight-global
+        - site-body-limit-web
+        - site-compress
 
   middlewares:
-    portfolio-compress:
+    site-compress:
       compress: {}
 
-    portfolio-rate-limit-global:
+    site-rate-limit-global:
       rateLimit:
         average: 60
         burst: 120
         period: 1m
 
-    portfolio-inflight-global:
+    site-inflight-global:
       inFlightReq:
         amount: 200
 
-    portfolio-body-limit-web:
+    site-body-limit-web:
       buffering:
         maxRequestBodyBytes: 1048576
 
-    portfolio-body-limit-contact:
+    site-body-limit-contact:
       buffering:
         maxRequestBodyBytes: 65536
 
   services:
-    portfolio-app:
+    site-app:
       loadBalancer:
         servers:
           - url: http://app:8000

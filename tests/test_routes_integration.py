@@ -181,7 +181,7 @@ def test_contact_submission_success_flow() -> None:
             data={
                 "name": "Alice Example",
                 "email": "alice@example.com",
-                "subject": "Portfolio Contact",
+                "subject": "Site Contact",
                 "message": "Hello, I would like to discuss a project collaboration.",
                 "csrf_token": csrf_token,
             },
@@ -199,7 +199,7 @@ def test_contact_submission_rejects_invalid_csrf() -> None:
             data={
                 "name": "Alice Example",
                 "email": "alice@example.com",
-                "subject": "Portfolio Contact",
+                "subject": "Site Contact",
                 "message": "Hello, I would like to discuss a project collaboration.",
                 "csrf_token": "invalid-token",
             },

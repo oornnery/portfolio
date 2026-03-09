@@ -9,7 +9,7 @@ tags:
   - "owasp"
   - "fastapi"
 featured: true
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Security hardening is easier when controls are default behavior, not optional add-ons.
@@ -42,7 +42,7 @@ This changes security from "please remember" to "you have to bypass it on purpos
 
 ## Controls that stop common abuse early
 
-For portfolio or product sites, the most common issues are rarely exotic.
+For personal or product sites, the most common issues are rarely exotic.
 
 They are usually:
 

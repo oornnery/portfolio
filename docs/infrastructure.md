@@ -20,8 +20,8 @@ The project ships with two Docker environments.
 
 ```mermaid
 flowchart LR
-    C[docker compose dev] --> A[portfolio-app-dev]
-    A --> U[Uvicorn --reload]
+    C[docker compose dev] --> A[site-app-dev]
+    A --> U[opentelemetry-instrument + Uvicorn --reload]
     A -. bind mount .-> Src[app/ + content/]
 ```
 
@@ -30,7 +30,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     I[Internet / Client] --> T[Traefik :${PROD_PUBLIC_HTTP_PORT:-80}]
-    T --> A[portfolio-app :8000]
+    T --> A[site-app :8000]
     A --> O[OTLP Endpoint]
     A --> W[Webhook]
     A --> S[SMTP Server]
@@ -50,8 +50,8 @@ Dynamic config:
 
 Configured routers:
 
-- `portfolio-web` for public website traffic
-- `portfolio-contact` for `POST /contact`
+- `site-web` for public website traffic
+- `site-contact` for `POST /contact`
 - Browser traces use same-origin `POST /otel/v1/traces` served by the app,
   which forwards to the OTLP HTTP collector
 
@@ -69,7 +69,7 @@ From `docker/docker-compose.prod.yml`:
 - `read_only: true`
 - `tmpfs: /tmp`
 - `security_opt: no-new-privileges:true`
-- Internal Docker network (`portfolio-edge`) with explicit subnet `172.28.0.0/16`
+- Internal Docker network (`site-edge`) with explicit subnet `172.28.0.0/16`
 - `--forwarded-allow-ips` restricted to the Docker subnet CIDR
   (prevents header spoofing)
 - App is private behind Traefik
@@ -78,13 +78,15 @@ From `docker/docker-compose.prod.yml`:
   `PROD_CORS_ALLOW_ORIGINS` -> `CORS_ALLOW_ORIGINS`
   `PROD_FRONTEND_TELEMETRY_ENABLED` -> `FRONTEND_TELEMETRY_ENABLED`
   `PROD_FRONTEND_TELEMETRY_OTLP_ENDPOINT` -> `FRONTEND_TELEMETRY_OTLP_ENDPOINT`
+- Production compose maps `PROD_OTEL_*` env vars directly to the
+  `opentelemetry-instrument` process
 - Health check via `GET /health` endpoint
 
 ## Observability Assets
 
-- `infra/signoz/dashboards/portfolio-unified-operations.json`
-- `infra/signoz/dashboards/portfolio-backend-overview.json`
-- `infra/signoz/dashboards/portfolio-frontend-telemetry.json`
+- `infra/signoz/dashboards/site-unified-operations.json`
+- `infra/signoz/dashboards/site-backend-overview.json`
+- `infra/signoz/dashboards/site-frontend-telemetry.json`
 - `infra/signoz/alerts/*.json`
 - The unified dashboard is the main day-to-day operations view across backend,
   frontend, contact flow, and OTLP proxy health
@@ -96,12 +98,12 @@ From `docker/docker-compose.prod.yml`:
   latency, contact delivery degradation, frontend error rate, frontend
   document-load latency, and OTLP proxy failures
 - Runbooks: `infra/README.md` and `infra/signoz/README.md`
-- `uv run task run_otel` is a convenience alias for the direct
-  `opentelemetry-instrument uvicorn app.main:app ...` command
-- Auto-instrumented shell runs must export `OTEL_*` before startup; values
-  present only in `.env` are not loaded by the OTel distro
-- The app accepts `OTEL_*` aliases too, so exported shell values stay aligned
-  with app-managed telemetry settings after startup
+- `uv run task run`, `uv run task run_prod`, and `uv run task run_otel` all
+  execute `opentelemetry-instrument uvicorn ...`
+- Local task commands load `.env` into the CLI process with
+  `uv run --env-file .env ...`
+- `OTEL_*` variables configure the backend SDK directly; the app no longer
+  bootstraps providers in-process
 - Browser tracing is configured with `FRONTEND_TELEMETRY_*` settings and uses
   the same-origin OTLP proxy route `/otel/v1/traces`
 - Grafana and Prometheus rule assets are no longer maintained in this repo;
@@ -117,5 +119,13 @@ From `docker/docker-compose.prod.yml`:
 - API route coverage gate (`--cov-fail-under=100` for `app/api`)
 - markdown checks (`rumdl check`)
 - Jx catalog check
+
+.github/workflows/docker-publish.yml runs:
+
+- Docker Buildx setup
+- GHCR login with `GITHUB_TOKEN`
+- OCI metadata/label generation
+- production image build from `docker/Dockerfile.prod`
+- push to `ghcr.io/<owner>/<repo>` on `master`, `v*` tags, and manual dispatch
 
 Task automation is available via Taskipy in `pyproject.toml`.

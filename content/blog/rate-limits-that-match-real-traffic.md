@@ -9,7 +9,7 @@ tags:
   - "api"
   - "fastapi"
 featured: false
-discussion_url: "https://github.com/oornnery/proj/portfolio/discussions"
+discussion_url: "https://github.com/oornnery/proj/site/discussions"
 ---
 
 Rate limits only help when they reflect real usage.
