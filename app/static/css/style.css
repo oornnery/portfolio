@@ -18,6 +18,25 @@
     font-weight: 500;
 }
 
+/* Palette swatch colors — replaces inline style="background:..." (CSP-safe) */
+.palette-swatch-default { --s1: #7c7cff; --s2: #7c3aed; }
+.palette-swatch-ocean   { --s1: #14b8a6; --s2: #0891b2; }
+.palette-swatch-sunset  { --s1: #f97316; --s2: #ef4444; }
+.palette-swatch-rose    { --s1: #f43f5e; --s2: #ec4899; }
+.palette-swatch-forest  { --s1: #22c55e; --s2: #10b981; }
+.palette-swatch-mono    { --s1: #a1a1aa; --s2: #71717a; }
+.palette-swatch .swatch-1 { background: var(--s1); }
+.palette-swatch .swatch-2 { background: var(--s2); }
+
+/* Avatar initials background — replaces inline radial-gradient style (CSP-safe) */
+.avatar-initials {
+    background: radial-gradient(
+        circle at top,
+        rgb(var(--surface-2-rgb) / 0.88),
+        rgb(var(--surface-rgb) / 0.98)
+    );
+}
+
 /* ==========================================
    CSS Variables - Legacy Aliases
    ========================================== */
@@ -224,19 +243,25 @@ textarea:focus-visible {
 }
 
 .featured-carousel-viewport {
-    overflow: hidden;
+    /* overflow-x:auto + hidden scrollbar: scrollTo() controls position without
+       inline styles, which would violate style-src 'self' CSP. */
+    overflow-x: auto;
     border-radius: var(--radius-lg);
-    padding: 2px 4px;
+    /* hide scrollbar cross-browser */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.featured-carousel-viewport::-webkit-scrollbar {
+    display: none;
 }
 
 .featured-carousel-track {
     display: flex;
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
 }
 
 .featured-carousel-slide {
-    width: 100%;
+    min-width: 100%;
     flex: 0 0 100%;
 }
 
